@@ -62,3 +62,12 @@ class Scene(db.Model):
     negative_prompt = db.Column(db.Text)
     params = db.Column(db.Text)
     collection_name = db.Column(db.String(255))
+
+class Task(db.Model):
+    __tablename__ = 'tasks'
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, nullable=True)
+    scene_id = db.Column(db.Integer, nullable=True)
+    status = db.Column(db.String(255), nullable=True)
+    result_img_key = db.Column(db.String(2550), nullable=True)
+    debug_img = db.Column(db.JSON, nullable=True)

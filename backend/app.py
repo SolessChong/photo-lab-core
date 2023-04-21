@@ -11,13 +11,6 @@ from flask_migrate import Migrate
 from extensions import  app, db
 import celery_worker
 
-# app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# CORS(app)
-
-# db.init_app(app)
-# migrate = Migrate(app, db)
 
 import models
 
