@@ -111,7 +111,6 @@ def run_lora_on_base_img(task) -> Image:
     prompt = task['prompt']
     i2i_args = task['params']
 
-
     image = base_img.copy()
     # detect face and draw mask
     mask_list = face_mask.get_face_mask(base_img, expand_face=1.0)

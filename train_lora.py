@@ -154,13 +154,14 @@ def train_lora(dataset_path, subject_name, class_name):
 
     print(os.path.join(conf.TRAIN_UTILS_ROOT, "./venv/scripts/accelerate.exe"))
 
+    # 2500 images with repeat, 5 epoch
     cmd = f"""{os.path.join(conf.TRAIN_UTILS_ROOT, "./venv/scripts/accelerate.exe")} \
         launch \
         --num_cpu_threads_per_process=2 \
         "{Path(conf.TRAIN_UTILS_ROOT) / "train_network.py"}" --enable_bucket \
-        --pretrained_model_name_or_path="D:/sd/stable-diffusion-webui/models/Stable-diffusion/chilloutmix_NiPrunedFp16Fix.safetensors" \
+        --pretrained_model_name_or_path={conf.MODEL_RESOURCES['CM.ST']} \
         --train_data_dir="{Path(dataset_path) / "img_train_n"}" \
-        --reg_data_dir="D:/sd/data/regularization/Stable-Diffusion-Regularization-Images-color_photo_of_a_woman_ddim" \
+        --reg_data_dir={conf.DATA_RESOURCES['REG.WOMEN']} \
         --resolution=512,512 \
         --output_dir="{Path(dataset_path) /  "model_lora"}" \
         --logging_dir="{Path(dataset_path) / "log"}" --network_alpha="256" \
@@ -201,9 +202,9 @@ def main():
     #
     # Dir structure:
     #   - dataset_path
-    #       - img_raw
-    #       - img_train
-    #       - model_lora
+    #       - img_raw: png files as input
+    #       - img_train: auto created
+    #       - model_lora: auto created
     img_raw_path = Path(args.dataset_path) / "img_raw"
     img_train_path = Path(args.dataset_path) / "img_train"
 
@@ -218,7 +219,7 @@ def main():
     ## 3. Train LORA model
     #
     logging.info("=== start training LORA model")
-    train_lora(args.dataset_path, args.subject_name, args.class_name)
+    train_lora(args.dataset_path, conf.SUBJECT_PLACEHOLDER, 'girl')
 
 # main program
 if __name__ == "__main__":

@@ -21,3 +21,15 @@ FILE_CONF = {
     'TMP_OUTPUT': 'data/output/tmp',
 }
 
+MODEL_RESOURCES = {
+    'CM.ST': 'D:/sd/stable-diffusion-webui/models/Stable-diffusion/chilloutmix_NiPrunedFp16Fix.safetensors',
+}
+
+DATA_RESOURCES = {
+    'REG.WOMEN': 'D:/sd/data/regularization/Stable-Diffusion-Regularization-Images-color_photo_of_a_woman_ddim',
+}
+
+TRAIN_PARAMS = {
+    'ENLARGE_FACE': 2,
+    'REMOVE_BACKGROUND': True,
+}
