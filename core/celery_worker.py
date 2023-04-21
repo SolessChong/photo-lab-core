@@ -37,9 +37,12 @@
 
 
 import conf
-from train_lora import *
+import train_lora
+import render
 from resource_manager import ResourceMgr, ResourceType, bucket
 from pathlib import Path
+from backend.models import *
+import logging
 
 # Train LORA model
 def task_train_lora(person_id, train_img_list):
@@ -53,17 +56,17 @@ def task_train_lora(person_id, train_img_list):
         bucket.get_object_to_file(img_url, str(img_raw_path / f"{i}.png"))
         
     # read img list from img_path
-    detect_subject_and_crop(dataset_path, remove_bg=conf.TRAIN_PARAMS['REMOVE_BACKGROUND'], enlarge=conf.TRAIN_PARAMS['ENLARGE_FACE'])
+    train_lora.detect_subject_and_crop(dataset_path, remove_bg=conf.TRAIN_PARAMS['REMOVE_BACKGROUND'], enlarge=conf.TRAIN_PARAMS['ENLARGE_FACE'])
 
     ## 2. Captioning
     #
     logging.info("=== start captioning")
-    captioning(img_train_path,  remove_bg=conf.TRAIN_PARAMS['REMOVE_BACKGROUND'])
+    train_lora.captioning(img_train_path,  remove_bg=conf.TRAIN_PARAMS['REMOVE_BACKGROUND'])
 
     ## 3. Train LORA model
     #
     logging.info(f"=== start training LORA model {person_id}")
-    train_lora(dataset_path, person_id, 'girl')
+    train_lora.train_lora(dataset_path, person_id, 'girl')
 
     # TODO: save to db @fengyi
     # local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
