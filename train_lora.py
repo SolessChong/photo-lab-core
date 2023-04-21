@@ -12,6 +12,7 @@ import shutil
 from pathlib import Path
 import face_mask
 import pose_detect
+from resource_manager import ResourceMgr, ResourceType
 
 import sys
 import io
@@ -30,7 +31,7 @@ parser.add_argument("subject_name", help="subject name")
 parser.add_argument("class_name", help="subject id")
 
 # parse cli arguments
-args = parser.parse_args()
+
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -149,7 +150,7 @@ def train_lora(dataset_path, subject_name, class_name):
         shutil.rmtree(Path(dataset_path) /  f"img_train_n")
     shutil.copytree(
         Path(dataset_path) /  "img_train",
-        Path(dataset_path) / f"img_train_n/{repeats}_{subject_name} {class_name}/"
+        Path(dataset_path) / f"img_train_n/{repeats}_{conf.SUBJECT_PLACEHOLDER} {class_name}/"
     )
 
     print(os.path.join(conf.TRAIN_UTILS_ROOT, "./venv/scripts/accelerate.exe"))
@@ -173,6 +174,7 @@ def train_lora(dataset_path, subject_name, class_name):
         > {Path(dataset_path) / "train.log"} 2>&1
         """
         # > {os.path.join(dataset_path, "train.log")} 2>&1
+        # --reg_data_dir={conf.DATA_RESOURCES['REG.WOMEN']} \
     print(cmd)
 
     os.environ['PYTHONIOENCODING'] =  'utf-8'
@@ -187,14 +189,17 @@ def train_lora(dataset_path, subject_name, class_name):
         # for line in process.stderr:            
         #     print(line, end='', flush=True)
         process.wait(timeout=7200)
-    # with subprocess.Popen(cmd, shell=True, text=True, encoding='utf-8') as process:
-    #     output, errors = process.communicate()
     
-
+    # Copy model to model folder
+    shutil.copyfile(
+        str(Path(dataset_path) / "model_lora" / (subject_name + ".safetensor")),
+        ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, subject_name)
+    )
     logging.info("--- LORA model training finished")
 
 # main function
 def main():
+    args = parser.parse_args()
     ## Flags
     remove_bg = True
     enlarge_face = 2
