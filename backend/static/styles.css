@@ -1,0 +1,208 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2em;
+}
+
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.image-item {
+    width: 33%;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1em;
+    border-radius: 10px;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.editable {
+    border: 1px solid #ccc;
+    background-color: white;
+    outline: none;
+    resize: none;
+    overflow-wrap: break-word;
+    padding: 1px;
+    display: inline-block;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.label {
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 2em;
+    margin-bottom: 2em;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+input, button {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 1em;
+}
+
+button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+header {
+    background-color: #f5f5f5;
+    padding: 1em;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+}
+
+.tabs {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tab {
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.tab:hover {
+    cursor: pointer;
+    background-color: #f0f0f0;
+}
+
+.tab.active {
+    background-color: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+.tab-content {
+    display: none;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Scene Tab */
+.scene-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.scene-item {
+    width: 30%;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1em;
+    border-radius: 10px;
+}
+
+.scene-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Prompt Tab */
+.prompt-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.prompt-item {
+    width: 30%;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1em;
+    border-radius: 10px;
+}
+
+.prompt-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.prompt-text {
+    width: 80%;
+}
+
+select {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 1em;
+    width: 100%;
+    box-sizing: border-box;
+}

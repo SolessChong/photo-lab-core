@@ -1,0 +1,375 @@
+nohup: ignoring input
+/usr/local/lib/python3.10/dist-packages/celery/platforms.py:840: SecurityWarning: You're running the worker with superuser privileges: this is
+absolutely not recommended!
+
+Please specify a different user using the --uid option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  warnings.warn(SecurityWarning(ROOT_DISCOURAGED.format(
+ 
+ -------------- celery@iZt4n7ah8y2rvj9u74p13hZ v5.2.7 (dawn-chorus)
+--- ***** ----- 
+-- ******* ---- Linux-5.15.0-58-generic-x86_64-with-glibc2.35 2023-04-19 04:19:24
+- *** --- * --- 
+- ** ---------- [config]
+- ** ---------- .> app:         extensions:0x7fa5b2a5ece0
+- ** ---------- .> transport:   redis://localhost:6379//
+- ** ---------- .> results:     redis://localhost:6379/
+- *** --- * --- .> concurrency: 2 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** ----- 
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+                
+
+[tasks]
+  . celery_worker.generate_images_task
+
+[2023-04-19 04:19:24,302: WARNING/MainProcess] /usr/local/lib/python3.10/dist-packages/celery/app/utils.py:204: CDeprecationWarning: 
+    The 'CELERY_RESULT_BACKEND' setting is deprecated and scheduled for removal in
+    version 6.0.0. Use the result_backend instead
+
+  deprecated.warn(description=f'The {setting!r} setting',
+
+[2023-04-19 04:19:24,302: WARNING/MainProcess] Please run `celery upgrade settings path/to/settings.py` to avoid these warnings and to allow a smoother upgrade to Celery 6.0.
+[2023-04-19 04:19:24,380: INFO/MainProcess] Connected to redis://localhost:6379//
+[2023-04-19 04:19:24,382: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 04:19:25,387: INFO/MainProcess] mingle: all alone
+[2023-04-19 04:19:25,394: INFO/MainProcess] celery@iZt4n7ah8y2rvj9u74p13hZ ready.
+[2023-04-19 04:19:25,395: INFO/MainProcess] Task celery_worker.generate_images_task[13fd07a5-a236-408e-9b2c-0e4a2949ec7e] received
+[2023-04-19 04:19:25,396: INFO/MainProcess] Task celery_worker.generate_images_task[d267bebc-bb7b-4e1b-a6f8-c1c026351003] received
+[2023-04-19 04:19:25,405: INFO/MainProcess] Task celery_worker.generate_images_task[849addb3-9a27-4c7a-8d39-00fc83d760aa] received
+[2023-04-19 04:19:26,046: INFO/ForkPoolWorker-2] start generate_images_task
+[2023-04-19 04:19:26,059: INFO/ForkPoolWorker-1] start generate_images_task
+[2023-04-19 04:19:26,102: INFO/ForkPoolWorker-2] start generete for scene id 373,  action_type: mj
+[2023-04-19 04:19:26,115: INFO/ForkPoolWorker-1] start generete for scene id 75,  action_type: reface
+[2023-04-19 04:19:47,626: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 04:20:01,778: INFO/ForkPoolWorker-1] get akool reface successfully @time 4 for source id: 7, scene id: 75
+[2023-04-19 04:20:01,832: INFO/ForkPoolWorker-1] start generete for scene id 431,  action_type: mj
+[2023-04-19 04:23:27,137: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 373
+[2023-04-19 04:23:27,191: INFO/ForkPoolWorker-2] start generete for scene id 390,  action_type: mj
+[2023-04-19 04:24:02,881: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 431
+[2023-04-19 04:24:02,936: INFO/ForkPoolWorker-1] start generete for scene id 480,  action_type: mj
+[2023-04-19 04:27:28,232: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 390
+[2023-04-19 04:27:28,286: INFO/ForkPoolWorker-2] start generete for scene id 414,  action_type: mj
+[2023-04-19 04:28:04,136: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 480
+[2023-04-19 04:28:04,191: INFO/ForkPoolWorker-1] start generete for scene id 430,  action_type: mj
+[2023-04-19 04:31:29,278: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 414
+[2023-04-19 04:31:29,332: INFO/ForkPoolWorker-2] start generete for scene id 417,  action_type: mj
+[2023-04-19 04:32:05,250: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 430
+[2023-04-19 04:32:05,305: INFO/ForkPoolWorker-1] start generete for scene id 7,  action_type: mj
+[2023-04-19 04:35:30,500: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 417
+[2023-04-19 04:35:30,554: INFO/ForkPoolWorker-2] start generete for scene id 481,  action_type: mj
+[2023-04-19 04:36:06,408: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 7
+[2023-04-19 04:36:06,463: INFO/ForkPoolWorker-1] start generete for scene id 407,  action_type: mj
+[2023-04-19 04:39:31,666: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 481
+[2023-04-19 04:39:31,721: INFO/ForkPoolWorker-2] start generete for scene id 467,  action_type: mj
+[2023-04-19 04:40:07,528: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 407
+[2023-04-19 04:40:07,583: INFO/ForkPoolWorker-1] start generete for scene id 465,  action_type: mj
+[2023-04-19 04:43:32,748: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 467
+[2023-04-19 04:43:32,802: INFO/ForkPoolWorker-2] start generete for scene id 456,  action_type: mj
+[2023-04-19 04:44:08,692: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 465
+[2023-04-19 04:44:08,747: INFO/ForkPoolWorker-1] start generete for scene id 495,  action_type: mj
+[2023-04-19 04:47:33,822: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 456
+[2023-04-19 04:47:33,876: INFO/ForkPoolWorker-2] start generete for scene id 407,  action_type: mj
+[2023-04-19 04:48:09,797: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 495
+[2023-04-19 04:48:09,852: INFO/ForkPoolWorker-1] start generete for scene id 543,  action_type: mj
+[2023-04-19 04:51:34,889: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 407
+[2023-04-19 04:51:34,943: INFO/ForkPoolWorker-2] start generete for scene id 532,  action_type: mj
+[2023-04-19 04:52:10,972: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 543
+[2023-04-19 04:52:11,027: INFO/ForkPoolWorker-1] start generete for scene id 531,  action_type: mj
+[2023-04-19 04:55:35,932: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 532
+[2023-04-19 04:55:35,986: INFO/ForkPoolWorker-2] start generete for scene id 522,  action_type: mj
+[2023-04-19 04:56:12,082: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 531
+[2023-04-19 04:56:12,137: INFO/ForkPoolWorker-1] start generete for scene id 35,  action_type: reface
+[2023-04-19 04:56:27,201: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 04:56:34,929: INFO/ForkPoolWorker-1] get akool reface successfully @time 2 for source id: 7, scene id: 35
+[2023-04-19 04:56:34,983: INFO/ForkPoolWorker-1] start generete for scene id 16,  action_type: reface
+[2023-04-19 04:56:56,916: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 04:57:27,334: INFO/ForkPoolWorker-1] get akool reface successfully @time 12 for source id: 7, scene id: 16
+[2023-04-19 04:57:27,388: INFO/ForkPoolWorker-1] start generete for scene id 426,  action_type: mj
+[2023-04-19 04:59:38,147: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 522
+[2023-04-19 04:59:38,201: INFO/ForkPoolWorker-2] start generete for scene id 519,  action_type: mj
+[2023-04-19 05:01:28,403: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 426
+[2023-04-19 05:01:28,458: INFO/ForkPoolWorker-1] start generete for scene id 383,  action_type: mj
+[2023-04-19 05:03:39,193: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 519
+[2023-04-19 05:03:39,247: INFO/ForkPoolWorker-2] start generete for scene id 496,  action_type: mj
+[2023-04-19 05:05:29,453: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 383
+[2023-04-19 05:05:29,508: INFO/ForkPoolWorker-1] start generete for scene id 427,  action_type: mj
+[2023-04-19 05:07:40,211: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 496
+[2023-04-19 05:07:40,266: INFO/ForkPoolWorker-2] start generete for scene id 422,  action_type: mj
+[2023-04-19 05:09:30,489: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 427
+[2023-04-19 05:09:30,544: INFO/ForkPoolWorker-1] start generete for scene id 64,  action_type: reface
+[2023-04-19 05:09:41,648: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 05:09:46,615: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 7, scene id: 64
+[2023-04-19 05:09:46,670: INFO/ForkPoolWorker-1] start generete for scene id 363,  action_type: mj
+[2023-04-19 05:11:41,369: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 422
+[2023-04-19 05:11:41,423: INFO/ForkPoolWorker-2] start generete for scene id 429,  action_type: mj
+[2023-04-19 05:13:47,802: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 363
+[2023-04-19 05:13:47,857: INFO/ForkPoolWorker-1] start generete for scene id 499,  action_type: mj
+[2023-04-19 05:15:42,410: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 429
+[2023-04-19 05:15:42,464: INFO/ForkPoolWorker-2] start generete for scene id 546,  action_type: mj
+[2023-04-19 05:17:48,832: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 499
+[2023-04-19 05:17:48,886: INFO/ForkPoolWorker-1] start generete for scene id 84,  action_type: reface
+[2023-04-19 05:17:58,729: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 05:18:03,981: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 7, scene id: 84
+[2023-04-19 05:18:04,036: INFO/ForkPoolWorker-1] start generete for scene id 424,  action_type: mj
+[2023-04-19 05:19:43,454: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 546
+[2023-04-19 05:19:43,508: INFO/ForkPoolWorker-2] start generete for scene id 542,  action_type: mj
+[2023-04-19 05:20:54,777: INFO/MainProcess] Task celery_worker.generate_images_task[849addb3-9a27-4c7a-8d39-00fc83d760aa] received
+[2023-04-19 05:22:05,184: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 424
+[2023-04-19 05:22:05,294: INFO/ForkPoolWorker-1] Task celery_worker.generate_images_task[d267bebc-bb7b-4e1b-a6f8-c1c026351003] succeeded in 3759.890192720981s: None
+[2023-04-19 05:22:05,349: INFO/ForkPoolWorker-1] start generate_images_task
+[2023-04-19 05:22:05,404: INFO/ForkPoolWorker-1] start generete for scene id 484,  action_type: mj
+[2023-04-19 05:23:44,457: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 542
+[2023-04-19 05:23:44,511: INFO/ForkPoolWorker-2] start generete for scene id 470,  action_type: mj
+[2023-04-19 05:26:06,353: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 484
+[2023-04-19 05:26:06,408: INFO/ForkPoolWorker-1] start generete for scene id 358,  action_type: mj
+[2023-04-19 05:27:45,565: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 470
+[2023-04-19 05:27:45,619: INFO/ForkPoolWorker-2] start generete for scene id 383,  action_type: mj
+[2023-04-19 05:30:07,453: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 358
+[2023-04-19 05:30:07,508: INFO/ForkPoolWorker-1] start generete for scene id 403,  action_type: mj
+[2023-04-19 05:31:46,736: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 383
+[2023-04-19 05:31:46,790: INFO/ForkPoolWorker-2] start generete for scene id 454,  action_type: mj
+[2023-04-19 05:34:08,476: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 403
+[2023-04-19 05:34:08,531: INFO/ForkPoolWorker-1] start generete for scene id 536,  action_type: mj
+[2023-04-19 05:35:47,766: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 454
+[2023-04-19 05:35:47,821: INFO/ForkPoolWorker-2] start generete for scene id 501,  action_type: mj
+[2023-04-19 05:38:09,532: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 536
+[2023-04-19 05:38:09,587: INFO/ForkPoolWorker-1] start generete for scene id 34,  action_type: reface
+[2023-04-19 05:38:17,353: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 05:38:21,894: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 7, scene id: 34
+[2023-04-19 05:38:21,949: INFO/ForkPoolWorker-1] start generete for scene id 546,  action_type: mj
+[2023-04-19 05:39:48,964: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 501
+[2023-04-19 05:39:49,071: INFO/ForkPoolWorker-2] Task celery_worker.generate_images_task[13fd07a5-a236-408e-9b2c-0e4a2949ec7e] succeeded in 4823.6745681829925s: None
+[2023-04-19 05:39:49,126: INFO/ForkPoolWorker-2] start generate_images_task
+[2023-04-19 05:39:49,180: INFO/ForkPoolWorker-2] start generete for scene id 484,  action_type: mj
+[2023-04-19 05:42:22,978: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 546
+[2023-04-19 05:42:23,033: INFO/ForkPoolWorker-1] start generete for scene id 95,  action_type: reface
+[2023-04-19 05:42:32,187: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 05:42:39,259: INFO/ForkPoolWorker-1] get akool reface successfully @time 2 for source id: 7, scene id: 95
+[2023-04-19 05:42:39,314: INFO/ForkPoolWorker-1] start generete for scene id 422,  action_type: mj
+[2023-04-19 05:43:50,164: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 484
+[2023-04-19 05:43:50,218: INFO/ForkPoolWorker-2] start generete for scene id 358,  action_type: mj
+[2023-04-19 05:46:40,475: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 422
+[2023-04-19 05:46:40,530: INFO/ForkPoolWorker-1] start generete for scene id 378,  action_type: mj
+[2023-04-19 05:47:51,188: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 358
+[2023-04-19 05:47:51,242: INFO/ForkPoolWorker-2] start generete for scene id 403,  action_type: mj
+[2023-04-19 05:50:41,490: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 378
+[2023-04-19 05:50:41,545: INFO/ForkPoolWorker-1] start generete for scene id 61,  action_type: reface
+[2023-04-19 05:50:48,576: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 05:50:52,861: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 7, scene id: 61
+[2023-04-19 05:50:52,916: INFO/ForkPoolWorker-1] start generete for scene id 45,  action_type: reface
+[2023-04-19 05:50:59,957: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 05:51:04,052: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 7, scene id: 45
+[2023-04-19 05:51:04,107: INFO/ForkPoolWorker-1] start generete for scene id 85,  action_type: reface
+[2023-04-19 05:51:18,574: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 05:51:26,969: INFO/ForkPoolWorker-1] get akool reface successfully @time 2 for source id: 7, scene id: 85
+[2023-04-19 05:51:27,024: INFO/ForkPoolWorker-1] start generete for scene id 409,  action_type: mj
+[2023-04-19 05:51:52,272: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 403
+[2023-04-19 05:51:52,326: INFO/ForkPoolWorker-2] start generete for scene id 536,  action_type: mj
+[2023-04-19 05:55:28,165: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 409
+[2023-04-19 05:55:28,220: INFO/ForkPoolWorker-1] start generete for scene id 43,  action_type: reface
+[2023-04-19 05:55:35,391: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 05:55:40,129: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 7, scene id: 43
+[2023-04-19 05:55:40,184: INFO/ForkPoolWorker-1] start generete for scene id 545,  action_type: mj
+[2023-04-19 05:55:53,356: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 536
+[2023-04-19 05:55:53,410: INFO/ForkPoolWorker-2] start generete for scene id 34,  action_type: reface
+[2023-04-19 05:56:02,628: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-19 05:56:06,821: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 7, scene id: 34
+[2023-04-19 05:56:06,875: INFO/ForkPoolWorker-2] start generete for scene id 546,  action_type: mj
+[2023-04-19 05:59:41,253: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 545
+[2023-04-19 05:59:41,308: INFO/ForkPoolWorker-1] start generete for scene id 527,  action_type: mj
+[2023-04-19 06:00:07,909: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 546
+[2023-04-19 06:00:07,963: INFO/ForkPoolWorker-2] start generete for scene id 95,  action_type: reface
+[2023-04-19 06:00:20,514: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-19 06:00:27,567: INFO/ForkPoolWorker-2] get akool reface successfully @time 2 for source id: 7, scene id: 95
+[2023-04-19 06:00:27,622: INFO/ForkPoolWorker-2] start generete for scene id 422,  action_type: mj
+[2023-04-19 06:03:42,278: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 527
+[2023-04-19 06:03:42,333: INFO/ForkPoolWorker-1] start generete for scene id 89,  action_type: reface
+[2023-04-19 06:04:01,460: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-19 06:04:11,411: INFO/ForkPoolWorker-1] get akool reface successfully @time 2 for source id: 7, scene id: 89
+[2023-04-19 06:04:11,466: INFO/ForkPoolWorker-1] start generete for scene id 401,  action_type: mj
+[2023-04-19 06:04:28,723: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 422
+[2023-04-19 06:04:28,777: INFO/ForkPoolWorker-2] start generete for scene id 378,  action_type: mj
+[2023-04-19 06:08:12,486: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 401
+[2023-04-19 06:08:12,541: INFO/ForkPoolWorker-1] start generete for scene id 471,  action_type: mj
+[2023-04-19 06:08:29,750: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 378
+[2023-04-19 06:08:29,804: INFO/ForkPoolWorker-2] start generete for scene id 61,  action_type: reface
+[2023-04-19 06:08:36,759: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-19 06:08:40,997: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 7, scene id: 61
+[2023-04-19 06:08:41,051: INFO/ForkPoolWorker-2] start generete for scene id 45,  action_type: reface
+[2023-04-19 06:08:48,026: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-19 06:08:52,715: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 7, scene id: 45
+[2023-04-19 06:08:52,769: INFO/ForkPoolWorker-2] start generete for scene id 85,  action_type: reface
+[2023-04-19 06:09:07,899: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-19 06:09:16,704: INFO/ForkPoolWorker-2] get akool reface successfully @time 2 for source id: 7, scene id: 85
+[2023-04-19 06:09:16,758: INFO/ForkPoolWorker-2] start generete for scene id 409,  action_type: mj
+[2023-04-19 06:12:13,592: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 471
+[2023-04-19 06:12:13,647: INFO/ForkPoolWorker-1] start generete for scene id 382,  action_type: mj
+[2023-04-19 06:13:17,848: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 409
+[2023-04-19 06:13:17,902: INFO/ForkPoolWorker-2] start generete for scene id 43,  action_type: reface
+[2023-04-19 06:13:25,145: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-19 06:13:29,869: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 7, scene id: 43
+[2023-04-19 06:13:29,923: INFO/ForkPoolWorker-2] start generete for scene id 545,  action_type: mj
+[2023-04-19 06:16:14,648: INFO/ForkPoolWorker-1] failed to get mj for source id: 7, scene id: 382
+[2023-04-19 06:16:14,758: INFO/ForkPoolWorker-1] Task celery_worker.generate_images_task[849addb3-9a27-4c7a-8d39-00fc83d760aa] succeeded in 3249.463051141007s: None
+[2023-04-19 06:17:31,002: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 545
+[2023-04-19 06:17:31,056: INFO/ForkPoolWorker-2] start generete for scene id 527,  action_type: mj
+[2023-04-19 06:21:32,105: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 527
+[2023-04-19 06:21:32,159: INFO/ForkPoolWorker-2] start generete for scene id 89,  action_type: reface
+[2023-04-19 06:21:51,405: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-19 06:22:03,871: INFO/ForkPoolWorker-2] get akool reface successfully @time 4 for source id: 7, scene id: 89
+[2023-04-19 06:22:03,927: INFO/ForkPoolWorker-2] start generete for scene id 401,  action_type: mj
+[2023-04-19 06:26:05,009: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 401
+[2023-04-19 06:26:05,064: INFO/ForkPoolWorker-2] start generete for scene id 471,  action_type: mj
+[2023-04-19 06:30:06,034: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 471
+[2023-04-19 06:30:06,089: INFO/ForkPoolWorker-2] start generete for scene id 382,  action_type: mj
+[2023-04-19 06:34:07,096: INFO/ForkPoolWorker-2] failed to get mj for source id: 7, scene id: 382
+[2023-04-19 06:34:07,206: INFO/ForkPoolWorker-2] Task celery_worker.generate_images_task[849addb3-9a27-4c7a-8d39-00fc83d760aa] succeeded in 3258.133827364014s: None
+[2023-04-21 12:38:22,652: INFO/MainProcess] Task celery_worker.generate_images_task[16bd013b-5b17-48e3-963b-4b80b0d2d3ce] received
+[2023-04-21 12:38:22,948: INFO/ForkPoolWorker-2] start generate_images_task
+[2023-04-21 12:38:22,997: INFO/ForkPoolWorker-2] start generete for scene id 530,  action_type: mj
+[2023-04-21 12:42:24,024: INFO/ForkPoolWorker-2] failed to get mj for source id: 1, scene id: 530
+[2023-04-21 12:42:24,074: INFO/ForkPoolWorker-2] start generete for scene id 429,  action_type: mj
+[2023-04-21 12:46:25,041: INFO/ForkPoolWorker-2] failed to get mj for source id: 1, scene id: 429
+[2023-04-21 12:46:25,091: INFO/ForkPoolWorker-2] start generete for scene id 25,  action_type: reface
+[2023-04-21 12:46:50,782: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 12:47:54,894: ERROR/ForkPoolWorker-2] Task celery_worker.generate_images_task[16bd013b-5b17-48e3-963b-4b80b0d2d3ce] raised unexpected: RequestError("ConnectionError(ProtocolError('Connection aborted.', TimeoutError('timed out')))")
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/celery/app/trace.py", line 451, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/root/photolab/celery_worker.py", line 27, in __call__
+    return self.run(*args, **kwargs)
+  File "/root/photolab/celery_worker.py", line 76, in generate_images_task
+    utils.oss_put(new_image.img_url, result_image)
+  File "/root/photolab/utils.py", line 86, in oss_put
+    bucket.put_object(key, value)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 592, in put_object
+    resp = self.__do_object('PUT', key, data=data, headers=headers)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 235, in _do
+    resp = self.session.do_request(req, timeout=self.timeout)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/http.py", line 51, in do_request
+    raise RequestError(e)
+oss2.exceptions.RequestError: ConnectionError(ProtocolError('Connection aborted.', TimeoutError('timed out')))
+[2023-04-21 12:47:54,898: ERROR/MainProcess] Task handler raised error: <MaybeEncodingError: Error sending result: ''(1, <ExceptionInfo: RequestError("ConnectionError(ProtocolError(\'Connection aborted.\', TimeoutError(\'timed out\')))")>, None)''. Reason: ''PicklingError("Can\'t pickle <class \'oss2.exceptions.RequestError\'>: it\'s not the same object as oss2.exceptions.RequestError")''.>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/billiard/pool.py", line 366, in workloop
+    put((READY, (job, i, result, inqW_fd)))
+  File "/usr/local/lib/python3.10/dist-packages/billiard/queues.py", line 366, in put
+    self.send_payload(ForkingPickler.dumps(obj))
+  File "/usr/local/lib/python3.10/dist-packages/billiard/reduction.py", line 56, in dumps
+    cls(buf, protocol).dump(obj)
+billiard.pool.MaybeEncodingError: Error sending result: ''(1, <ExceptionInfo: RequestError("ConnectionError(ProtocolError(\'Connection aborted.\', TimeoutError(\'timed out\')))")>, None)''. Reason: ''PicklingError("Can\'t pickle <class \'oss2.exceptions.RequestError\'>: it\'s not the same object as oss2.exceptions.RequestError")''.
+[2023-04-21 13:29:28,911: INFO/MainProcess] Task celery_worker.generate_images_task[f2619e8c-e7ee-4b15-b0b4-62791649f50e] received
+[2023-04-21 13:29:28,961: INFO/ForkPoolWorker-2] start generate_images_task
+[2023-04-21 13:29:29,011: INFO/ForkPoolWorker-2] start generete for scene id 14,  action_type: mj
+[2023-04-21 13:29:41,143: INFO/MainProcess] Task celery_worker.generate_images_task[25f90fec-0824-4234-8d8b-5832eab8d140] received
+[2023-04-21 13:29:41,465: INFO/ForkPoolWorker-1] start generate_images_task
+[2023-04-21 13:29:41,520: INFO/ForkPoolWorker-1] start generete for scene id 463,  action_type: mj
+[2023-04-21 13:29:48,852: INFO/MainProcess] Task celery_worker.generate_images_task[56458281-c950-4721-9ea8-18fba31971f2] received
+[2023-04-21 13:33:29,948: INFO/ForkPoolWorker-2] failed to get mj for source id: 3, scene id: 14
+[2023-04-21 13:33:29,998: INFO/ForkPoolWorker-2] start generete for scene id 15,  action_type: reface
+[2023-04-21 13:33:34,295: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 13:33:38,747: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 3, scene id: 15
+[2023-04-21 13:33:38,845: INFO/ForkPoolWorker-2] Task celery_worker.generate_images_task[f2619e8c-e7ee-4b15-b0b4-62791649f50e] succeeded in 249.93340666295262s: None
+[2023-04-21 13:33:38,896: INFO/ForkPoolWorker-2] start generate_images_task
+[2023-04-21 13:33:38,945: INFO/ForkPoolWorker-2] start generete for scene id 450,  action_type: mj
+[2023-04-21 13:33:42,551: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 463
+[2023-04-21 13:33:42,605: INFO/ForkPoolWorker-1] start generete for scene id 67,  action_type: reface
+[2023-04-21 13:33:56,060: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-21 13:34:00,322: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 1, scene id: 67
+[2023-04-21 13:34:00,376: INFO/ForkPoolWorker-1] start generete for scene id 418,  action_type: mj
+[2023-04-21 13:37:39,965: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 450
+[2023-04-21 13:37:40,015: INFO/ForkPoolWorker-2] start generete for scene id 18,  action_type: reface
+[2023-04-21 13:37:49,620: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 13:37:57,518: INFO/ForkPoolWorker-2] get akool reface successfully @time 2 for source id: 5, scene id: 18
+[2023-04-21 13:37:57,568: INFO/ForkPoolWorker-2] start generete for scene id 100,  action_type: reface
+[2023-04-21 13:38:01,434: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 418
+[2023-04-21 13:38:01,488: INFO/ForkPoolWorker-1] start generete for scene id 68,  action_type: reface
+[2023-04-21 13:38:15,973: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 13:38:30,175: INFO/ForkPoolWorker-2] get akool reface successfully @time 3 for source id: 5, scene id: 100
+[2023-04-21 13:38:30,224: INFO/ForkPoolWorker-2] start generete for scene id 548,  action_type: reface
+[2023-04-21 13:38:37,018: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 13:38:38,570: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-21 13:38:41,477: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 5, scene id: 548
+[2023-04-21 13:38:41,527: INFO/ForkPoolWorker-2] start generete for scene id 46,  action_type: reface
+[2023-04-21 13:38:47,104: INFO/ForkPoolWorker-1] get akool reface successfully @time 2 for source id: 1, scene id: 68
+[2023-04-21 13:38:47,159: INFO/ForkPoolWorker-1] start generete for scene id 37,  action_type: reface
+[2023-04-21 13:39:13,758: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 13:39:16,089: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-21 13:39:19,116: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 5, scene id: 46
+[2023-04-21 13:39:19,166: INFO/ForkPoolWorker-2] start generete for scene id 439,  action_type: mj
+[2023-04-21 13:39:22,624: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 1, scene id: 37
+[2023-04-21 13:39:22,678: INFO/ForkPoolWorker-1] start generete for scene id 39,  action_type: reface
+[2023-04-21 13:39:46,075: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-21 13:39:52,239: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 1, scene id: 39
+[2023-04-21 13:39:52,294: INFO/ForkPoolWorker-1] start generete for scene id 498,  action_type: mj
+[2023-04-21 13:43:20,196: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 439
+[2023-04-21 13:43:20,246: INFO/ForkPoolWorker-2] start generete for scene id 64,  action_type: reface
+[2023-04-21 13:43:30,589: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 13:43:53,318: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 498
+[2023-04-21 13:43:53,373: INFO/ForkPoolWorker-1] start generete for scene id 422,  action_type: mj
+[2023-04-21 13:44:08,147: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 5, scene id: 64
+[2023-04-21 13:44:08,197: INFO/ForkPoolWorker-2] start generete for scene id 477,  action_type: mj
+[2023-04-21 13:47:54,385: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 422
+[2023-04-21 13:47:54,440: INFO/ForkPoolWorker-1] start generete for scene id 514,  action_type: mj
+[2023-04-21 13:48:09,258: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 477
+[2023-04-21 13:48:09,308: INFO/ForkPoolWorker-2] start generete for scene id 365,  action_type: mj
+[2023-04-21 13:51:55,420: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 514
+[2023-04-21 13:51:55,474: INFO/ForkPoolWorker-1] start generete for scene id 526,  action_type: mj
+[2023-04-21 13:52:10,256: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 365
+[2023-04-21 13:52:10,305: INFO/ForkPoolWorker-2] start generete for scene id 362,  action_type: mj
+[2023-04-21 13:55:56,541: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 526
+[2023-04-21 13:55:56,595: INFO/ForkPoolWorker-1] start generete for scene id 417,  action_type: mj
+[2023-04-21 13:56:11,230: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 362
+[2023-04-21 13:56:11,280: INFO/ForkPoolWorker-2] start generete for scene id 407,  action_type: mj
+[2023-04-21 13:59:57,867: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 417
+[2023-04-21 13:59:57,921: INFO/ForkPoolWorker-1] start generete for scene id 98,  action_type: reface
+[2023-04-21 14:00:12,220: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 407
+[2023-04-21 14:00:12,270: INFO/ForkPoolWorker-2] start generete for scene id 19,  action_type: reface
+[2023-04-21 14:00:19,069: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-21 14:00:27,865: INFO/ForkPoolWorker-1] get akool reface successfully @time 2 for source id: 1, scene id: 98
+[2023-04-21 14:00:27,919: INFO/ForkPoolWorker-1] start generete for scene id 360,  action_type: mj
+[2023-04-21 14:00:54,526: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 14:01:13,656: INFO/ForkPoolWorker-2] get akool reface successfully @time 5 for source id: 5, scene id: 19
+[2023-04-21 14:01:13,705: INFO/ForkPoolWorker-2] start generete for scene id 49,  action_type: reface
+[2023-04-21 14:01:27,415: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 14:01:35,243: INFO/ForkPoolWorker-2] get akool reface successfully @time 2 for source id: 5, scene id: 49
+[2023-04-21 14:01:35,293: INFO/ForkPoolWorker-2] start generete for scene id 86,  action_type: reface
+[2023-04-21 14:01:41,597: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 14:01:46,375: INFO/ForkPoolWorker-2] get akool reface successfully @time 1 for source id: 5, scene id: 86
+[2023-04-21 14:01:46,425: INFO/ForkPoolWorker-2] start generete for scene id 380,  action_type: mj
+[2023-04-21 14:04:29,051: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 360
+[2023-04-21 14:04:29,105: INFO/ForkPoolWorker-1] start generete for scene id 45,  action_type: reface
+[2023-04-21 14:04:46,550: WARNING/ForkPoolWorker-1] Files uploaded successfully
+[2023-04-21 14:04:50,854: INFO/ForkPoolWorker-1] get akool reface successfully @time 1 for source id: 1, scene id: 45
+[2023-04-21 14:04:50,908: INFO/ForkPoolWorker-1] start generete for scene id 470,  action_type: mj
+[2023-04-21 14:05:47,469: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 380
+[2023-04-21 14:05:47,519: INFO/ForkPoolWorker-2] start generete for scene id 486,  action_type: mj
+[2023-04-21 14:08:51,950: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 470
+[2023-04-21 14:08:52,004: INFO/ForkPoolWorker-1] start generete for scene id 383,  action_type: mj
+[2023-04-21 14:09:48,523: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 486
+[2023-04-21 14:09:48,573: INFO/ForkPoolWorker-2] start generete for scene id 73,  action_type: reface
+[2023-04-21 14:10:18,614: WARNING/ForkPoolWorker-2] Files uploaded successfully
+[2023-04-21 14:10:48,542: INFO/ForkPoolWorker-2] failed to get akool reface for source id: 5, scene id: 73
+[2023-04-21 14:10:48,593: INFO/ForkPoolWorker-2] start generete for scene id 529,  action_type: mj
+[2023-04-21 14:12:52,980: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 383
+[2023-04-21 14:12:53,034: INFO/ForkPoolWorker-1] start generete for scene id 427,  action_type: mj
+[2023-04-21 14:14:49,608: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 529
+[2023-04-21 14:14:49,658: INFO/ForkPoolWorker-2] start generete for scene id 433,  action_type: mj
+[2023-04-21 14:16:54,077: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 427
+[2023-04-21 14:16:54,131: INFO/ForkPoolWorker-1] start generete for scene id 474,  action_type: mj
+[2023-04-21 14:18:50,632: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 433
+[2023-04-21 14:18:50,682: INFO/ForkPoolWorker-2] start generete for scene id 511,  action_type: mj
+[2023-04-21 14:20:55,209: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 474
+[2023-04-21 14:20:55,263: INFO/ForkPoolWorker-1] start generete for scene id 436,  action_type: mj
+[2023-04-21 14:22:51,691: INFO/ForkPoolWorker-2] failed to get mj for source id: 5, scene id: 511
+[2023-04-21 14:22:51,793: INFO/ForkPoolWorker-2] Task celery_worker.generate_images_task[56458281-c950-4721-9ea8-18fba31971f2] succeeded in 2952.9475287449895s: None
+[2023-04-21 14:24:56,220: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 436
+[2023-04-21 14:24:56,274: INFO/ForkPoolWorker-1] start generete for scene id 532,  action_type: mj
+[2023-04-21 14:28:57,260: INFO/ForkPoolWorker-1] failed to get mj for source id: 1, scene id: 532
+[2023-04-21 14:28:57,369: INFO/ForkPoolWorker-1] Task celery_worker.generate_images_task[25f90fec-0824-4234-8d8b-5832eab8d140] succeeded in 3556.2254347559647s: None

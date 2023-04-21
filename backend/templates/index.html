@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片展示</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='main.js') }}" defer></script>
+
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="tabs">
+                <li class="tab active" id="scene-tab" onclick="switchTab('scene')">Scene</li>
+                <li class="tab" id="prompt-tab" onclick="switchTab('prompt')">Prompt</li>
+                <li class="tab" id="source-tab" onclick="switchTab('source')">Source</li>
+                <li class="tab" id="edit-tab" onclick="switchTab('edit')">Upload</li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="tab-content active" id="scene-content">
+        <div class="container">
+            <div class="scene-container" id="scene-container">
+                <!-- 图片将通过JavaScript动态添加到此处 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="prompt-content">
+        <div class="container">
+            <div class="prompt-container" id="prompt-container">
+                <!-- 无图片场景将通过JavaScript动态添加到此处 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="source-content">
+        <div class="container">
+            <div class="image-container" id="user_face">
+                <!-- 生成的图片将通过JavaScript动态添加到此处 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="edit-content">
+        <div class="container">
+            <h2>上传Scene、Prompt或是Source</h2>
+            <p>- Scene 代表需要换脸的底图。如果是上传Scene，请选择图片文件，Action Type设置为reface，表示用于换脸。Image Type取决于图片类型。其他值任意填写</p>
+            <p>- Prompt 代表mj生成。只需要Action Type设置为mj， 填写prompt文本，其他值任意填写</p>
+            <p>- Source 代表用户人脸，上传时请将Image Type选为source， 同时指定相应图片文件。 其他值可以任意填写。user_id表示这是属于哪个user的照片。</p>
+            <div class="form-container">
+                <form id="upload-form">
+                    <input type="file" name="img_file" multiple>
+                    <br>
+                    <select name="action_type" required>
+                        <option value="" disabled selected>Action Type</option>
+                        <option value="sd">sd</option>
+                        <option value="mj">mj</option>
+                        <option value="reface">reface</option>
+                    </select>
+                    <br>
+                    <select name="img_type" required>
+                        <option value="" disabled selected>Image Type</option>
+                        <option value="source">source</option>
+                        <option value="girl">girl</option>
+                        <option value="boy">boy</option>
+                        <option value="pet">pet</option>
+                    </select>
+                    <br>
+                    <input type="text" name="prompt" placeholder="Prompt">
+                    <br>
+                    <input type="number" step="0.01" name="rate" placeholder="Rate">
+                    <br>
+                    <select name="user_id" required>
+                        <option value="" disabled selected>User ID</option>
+                        <option value="yi">yi</option>
+                        <option value="wzh">wzh</option>
+                        <option value="wxf">wxf</option>
+                        <option value="meizi">meizi</option>
+                    </select>
+                    <label for="collection_name">Collection Name:</label>
+                    <input type="text" id="collection_name" name="collection_name" required>
+                    <button type="submit">Upload</button>
+                    <br>
+                    <button type="submit">上传图片</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="image-container" id="blind-box-results">
+        <!-- 生成的图片将通过JavaScript动态添加到此处 -->
+    </div>
+</body>
+</html>
