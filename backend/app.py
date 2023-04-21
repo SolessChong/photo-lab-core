@@ -23,31 +23,34 @@ import models
 
 @app.route('/api/upload_source', methods=['POST'])
 def upload_source():
-    if 'img_file' not in request.files or 'user_id' not in request.form:
-        return {"status": "error", "message": "Missing img_file or user_id"}, 400
+    if 'img_file' not in request.files or 'user_id' not in request.form or 'person_name' not in request.form:
+        return {"status": "error", "message": "Missing img_file, user_id or person_name"}, 400
 
     img_file = request.files['img_file']
     user_id = request.form['user_id']
     source_type = request.form.get('type', None)
+    person_name = request.form['person_name']
 
-    # 计算当前用户总source数
-    user = models.Users.query.filter_by(user_id=user_id).first()
-    if not user:
-        return {"status": "error", "message": "Invalid user_id"}, 400
+    # 查找 persons 表中是否存在相应的记录
+    person = models.Persons.query.filter_by(user_id=user_id, name=person_name).first()
+    if not person:
+        # 如果不存在，创建一个新的 Person 对象并将其保存到数据库中
+        new_person = models.Persons(name=person_name, user_id=user_id)
+        db.session.add(new_person)
+        db.session.commit()
+        person_id = new_person.id
+    else:
+        person_id = person.id
 
-    user.source_num += 1
-    db.session.commit()
-    
-    img_url = f'source/{user_id}/{user.source_num}.jpg'
-    utils.oss_put(img_url, img_file)
+    base_img_key = f'source/{user_id}/{person_id}/{secrets.token_hex(16)}.png'
+    utils.oss_put(base_img_key, utils.convert_to_png_bytes(img_file))
 
     # 存储记录到数据库
-    source = models.Source(img_url=img_url, user_id=user_id, type=source_type)
+    source = models.Source(base_img_key=base_img_key, user_id=user_id, type=source_type, person_id=person_id)
     db.session.add(source)
     db.session.commit()
 
     return {"status": "success", "message": "Image uploaded and record updated"}, 200
-
 
 @app.route('/')
 def index():
@@ -95,7 +98,7 @@ def upload_scene():
     base_img_key = None
     # 上传图片到OSS
     if file:
-        base_img_key = 'scenes/' + secrets.token_hex(16) + '.png'
+        base_img_key = f'scenes/sd_collection/{collection_name}/{secrets.token_hex(16)}.png'
         oss_put(base_img_key, utils.convert_to_png_bytes(file))
 
     # 将图片信息存入数据库

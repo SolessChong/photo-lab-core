@@ -9,10 +9,21 @@ class Users(db.Model):
 
 class Source(db.Model):
     __tablename__ = 'source'
-    img_url = db.Column(db.String(5000), nullable=False)
+    img_url = db.Column(db.String(5000), nullable=True)
     user_id = db.Column(db.String(255), nullable=False)
     source_id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(255), nullable=True)
+    person_id = db.Column(db.Integer, nullable=True)
+    base_img_key = db.Column(db.String(255), nullable=False)
+    
+class Persons(db.Model):
+    __tablename__ = 'persons'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=True)
+    model_type = db.Column(db.String(255), nullable=True)
+    model_file_key = db.Column(db.String(2550), nullable=True)
+    sex = db.Column(db.String(255), nullable=True)
+    user_id = db.Column(db.String(255), nullable=True)
 
 class GeneratedImage(db.Model):
     __tablename__ = 'generated_images'

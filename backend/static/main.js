@@ -138,6 +138,7 @@ document.getElementById('upload-form').addEventListener('submit', async function
         currentFormData.append("user_id", formData.get("user_id"));
         currentFormData.append("user_id", formData.get("user_id"));
         currentFormData.append("collection_name", formData.get("collection_name"));
+        currentFormData.append("person_name", formData.get("person_name"));
 
         const response = await fetch(apiUrl, {
             method: 'POST',
