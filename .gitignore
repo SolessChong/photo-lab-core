@@ -1,0 +1,23 @@
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.ico
+*.svg
+*.tif
+*.tiff
+
+# Ignore model files
+*.pth
+*.safetensor
+*.dat
+haarcascade.xml
+
+# Data files
+Data/
