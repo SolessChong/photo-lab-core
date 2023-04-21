@@ -42,6 +42,9 @@ from resource_manager import ResourceMgr, ResourceType, bucket
 from pathlib import Path
 
 # Train LORA model
+# test case, 
+# person_id=0
+# train_img_list = ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png']
 def task_train_lora(person_id, train_img_list):
     # save to local
     dataset_path = Path(ResourceMgr.get_resource_path(ResourceType.TRAIN_DATASET, person_id))
@@ -68,7 +71,9 @@ def task_train_lora(person_id, train_img_list):
     # TODO: save to db @fengyi
     # local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
 
-
+# test case,
+# scene_id = 557
+# persion_id_list = [0]
 def task_render_scene(scene_id, person_id):
     # scene_base_img, lora_file_list, hint_img_list, ROI_list[mask_img_list, bbox], prompt, negative_prompt, debug_list[1..10]
     pass

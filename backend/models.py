@@ -49,20 +49,21 @@ class Pack(db.Model):
 class Scene(db.Model):
     __tablename__ = 'scenes'
 
-    scene_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    img_url = db.Column(db.String(2000))
-    prompt = db.Column(db.Text)
-    action_type = db.Column(db.String(255), nullable=False)
-    img_type =db.Column(db.String(255), nullable=False)
-    rate = db.Column(db.Float)
-    name = db.Column(db.String(255))
-    base_img_key = db.Column(db.String(2550))
-    hint_img_list = db.Column(db.JSON)
-    roi_list = db.Column(db.JSON)
-    model_name = db.Column(db.String(2550))
-    negative_prompt = db.Column(db.Text)
-    params = db.Column(db.Text)
-    collection_name = db.Column(db.String(255))
+    scene_id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
+    img_url = db.Column(db.String(2000), nullable=True)
+    prompt = db.Column(db.Text, nullable=True)
+    action_type = db.Column(db.String(255), nullable=False, comment='type包括mj,reface, sd等。\r\n如果是mj，直接调用prompt生成图片\r\n如果是reface，直接与上传的头像图片进行换脸\r\n')
+    img_type = db.Column(db.String(255), nullable=False, comment='图片类型，包括男生、女生、多人、猫、狗')
+    rate = db.Column(db.Float, nullable=True, comment='推荐评分，从0-10分，可以有小数点\r\n')
+    
+    name = db.Column(db.String(255), nullable=True)
+    base_img_key = db.Column(db.String(2550), nullable=True)
+    hint_img_list = db.Column(db.JSON, nullable=True)
+    roi_list = db.Column(db.JSON, nullable=True)
+    model_name = db.Column(db.String(2550), nullable=True)
+    negative_prompt = db.Column(db.Text, nullable=True)
+    params = db.Column(db.Text, nullable=True)
+    collection_name = db.Column(db.String(255), nullable=True)
 
 class Task(db.Model):
     __tablename__ = 'tasks'
