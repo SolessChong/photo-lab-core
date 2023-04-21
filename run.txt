@@ -1,0 +1,1 @@
+rembg p D:\sd\data\ycy\ycy-train\100_ycy D:\sd\data\ycy\ycy-train\100_ycy2 -bgc 255 255  255 255
