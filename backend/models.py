@@ -24,6 +24,7 @@ class Persons(db.Model):
     model_file_key = db.Column(db.String(2550), nullable=True)
     sex = db.Column(db.String(255), nullable=True)
     user_id = db.Column(db.String(255), nullable=True)
+    lora_train_status = db.Column(db.String(255), nullable=True)
 
 class GeneratedImage(db.Model):
     __tablename__ = 'generated_images'
@@ -66,7 +67,7 @@ class Scene(db.Model):
 class Task(db.Model):
     __tablename__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True)
-    person_id = db.Column(db.Integer, nullable=True)
+    person_id_list = db.Column(db.JSON, nullable=True, comment="可能有多个用户，因此用JSONArray存储所有person_ids")
     scene_id = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(255), nullable=True)
     result_img_key = db.Column(db.String(2550), nullable=True)
