@@ -21,3 +21,6 @@ haarcascade.xml
 
 # Data files
 Data/
+
+# Train models
+train/

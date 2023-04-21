@@ -170,7 +170,9 @@ def train_lora(dataset_path, subject_name, class_name):
         --network_module=networks.lora \
         --text_encoder_lr=5e-5 --unet_lr=0.0001 --network_dim=256 \
         --output_name="{subject_name}" \
-        --lr_scheduler_num_cycles="10" --learning_rate="0.001" --lr_scheduler="cosine" --lr_warmup_steps="300" --train_batch_size="6" --max_train_steps="5000" --save_every_n_epochs="1" --mixed_precision="fp16" --save_precision="fp16" --optimizer_type="AdamW" --max_data_loader_n_workers="0" --bucket_reso_steps=64 --xformers --bucket_no_upscale --random_crop \
+        --lr_scheduler_num_cycles="10" --learning_rate="0.001" --lr_scheduler="cosine" \
+        --lr_warmup_steps="300" --train_batch_size="2" \
+        --max_train_steps="5" --save_every_n_epochs="1" --mixed_precision="fp16" --save_precision="fp16" --optimizer_type="AdamW" --max_data_loader_n_workers="0" --bucket_reso_steps=64 --xformers --bucket_no_upscale --random_crop \
         > {Path(dataset_path) / "train.log"} 2>&1
         """
         # > {os.path.join(dataset_path, "train.log")} 2>&1
@@ -192,7 +194,7 @@ def train_lora(dataset_path, subject_name, class_name):
     
     # Copy model to model folder
     shutil.copyfile(
-        str(Path(dataset_path) / "model_lora" / (subject_name + ".safetensor")),
+        str(Path(dataset_path) / "model_lora" / (subject_name + ".safetensors")),
         ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, subject_name)
     )
     logging.info("--- LORA model training finished")
