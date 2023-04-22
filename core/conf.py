@@ -4,7 +4,9 @@ TRAIN_UTILS_ROOT = "D:/sd/kohya_ss/"
 # SUBJECT_PLACEHOLDER = "person_MYDEARUSERXX"
 SUBJECT_PLACEHOLDER = "girl_userxx"
 
-DEBUG = True
+DEBUG = False
+
+FILE_STORAGE = 'OSS'   # ['OSS', 'LOCAL']
 
 # Image rendering settings
 RENDERING_SETTINGS = {

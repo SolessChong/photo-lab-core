@@ -1,5 +1,6 @@
 from PIL import Image
 import os
+import io
 import rembg
 import cv2
 import subprocess
@@ -153,7 +154,7 @@ def run_lora_on_base_img(task) -> Image:
         if conf.DEBUG:
             if not os.path.exists(os.path.dirname(char_base_path)):
                 os.makedirs(os.path.dirname(char_base_path))
-        cv2.imwrite(char_base_path, char_base_img)
+            cv2.imwrite(char_base_path, char_base_img)
 
         char_pose_img = pose_img.copy().crop((bb[0], bb[1], bb[0] + bb[2], bb[1] + bb[3]))
         char_mask_img = mask_list[i].copy().crop((bb[0], bb[1], bb[0] + bb[2], bb[1] + bb[3]))
@@ -202,10 +203,13 @@ def run_lora_on_base_img(task) -> Image:
 
     # save final image
     # create path if not exist
-    output_path = ResourceMgr.get_resource_path(ResourceType.OUTPUT, task['scene_id'])
-    if not os.path.exists(os.path.dirname(output_path)):
-        os.makedirs(os.path.dirname(output_path))
-    image.save(output_path)
+    # output_path = ResourceMgr.get_resource_path(ResourceType.OUTPUT, task['task_id'])
+    # if not os.path.exists(os.path.dirname(output_path)):
+    #     os.makedirs(os.path.dirname(output_path))
+    # image.save(output_path)
+    img_bytes = io.BytesIO()
+    image.save(img_bytes)
+
     # Log success
     logging.info(f"Task {task['task_id']}, Scene {task['scene_id']} finished successfully.")
     return image

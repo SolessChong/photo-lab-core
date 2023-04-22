@@ -7,10 +7,6 @@ import os
 from insightface.app import FaceAnalysis
 from insightface.data import get_image as ins_get_image
 
-# Initialize the dlib face detector and landmark predictor
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor('pipeline/libs/shape_predictor_81_face_landmarks.dat')
-
 face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106'])
 face_analysis.prepare(ctx_id=0, det_size=(640, 640))
 
