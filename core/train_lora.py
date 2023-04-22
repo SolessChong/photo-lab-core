@@ -180,21 +180,16 @@ def train_lora(dataset_path, subject_name, class_name):
     print(cmd)
 
     os.environ['PYTHONIOENCODING'] =  'utf-8'
-    with subprocess.Popen(
+    subprocess.run(
             cmd, 
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
             shell=True, text=True, encoding='utf-8', 
-        ) as process:
-        # for line in process.stdout:
-        #     # # Print the line without adding a newline character
-        #     print(line, end='', flush=True)
-        # for line in process.stderr:            
-        #     print(line, end='', flush=True)
-        process.wait(timeout=7200)
+    )
+
     
     # Copy model to model folder
     shutil.copyfile(
-        str(Path(dataset_path) / "model_lora" / (subject_name + ".safetensors")),
+        str(Path(dataset_path) / "model_lora" / (str(subject_name) + ".safetensors")),
         ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, subject_name)
     )
     logging.info("--- LORA model training finished")
