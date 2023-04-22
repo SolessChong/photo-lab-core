@@ -13,7 +13,7 @@ import sys
 import os
 
 # Assuming that your current working directory is the parent directory of "libs"
-libs_dir = os.path.abspath("pipeline/core/libs")
+libs_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(libs_dir)
 from openpose import util
 from openpose.model import bodypose_model
