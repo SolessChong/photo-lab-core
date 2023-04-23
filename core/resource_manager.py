@@ -38,7 +38,7 @@ class ResourceMgr:
 
     # Get resource for different type. Not the id is different for different types
     @staticmethod
-    def get_resource_path(resource_type, id):
+    def get_resource_local_path(resource_type, id):
         root = Path(FILE_CONF['ROOT'])
         # For local file:
         if FILE_STORAGE == 'local':

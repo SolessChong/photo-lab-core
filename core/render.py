@@ -76,8 +76,8 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 # prepare task, download base_img, generate pose, download lora.
 def prepare_task(task):
     # download base_img
-    base_img_path = ResourceMgr.get_resource_path( ResourceType.BASE_IMG, task['scene_id'])
-    pose_img_url = ResourceMgr.get_resource_path(ResourceType.POSE_IMG, task['scene_id'])
+    base_img_path = ResourceMgr.get_resource_local_path( ResourceType.BASE_IMG, task['scene_id'])
+    pose_img_url = ResourceMgr.get_resource_local_path(ResourceType.POSE_IMG, task['scene_id'])
     base_img = read_cv2img(base_img_path)
     pose_map = read_cv2img(pose_img_url)
 
@@ -90,8 +90,8 @@ def run_lora_on_base_img(task) -> Image:
 
     base_img, pose_img = prepare_task(task)
     # load base_img
-    base_img = read_PILimg(ResourceMgr.get_resource_path(ResourceType.BASE_IMG, task['scene_id']))
-    pose_img = read_PILimg(ResourceMgr.get_resource_path(ResourceType.POSE_IMG, task['scene_id']))
+    base_img = read_PILimg(ResourceMgr.get_resource_local_path(ResourceType.BASE_IMG, task['scene_id']))
+    pose_img = read_PILimg(ResourceMgr.get_resource_local_path(ResourceType.POSE_IMG, task['scene_id']))
     lora_list = task['lora_list']
     prompt = task['prompt']
     i2i_args = task['params']
@@ -136,7 +136,7 @@ def run_lora_on_base_img(task) -> Image:
         char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2)
         ######## save char_base_img
         if conf.DEBUG:
-            char_base_path = ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}")
+            char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}")
             if not os.path.exists(os.path.dirname(char_base_path)):
                 os.makedirs(os.path.dirname(char_base_path))
             cv2.imwrite(char_base_path, char_base_img)
@@ -155,13 +155,13 @@ def run_lora_on_base_img(task) -> Image:
         ### Save tmp image for debug
         if conf.DEBUG:
             # create path if not exist
-            output_dir = os.path.dirname(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, task['scene_id']))
-            char_base_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}"))
-            char_pose_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_pose_img_{i}"))
-            char_mask_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_mask_img_{i}"))
+            output_dir = os.path.dirname(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, task['scene_id']))
+            char_base_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}"))
+            char_pose_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_pose_img_{i}"))
+            char_mask_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_mask_img_{i}"))
             # linearly blend between pose and base image
             blended_img = Image.blend(char_base_img, char_pose_img, 0.5)
-            blended_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_blended_img_{i}"))
+            blended_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_blended_img_{i}"))
 
         char_controlnet_units = [webuiapi.ControlNetUnit(input_image=char_pose_img, model="control_sd15_openpose [fef5e48e]", resize_mode="Inner Fit (Scale to Fit)", guidance=0.9, guidance_end=0.7)]
         char_lora_img = api.img2img(
@@ -182,8 +182,8 @@ def run_lora_on_base_img(task) -> Image:
         if conf.DEBUG:
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
-            char_lora_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_lora_{i}.png"))
-            image.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_result_{i}.png"))
+            char_lora_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_lora_{i}.png"))
+            image.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_result_{i}.png"))
 
     # save final image
     # create path if not exist

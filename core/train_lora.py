@@ -187,7 +187,7 @@ def train_lora(dataset_path, subject_name, class_name):
     # Copy model to model folder
     shutil.copyfile(
         str(Path(dataset_path) / "model_lora" / (str(subject_name) + ".safetensors")),
-        ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, subject_name)
+        ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, subject_name)
     )
     logging.info("--- LORA model training finished")
 
