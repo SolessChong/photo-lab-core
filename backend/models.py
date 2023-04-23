@@ -66,6 +66,13 @@ class Scene(db.Model):
     negative_prompt = db.Column(db.Text, nullable=True)
     params = db.Column(db.Text, nullable=True)
     collection_name = db.Column(db.String(255), nullable=True)
+    
+    def update_pose_img(self, pose_img_url):
+        if self.hint_img_list is None:
+            self.hint_img_list = [pose_img_url]
+        else:
+            self.hint_img_list[0] = pose_img_url
+        db.session.commit()
 
 class Task(db.Model):
     __tablename__ = 'tasks'
@@ -75,3 +82,7 @@ class Task(db.Model):
     status = db.Column(db.String(255), nullable=True)
     result_img_key = db.Column(db.String(2550), nullable=True)
     debug_img = db.Column(db.JSON, nullable=True)
+
+    def update_result_img_key(self, result_img_key):
+        self.result_img_key = result_img_key
+        db.session.commit()
