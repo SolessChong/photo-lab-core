@@ -4,7 +4,7 @@ TRAIN_UTILS_ROOT = "D:/sd/kohya_ss/"
 # SUBJECT_PLACEHOLDER = "person_MYDEARUSERXX"
 SUBJECT_PLACEHOLDER = "girl_userxx"
 
-DEBUG = False
+DEBUG = True
 
 FILE_STORAGE = 'OSS'   # ['OSS', 'LOCAL']
 

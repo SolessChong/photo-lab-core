@@ -109,11 +109,11 @@ def run_lora_on_base_img(task) -> Image:
     
     for i in range(len(mask_list)):
         # prepare prompt with Lora
-        prompt_with_lora = prompt + f",<lora:user_{lora_list[i]}:1>, (photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
+        prompt_with_lora = prompt + f",<lora:{lora_list[i]}:1>, (photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
         logging.info(f"prompt_with_lora: {prompt_with_lora}")
         # replace person with subject name using regex
         pattern = r'\b(?:a woman|a man|a girl|a boy)\b'
-        prompt_with_lora = re.sub(pattern, f"photo of a {conf.SUBJECT_PLACEHOLDER}", prompt_with_lora)
+        prompt_with_lora = re.sub(pattern, f"photo of a {conf.SUBJECT_PLACEHOLDER}, {templates.PROMPT_PHOTO}", prompt_with_lora)
 
         upper_body_landmarks = [0, 1, 14, 15, 16, 17]  # Landmark indices for upper body
         upper_body_coords = [(candidates[int(subset[i][k])][0], candidates[int(subset[i][k])][1]) for k in upper_body_landmarks if subset[i][k] != -1]
