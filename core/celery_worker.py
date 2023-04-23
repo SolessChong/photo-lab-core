@@ -79,7 +79,7 @@ celery = make_celery(app)
 def task_train_lora(person_id, train_img_list):
     logging.info(f"======= Task: training LORA model {person_id}")
     # save to local
-    dataset_path = Path(ResourceMgr.get_resource_path(ResourceType.TRAIN_DATASET, person_id))
+    dataset_path = Path(ResourceMgr.get_resource_local_path(ResourceType.TRAIN_DATASET, person_id))
     img_train_path = dataset_path / "img_train"
     img_raw_path = dataset_path / "img_raw"
     for path in [img_train_path, img_raw_path]:
@@ -110,19 +110,20 @@ def task_train_lora(person_id, train_img_list):
 # scene_id = 557
 # persion_id_list = [0]
 @celery.task(name="render-scene")
-def task_render_scene(task_id, scene_id, person_id_list):
-    logging.info(f"======= Task: rendering scene: task_id={task_id}, scene_id={scene_id}, person_id_list={person_id_list}")
-
+def task_render_scene(task_id):
     # scene_base_img, lora_file_list, hint_img_list, ROI_list[mask_img_list, bbox], prompt, negative_prompt, debug_list[1..10]
     task = models.Task.query.get(task_id)
     scene = models.Scene.query.get(task.scene_id)
     # person_list = models.Person.query.filter(models.Person.id.in_(person_id_list)).all()
+    person_id_list = task.get_person_id_list()
     person_list = [models.Persons.query.get(person_id) for person_id in person_id_list]
+
+    logging.info(f"======= Task: rendering scene: task_id={task_id}, scene_id={task.scene_id}, person_id_list={person_id_list}")
     # Download person lora
     logging.info(f"  === Download person lora")
     for person in person_list:
         # if not exists, download
-        lora_file_path = ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person.id)
+        lora_file_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person.id)
         if not os.path.exists(lora_file_path):
             bucket.get_object_to_file(person.model_file_key, lora_file_path)
     logging.info(f"  --- Download person lora success")
@@ -132,7 +133,7 @@ def task_render_scene(task_id, scene_id, person_id_list):
     task_dict = {
         'task_id': task.id,
         'scene_id': task.scene_id,
-        'lora_list': [str(person.id) for person in person_list],
+        'lora_list': ['user_' + str(person.id) for person in person_list],
         'prompt': scene.prompt,
         'params': lora_inpaint_params
     }
