@@ -260,6 +260,8 @@ LORA_INPAINT_PARAMS = {
     "denoising_strength": 0.4
 }
 
+PROMPT_PHOTO = ",(8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1.37),professional lighting, photon mapping, radiosity, physically-based rendering,"
+
 def make_params(template, lut, **kwargs):
     for k, v in kwargs.items():
         if k in lut:

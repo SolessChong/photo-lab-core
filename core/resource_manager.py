@@ -79,12 +79,15 @@ class ResourceMgr:
                         return scene.hint_img_list[0]
                 case ResourceType.BASE_IMG:
                     scene = models.Scene.query.get(id)
-                    return scene.base_img_key
+                    if scene is None:
+                        return None
+                    else:
+                        return scene.base_img_key
                 case ResourceType.OUTPUT:
                     task = models.Task.query.get(id)
                     return task.result_img_key
                 case ResourceType.TMP_OUTPUT:
-                    pass
+                    return str(root / FILE_CONF['TMP_OUTPUT'] / (str(id) + '.png'))
         else:
             raise Exception("Unknown FILE_STORAGE: " + FILE_STORAGE)
 
