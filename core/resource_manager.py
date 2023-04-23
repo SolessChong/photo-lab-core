@@ -8,6 +8,10 @@ from pathlib import Path
 from enum import Enum
 from backend import models
 import io
+import json
+import numpy as np
+import cv2
+from PIL import Image
 
 OSS_ACCESS_KEY_ID = 'LTAINBTpPolLKWoX'
 OSS_ACCESS_KEY_SECRET = '1oQVQkxt7VlqB0fO7r7JEforkPgwOw'
@@ -57,7 +61,7 @@ class ResourceMgr:
         elif FILE_STORAGE == 'OSS':
             match resource_type:
                 case ResourceType.LORA_MODEL:
-                    return str(root / FILE_CONF['LORA_MODEL'] / (id + '.safetensors'))
+                    return str(root / FILE_CONF['LORA_MODEL'] / ('user_' + str(id) + '.safetensors'))
                 case ResourceType.TRAIN_DATASET:
                     return str(root / FILE_CONF['TRAIN_DATASET'] / str(id))
                 case ResourceType.POSE_IMG:
@@ -68,23 +72,49 @@ class ResourceMgr:
                     img_buf.seek(0)
                     img = Image.open(img_buf).convert('RGB')
                     '''
-                    scene = models.Scene.objects.get(id=id)
-                    img_str = bucket.get_object(scene.pose_img_key)
-                    img_buf = io.BytesIO()
-                    img_buf.write(img_str.read())
-                    img_buf.seek(0)
-                    return img_buf
+                    scene = models.Scene.query.get(id)
+                    if scene.hint_img_list is None:
+                        return None
+                    else:
+                        return scene.hint_img_list[0]
                 case ResourceType.BASE_IMG:
-                    scene = models.Scene.objects.get(id=id)
-                    img_str = bucket.get_object(scene.base_img_key)
-                    img_buf = io.BytesIO()
-                    img_buf.write(img_str.read())
-                    img_buf.seek(0)
-                    return img_buf
+                    scene = models.Scene.query.get(id)
+                    return scene.base_img_key
                 case ResourceType.OUTPUT:
-                    task = models.Task.objects.get(id=id)
+                    task = models.Task.query.get(id)
                     return task.result_img_key
                 case ResourceType.TMP_OUTPUT:
                     pass
         else:
             raise Exception("Unknown FILE_STORAGE: " + FILE_STORAGE)
+
+
+def oss2buf(url):
+    content_str = bucket.get_object(url)
+    buf = io.BytesIO()
+    buf.write(content_str.read())
+    buf.seek(0)
+    return buf
+
+def str2oss(buf, url):
+    return bucket.put_object(url, buf)
+
+def oss2str(url):
+    return bucket.get_object(url).read()
+
+def read_cv2img(url):
+    buf = oss2buf(url)
+    img = cv2.imdecode(np.frombuffer(buf.read(), np.uint8), cv2.IMREAD_COLOR)
+    return img
+
+def read_PILimg(url):
+    buf = oss2buf(url)
+    img = Image.open(buf).convert('RGB')
+    return img
+
+def write_PILimage(img, url):
+    # img_bytes = io.BytesIO()
+    # image.save(img_bytes)
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    str2oss(buf.getvalue(), url)

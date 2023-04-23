@@ -1,3 +1,5 @@
+from core import conf
+
 i2i_para_template = {
     'arg1': 'task(z7mdw1573f7sox9)',  # id_task: str
     'arg2': 2,  # mode: int
@@ -244,6 +246,19 @@ i2i_lut = {
     'override_settings_texts': 'arg40',
 }
 
+LORA_INPAINT_PARAMS = {
+    "negative_prompt": "EasyNegative, paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans,extra fingers,fewer fingers,strange fingers,bad hand",
+    "inpainting_fill": 1,
+    "inpaint_full_res": False,
+    "seed": -1,
+    "sampler_name": "DPM++ SDE Karras",
+    "restore_faces": True,
+    "width": conf.RENDERING_SETTINGS['size'][0],
+    "height": conf.RENDERING_SETTINGS['size'][1],
+    "cfg_scale": 7,
+    "steps": 40,
+    "denoising_strength": 0.4
+}
 
 def make_params(template, lut, **kwargs):
     for k, v in kwargs.items():

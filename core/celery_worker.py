@@ -40,7 +40,7 @@ import sys
 from core import conf
 from core import train_lora
 from core import render
-from core.resource_manager import ResourceMgr, ResourceType, bucket
+from core.resource_manager import ResourceMgr, ResourceType, bucket, str2oss, oss2buf, write_PILimage
 from pathlib import Path
 from backend import models
 from core import templates
@@ -77,6 +77,7 @@ celery = make_celery(app)
 # train_img_list = ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png']
 @celery.task()
 def task_train_lora(person_id, train_img_list):
+    logging.info(f"======= Task: training LORA model {person_id}")
     # save to local
     dataset_path = Path(ResourceMgr.get_resource_path(ResourceType.TRAIN_DATASET, person_id))
     img_train_path = dataset_path / "img_train"
@@ -94,12 +95,12 @@ def task_train_lora(person_id, train_img_list):
 
     ## 2. Captioning
     #
-    logging.info("=== start captioning")
+    logging.info("  === start captioning")
     train_lora.captioning(img_train_path,  remove_bg=conf.TRAIN_PARAMS['REMOVE_BACKGROUND'])
 
     ## 3. Train LORA model
     #
-    logging.info(f"=== start training LORA model {person_id}")
+    logging.info(f"  === start training LORA model {person_id}")
     train_lora(dataset_path, person_id, 'girl')
 
     # TODO: save to db @fengyi
@@ -110,6 +111,7 @@ def task_train_lora(person_id, train_img_list):
 # persion_id_list = [0]
 @celery.task(name="render-scene")
 def task_render_scene(task_id, scene_id, person_id_list):
+    logging.info(f"======= Task: rendering scene: task_id={task_id}, scene_id={scene_id}, person_id_list={person_id_list}")
 
     # scene_base_img, lora_file_list, hint_img_list, ROI_list[mask_img_list, bbox], prompt, negative_prompt, debug_list[1..10]
     task = models.Task.query.get(task_id)
@@ -117,10 +119,13 @@ def task_render_scene(task_id, scene_id, person_id_list):
     # person_list = models.Person.query.filter(models.Person.id.in_(person_id_list)).all()
     person_list = [models.Persons.query.get(person_id) for person_id in person_id_list]
     # Download person lora
+    logging.info(f"  === Download person lora")
     for person in person_list:
+        # if not exists, download
         lora_file_path = ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person.id)
-        bucket.get_object_to_file(person.model_file_key, lora_file_path)
-
+        if not os.path.exists(lora_file_path):
+            bucket.get_object_to_file(person.model_file_key, lora_file_path)
+    logging.info(f"  --- Download person lora success")
     lora_inpaint_params = templates.LORA_INPAINT_PARAMS
     if scene.params:
         lora_inpaint_params.update(json.loads(scene.params))
@@ -131,7 +136,15 @@ def task_render_scene(task_id, scene_id, person_id_list):
         'prompt': scene.prompt,
         'params': lora_inpaint_params
     }
-    render.run_lora_on_base_img(task_dict)
+    logging.info(f"    ----\n    task_dict: {task_dict}\n  ----")
+    rst_img = render.run_lora_on_base_img(task_dict)
+    # compose rst_img_key
+    rst_img_key = f"result/render/{task.id}.png"
+    task.update_result_img_key(rst_img_key)
+    
+    logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
+    write_PILimage(rst_img, task.result_img_key)
+
 
 @celery.task(name="hello")
 def print_hello():
