@@ -3,9 +3,7 @@ import sys
 import oss2
 import os
 # Add pipeline folder to path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from conf import FILE_CONF, FILE_STORAGE
+from core.conf import FILE_CONF, FILE_STORAGE
 from pathlib import Path
 from enum import Enum
 from backend import models

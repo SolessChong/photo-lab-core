@@ -5,20 +5,17 @@ import rembg
 import cv2
 import subprocess
 import logging
-import conf
+from core import conf
 import re
 import math
 import shutil
 from pathlib import Path
-import face_mask
-import pose_detect
-from resource_manager import ResourceMgr, ResourceType
+from core import face_mask
+from core import pose_detect
+from core.resource_manager import ResourceMgr, ResourceType
 
 import sys
 import io
-
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 # read command line arguments
 import argparse

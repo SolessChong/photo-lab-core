@@ -37,14 +37,13 @@
 
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-import conf
-import train_lora
-import render
-from resource_manager import ResourceMgr, ResourceType, bucket
+from core import conf
+from core import train_lora
+from core import render
+from core.resource_manager import ResourceMgr, ResourceType, bucket
 from pathlib import Path
 from backend import models
-import templates
+from core import templates
 import json
 import logging
 from backend.extensions import app, migrate, db
@@ -55,8 +54,7 @@ from flask import Flask
 
 
 def make_celery(app):
-    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
-    # celery.conf.update(app.config)
+    celery = Celery('pipeline.core.celery_worker', broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'])
 
     class ContextTask(celery.Task):
         def __call__(self, *args, **kwargs):
@@ -67,8 +65,8 @@ def make_celery(app):
     return celery
 
 app.config.update(
-    CELERY_BROKER_URL='redis://47.245.108.186:6379',
-    CELERY_RESULT_BACKEND='redis://47.245.108.186:6379'
+    CELERY_BROKER_URL='redis://39.108.222.9:6379/0',
+    CELERY_RESULT_BACKEND='redis://39.108.222.9:6379/0'
 )
 celery = make_celery(app)
 
@@ -110,13 +108,14 @@ def task_train_lora(person_id, train_img_list):
 # test case,
 # scene_id = 557
 # persion_id_list = [0]
-@celery.task()
+@celery.task(name="render-scene")
 def task_render_scene(task_id, scene_id, person_id_list):
 
     # scene_base_img, lora_file_list, hint_img_list, ROI_list[mask_img_list, bbox], prompt, negative_prompt, debug_list[1..10]
     task = models.Task.query.get(task_id)
     scene = models.Scene.query.get(task.scene_id)
-    person_list = models.Person.query.filter(models.Person.id.in_(person_id_list)).all()
+    # person_list = models.Person.query.filter(models.Person.id.in_(person_id_list)).all()
+    person_list = [models.Persons.query.get(person_id) for person_id in person_id_list]
     # Download person lora
     for person in person_list:
         lora_file_path = ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person.id)
@@ -134,10 +133,15 @@ def task_render_scene(task_id, scene_id, person_id_list):
     }
     render.run_lora_on_base_img(task_dict)
 
+@celery.task(name="hello")
+def print_hello():
+    print("hello world")
+
 # main script
 if __name__ == '__main__':
     # celery.send_task('pipeline.core.celery_worker.task_train_lora', args=[0, ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png']])
-    celery.send_task('celery_worker.task_render_scene', args=[0, 557, [0]])
+    celery.send_task('pipeline.core.celery_worker.print_hello')
+    # celery.send_task('pipeline.core.celery_worker.task_render_scene', args=[0, 557, [0]])
     # task_render_scene.delay(0, 557, [0])
     
     # task_train_lora(0, ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png'])

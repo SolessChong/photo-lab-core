@@ -5,20 +5,20 @@ import rembg
 import cv2
 import subprocess
 import logging
-import conf
+from core import conf
 import re
 import math
 import shutil
 from pathlib import Path
-import templates
+from core import templates
 import webuiapi
-import face_mask
-from libs.openpose.body import Body
-import pose_detect
+from core import face_mask
+from core.libs.openpose.body import Body
+from core import pose_detect
 import numpy as np
 import typing
-from libs.openpose.util import draw_bodypose
-from resource_manager import ResourceMgr, ResourceType
+from core.libs.openpose.util import draw_bodypose
+from core.resource_manager import ResourceMgr, ResourceType
 
 # create API client
 api = webuiapi.WebUIApi()
