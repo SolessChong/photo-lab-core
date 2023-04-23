@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 from .extensions import db
 
 class Users(db.Model):
@@ -86,3 +87,8 @@ class Task(db.Model):
     def update_result_img_key(self, result_img_key):
         self.result_img_key = result_img_key
         db.session.commit()
+
+    def get_person_id_list(self):
+        if self.person_id_list is None:
+            return []
+        return json.loads(self.person_id_list)
