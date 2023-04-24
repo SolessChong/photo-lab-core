@@ -101,10 +101,24 @@ def task_train_lora(person_id, train_img_list):
     ## 3. Train LORA model
     #
     logging.info(f"  === start training LORA model {person_id}")
-    train_lora(dataset_path, person_id, 'girl')
+    train_lora.train_lora(dataset_path, person_id, 'girl')
 
-    # TODO: save to db @fengyi
+    # TODO: save to db @fengyi. Re: 爸爸替你写了
+    person = models.Persons.query.get(person_id)
     # model file local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
+    model_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person_id)
+    if not os.path.exists(model_path):
+        logging.error(f"  --- LORA model {person_id} not found")
+        person.lora_train_status = "failed"
+        person.save()
+        return -1
+    else:
+        url = ResourceMgr.get_resource_oss_url(ResourceType.LORA_MODEL, person_id)
+        bucket.put_object_from_file(url, model_path)
+        person.lora_train_status = "success"
+        person.save()
+        logging.info(f"  --- LORA model {person_id} Success")
+        return 0
 
 # test case,
 # scene_id = 557
@@ -120,13 +134,14 @@ def task_render_scene(task_id):
 
     logging.info(f"======= Task: rendering scene: task_id={task_id}, scene_id={task.scene_id}, person_id_list={person_id_list}")
     # Download person lora
-    logging.info(f"  === Download person lora")
+    logging.info(f"  === Prepare local person lora")
     for person in person_list:
         # if not exists, download
         lora_file_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person.id)
         if not os.path.exists(lora_file_path):
+            logging.info(f"  --- Downloading person lora {person.id}")
             bucket.get_object_to_file(person.model_file_key, lora_file_path)
-    logging.info(f"  --- Download person lora success")
+    logging.info(f"  --- Local person lora finished")
     lora_inpaint_params = templates.LORA_INPAINT_PARAMS
     if scene.params:
         lora_inpaint_params.update(json.loads(scene.params))
@@ -140,11 +155,13 @@ def task_render_scene(task_id):
     logging.info(f"    ----\n    task_dict: {task_dict}\n  ----")
     rst_img = render.run_lora_on_base_img(task_dict)
     # compose rst_img_key
-    rst_img_key = f"result/render/{task.id}.png"
+    rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
     task.update_result_img_key(rst_img_key)
     
-    logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
     write_PILimage(rst_img, task.result_img_key)
+    logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
+    return 0
+
 
 
 @celery.task(name="hello")

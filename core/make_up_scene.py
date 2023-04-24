@@ -29,7 +29,7 @@ app.app_context().push()
 
 def prepare_scene(scene_id):
     # download base_img
-    base_img_url = ResourceMgr.get_resource_local_path( ResourceType.BASE_IMG, scene_id)
+    base_img_url = ResourceMgr.get_resource_oss_url( ResourceType.BASE_IMG, scene_id)
     if base_img_url is None:
         return False
     # # raise if base doesn't exist
@@ -37,7 +37,7 @@ def prepare_scene(scene_id):
     #     raise Exception(f"Base image not found! {base_img_path}")
 
     # generate pose_img if not exist
-    pose_img_url = ResourceMgr.get_resource_local_path(ResourceType.POSE_IMG, scene_id)
+    pose_img_url = ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, scene_id)
     # if file doesn't exist, generate it using openpose.body.Body
     if pose_img_url is None:
         pose_img_url = f'source/pose/{scene_id}.png'

@@ -76,9 +76,9 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 # prepare task, download base_img, generate pose, download lora.
 def prepare_task(task):
     # download base_img
-    base_img_path = ResourceMgr.get_resource_local_path( ResourceType.BASE_IMG, task['scene_id'])
-    pose_img_url = ResourceMgr.get_resource_local_path(ResourceType.POSE_IMG, task['scene_id'])
-    base_img = read_cv2img(base_img_path)
+    base_img_url = ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task['scene_id'])
+    pose_img_url = ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task['scene_id'])
+    base_img = read_cv2img(base_img_url)
     pose_map = read_cv2img(pose_img_url)
 
     return base_img, pose_map
@@ -90,8 +90,8 @@ def run_lora_on_base_img(task) -> Image:
 
     base_img, pose_img = prepare_task(task)
     # load base_img
-    base_img = read_PILimg(ResourceMgr.get_resource_local_path(ResourceType.BASE_IMG, task['scene_id']))
-    pose_img = read_PILimg(ResourceMgr.get_resource_local_path(ResourceType.POSE_IMG, task['scene_id']))
+    base_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task['scene_id']))
+    pose_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task['scene_id']))
     lora_list = task['lora_list']
     prompt = task['prompt']
     i2i_args = task['params']

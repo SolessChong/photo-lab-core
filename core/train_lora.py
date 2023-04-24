@@ -153,6 +153,9 @@ def train_lora(dataset_path, subject_name, class_name):
     print(os.path.join(conf.TRAIN_UTILS_ROOT, "./venv/scripts/accelerate.exe"))
 
     # 2500 images with repeat, 5 epoch
+    # calculate steps
+    num_epochs = 5
+
     cmd = f"""{os.path.join(conf.TRAIN_UTILS_ROOT, "./venv/scripts/accelerate.exe")} \
         launch \
         --num_cpu_threads_per_process=2 \
@@ -168,10 +171,12 @@ def train_lora(dataset_path, subject_name, class_name):
         --text_encoder_lr=5e-5 --unet_lr=0.0001 --network_dim=256 \
         --output_name="{subject_name}" \
         --lr_scheduler_num_cycles="10" --learning_rate="0.001" --lr_scheduler="cosine" \
-        --lr_warmup_steps="300" --train_batch_size="2" \
-        --max_train_steps="5" --save_every_n_epochs="1" --mixed_precision="fp16" --save_precision="fp16" --optimizer_type="AdamW" --max_data_loader_n_workers="0" --bucket_reso_steps=64 --xformers --bucket_no_upscale --random_crop \
+        --lr_warmup_steps="300" --train_batch_size="5" \
+        --max_train_epochs="{num_epochs}" \
+        --save_every_n_epochs="1" --mixed_precision="fp16" --save_precision="fp16" --optimizer_type="AdamW" --max_data_loader_n_workers="0" --bucket_reso_steps=64 --xformers --bucket_no_upscale --random_crop \
         > {Path(dataset_path) / "train.log"} 2>&1
         """
+        # --max_train_steps="2"
         # > {os.path.join(dataset_path, "train.log")} 2>&1
         # --reg_data_dir={conf.DATA_RESOURCES['REG.WOMEN']} \
     print(cmd)

@@ -3,7 +3,7 @@ import sys
 import oss2
 import os
 # Add pipeline folder to path
-from core.conf import FILE_CONF, FILE_STORAGE
+from core.conf import PATH_CONF, FILE_STORAGE
 from pathlib import Path
 from enum import Enum
 from backend import models
@@ -28,8 +28,9 @@ class ResourceType(Enum):
     TRAIN_DATASET = 1
     POSE_IMG = 2
     BASE_IMG = 3
-    OUTPUT = 4
+    RESULT_IMG = 4
     TMP_OUTPUT = 5
+    TRAIN_LOG = 6
 
 class ResourceMgr:
 
@@ -39,57 +40,68 @@ class ResourceMgr:
     # Get resource for different type. Not the id is different for different types
     @staticmethod
     def get_resource_local_path(resource_type, id):
-        root = Path(FILE_CONF['ROOT'])
+        root = Path(PATH_CONF['ROOT'])
         # For local file:
         if FILE_STORAGE == 'local':
             # switch resource_type
             match resource_type:
                 case ResourceType.LORA_MODEL:
-                    return str(root / FILE_CONF['LORA_MODEL'] / (id + '.safetensors'))
+                    return str(root / PATH_CONF['LORA_MODEL'] / (id + '.safetensors'))
                 case ResourceType.TRAIN_DATASET:
-                    return str(root / FILE_CONF['TRAIN_DATASET'] / str(id))
+                    return str(root / PATH_CONF['TRAIN_DATASET'] / str(id))
                 case ResourceType.POSE_IMG:
-                    return str(root / FILE_CONF['POSE_IMG'] / (id + '.png'))
+                    return str(root / PATH_CONF['POSE_IMG'] / (id + '.png'))
                 case ResourceType.BASE_IMG:
-                    return str(root / FILE_CONF['BASE_IMG'] / (id + '.png'))
-                case ResourceType.OUTPUT:
-                    return str(root / FILE_CONF['OUTPUT'] / (id + '.png'))
+                    return str(root / PATH_CONF['BASE_IMG'] / (id + '.png'))
+                case ResourceType.RESULT_IMG:
+                    return str(root / PATH_CONF['OUTPUT'] / (id + '.png'))
                 case ResourceType.TMP_OUTPUT:
-                    return str(root / FILE_CONF['TMP_OUTPUT'] / (id + '.png'))
+                    return str(root / PATH_CONF['TMP_OUTPUT'] / (id + '.png'))
+                case ResourceType.TRAIN_LOG:
+                    return str(root / PATH_CONF['TRAIN_DATASET'] / str(id) / 'train.log')
                 case _:
                     raise Exception("Unknown resource type: " + str(resource_type))
         elif FILE_STORAGE == 'OSS':
             match resource_type:
                 case ResourceType.LORA_MODEL:
-                    return str(root / FILE_CONF['LORA_MODEL'] / ('user_' + str(id) + '.safetensors'))
+                    return str(root / PATH_CONF['LORA_MODEL'] / ('user_' + str(id) + '.safetensors'))
                 case ResourceType.TRAIN_DATASET:
-                    return str(root / FILE_CONF['TRAIN_DATASET'] / str(id))
-                case ResourceType.POSE_IMG:
-                    '''
-                    img_str = self._bucket.get_object(img_path)
-                    img_buf = io.BytesIO()
-                    img_buf.write(img_str.read())
-                    img_buf.seek(0)
-                    img = Image.open(img_buf).convert('RGB')
-                    '''
-                    scene = models.Scene.query.get(id)
-                    if scene.hint_img_list is None:
-                        return None
-                    else:
-                        return scene.hint_img_list[0]
-                case ResourceType.BASE_IMG:
-                    scene = models.Scene.query.get(id)
-                    if scene is None:
-                        return None
-                    else:
-                        return scene.base_img_key
-                case ResourceType.OUTPUT:
+                    return str(root / PATH_CONF['TRAIN_DATASET'] / str(id))
+                case ResourceType.RESULT_IMG:
                     task = models.Task.query.get(id)
                     return task.result_img_key
                 case ResourceType.TMP_OUTPUT:
-                    return str(root / FILE_CONF['TMP_OUTPUT'] / (str(id) + '.png'))
+                    return str(root / PATH_CONF['TMP_OUTPUT'] / (str(id) + '.png'))
+                case ResourceType.TRAIN_LOG:
+                    return str(root / PATH_CONF['TRAIN_DATASET'] / str(id) / 'train.log')
         else:
             raise Exception("Unknown FILE_STORAGE: " + FILE_STORAGE)
+        
+    @staticmethod
+    def get_resource_oss_url(resource_type, id):
+        match resource_type:
+            case ResourceType.LORA_MODEL:
+                return str('/models/lora/' + str(id) + '.safetensors')
+            case ResourceType.TRAIN_DATASET:
+                raise Exception("Not implemented")
+            case ResourceType.POSE_IMG:
+                scene = models.Scene.query.get(id)
+                if scene.hint_img_list is None:
+                    return None
+                else:
+                    return scene.hint_img_list[0]
+            case ResourceType.BASE_IMG:
+                scene = models.Scene.query.get(id)
+                if scene is None:
+                    return None
+                else:
+                    return scene.base_img_key
+            case ResourceType.RESULT_IMG:
+                task = models.Task.query.get(id)
+                return task.result_img_key
+            case _:
+                raise Exception("Unknown resource type: " + str(resource_type))
+            
 
 
 def oss2buf(url):
