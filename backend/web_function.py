@@ -1,20 +1,10 @@
-import datetime
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from utils import(get_signed_url, oss_put, db_execute)
 import secrets
-import utils
-import random
-from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from extensions import  app, db
-import celery_worker
-import string
-import aliyun_face_detector
-from celery import group
 
-import models
+from . import utils
+from .utils import(get_signed_url, oss_put, db_execute)
+from . import models
 
 def get_scenes():
     img_types = request.args.get('img_type', None)

@@ -1,6 +1,6 @@
 // 获取场景并展示
 async function getScenes() {
-    const response = await fetch("/get_scenes?action_type=sd&img_type=boy,girl");
+    const response = await fetch("/get_scenes?action_type=sd,mj&img_type=boy,girl");
     const scenes = await response.json();
 
     const sceneContainer = document.getElementById('scene-container');
