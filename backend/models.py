@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from extensions import db
 
-class Users(db.Model):
+class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(255), nullable=False)
@@ -19,9 +19,9 @@ class Source(db.Model):
     person_id = db.Column(db.Integer, nullable=True)
     base_img_key = db.Column(db.String(255), nullable=False)
     
-class Persons(db.Model):
+class Person(db.Model):
     __tablename__ = 'persons'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=True)
     model_type = db.Column(db.String(255), nullable=True)
     model_file_key = db.Column(db.String(2550), nullable=True)
@@ -67,12 +67,16 @@ class Scene(db.Model):
     negative_prompt = db.Column(db.Text, nullable=True)
     params = db.Column(db.Text, nullable=True)
     collection_name = db.Column(db.String(255), nullable=True)
+    tags = db.Column(db.String(255), nullable=True)
+    
 
 class Task(db.Model):
     __tablename__ = 'tasks'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     person_id_list = db.Column(db.JSON, nullable=True, comment="可能有多个用户，因此用JSONArray存储所有person_ids")
     scene_id = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(255), nullable=True)
     result_img_key = db.Column(db.String(2550), nullable=True)
     debug_img = db.Column(db.JSON, nullable=True)
+    pack_id = db.Column(db.Integer, nullable=True)
+    user_id = db.Column(db.String(255), nullable=True)
