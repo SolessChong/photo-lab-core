@@ -3,7 +3,7 @@ import os
 import json
 from .extensions import db
 
-class Users(db.Model):
+class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(255), nullable=False)
@@ -19,9 +19,9 @@ class Source(db.Model):
     person_id = db.Column(db.Integer, nullable=True)
     base_img_key = db.Column(db.String(255), nullable=False)
     
-class Persons(db.Model):
+class Person(db.Model):
     __tablename__ = 'persons'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=True)
     model_type = db.Column(db.String(255), nullable=True)
     model_file_key = db.Column(db.String(2550), nullable=True)
@@ -67,6 +67,7 @@ class Scene(db.Model):
     negative_prompt = db.Column(db.Text, nullable=True)
     params = db.Column(db.Text, nullable=True)
     collection_name = db.Column(db.String(255), nullable=True)
+    tags = db.Column(db.String(255), nullable=True)
     
     def update_pose_img(self, pose_img_url):
         if self.hint_img_list is None:
@@ -77,12 +78,14 @@ class Scene(db.Model):
 
 class Task(db.Model):
     __tablename__ = 'tasks'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     person_id_list = db.Column(db.JSON, nullable=True, comment="可能有多个用户，因此用JSONArray存储所有person_ids")
     scene_id = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(255), nullable=True)
     result_img_key = db.Column(db.String(2550), nullable=True)
     debug_img = db.Column(db.JSON, nullable=True)
+    pack_id = db.Column(db.Integer, nullable=True)
+    user_id = db.Column(db.String(255), nullable=True)
 
     def update_result_img_key(self, result_img_key):
         self.result_img_key = result_img_key
@@ -92,3 +95,4 @@ class Task(db.Model):
         if self.person_id_list is None:
             return []
         return json.loads(self.person_id_list)
+    

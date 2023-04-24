@@ -1,0 +1,1 @@
+pip install Flask Flask-CORS Flask-SQLAlchemy Flask-Migrate oss2 requests Pillow pymysql celery
