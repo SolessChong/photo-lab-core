@@ -69,7 +69,6 @@ class Scene(db.Model):
     collection_name = db.Column(db.String(255), nullable=True)
     tags = db.Column(db.String(255), nullable=True)
     
-
     def update_pose_img(self, pose_img_url):
         if self.hint_img_list is None:
             self.hint_img_list = [pose_img_url]
@@ -87,6 +86,7 @@ class Task(db.Model):
     debug_img = db.Column(db.JSON, nullable=True)
     pack_id = db.Column(db.Integer, nullable=True)
     user_id = db.Column(db.String(255), nullable=True)
+
     def update_result_img_key(self, result_img_key):
         self.result_img_key = result_img_key
         db.session.commit()
