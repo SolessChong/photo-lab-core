@@ -75,7 +75,7 @@ celery = make_celery(app)
 # test case, 
 # person_id=0
 # train_img_list = ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png']
-@celery.task()
+@celery.task(name="train-lora")
 def task_train_lora(person_id, train_img_list):
     logging.info(f"======= Task: training LORA model {person_id}")
     # save to local
