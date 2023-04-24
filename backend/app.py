@@ -1,21 +1,25 @@
 import datetime
 from flask import Flask, request, jsonify, render_template
-from flask_cors import CORS
-from utils import(get_signed_url, oss_put, db_execute)
 import secrets
-import utils
 import random
-from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from extensions import  app, db
-import celery_worker
 import string
-import aliyun_face_detector
-from celery import group
-import web_function
+from celery import group, Celery, chain, chord
+import logging
 
-import models
+from backend.extensions import  app, db
+from . import aliyun_face_detector
+from . import web_function
+from . import utils
+from . import models
+
+celery_app = Celery('myapp', broker='r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com', backend='r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com')
+# Create the tasks as strings
+task_train_lora_str = 'train_lora'
+task_render_scene_str = 'render_scene'
+
+
+logger = logging.getLogger(__name__)
+
 
 @app.route('/api/create_user', methods=['GET'])
 def create_user():
@@ -79,57 +83,64 @@ def start_sd_generate():
     category = request.form['category']
 
     # 1. Get all scenes with the same category
-    scenes = models.Scene.query.filter_by(img_type=category, action_type='sd').all()
+    scenes = models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type=='sd', models.Scene.hint_img_list != None).all()
 
     # 2. Check for existing tasks and calculate new combinations
     new_combinations = []
     for scene in scenes:
         if not models.Task.query.filter_by(scene_id=scene.scene_id, person_id_list=person_id_list, user_id=user_id).first():
             new_combinations.append((scene.scene_id, person_id_list))
-
     m = len(new_combinations)
-
-    print(person_id_list)
+    logger.info(f'{user_id} has new_combinations: {new_combinations}')
+    
     # 3. If there are new combinations, handle them based on lora_train_status
-    if m > 0:
-        persons = models.Person.query.filter(models.Person.id.in_(tuple(person_id_list))).all()
-        train_lora_group = []
-        for person in persons:
-            if person.lora_train_status == 'pending':
-                return jsonify({'success': False, 'message': '请等待之前的AI拍摄任务完成再开始'})
+    if m == 0:
+        return jsonify({'success': False, 'message': 'No new tasks were created'})
+    
+    persons = models.Person.query.filter(models.Person.id.in_(tuple(person_id_list))).all()
+    train_lora_group = []
+    for person in persons:
+        if person.lora_train_status == 'pending':
+            return jsonify({'success': False, 'message': '请等待之前的AI拍摄任务完成再开始'})
 
-            elif person.lora_train_status == 'failed':
-                return jsonify({'success': False, 'message': '数字人物训练失败，请选择其他数字人物或新创建数字人物'})
+        elif person.lora_train_status == 'failed':
+            return jsonify({'success': False, 'message': '数字人物训练失败，请选择其他数字人物或新创建数字人物'})
 
-            elif person.lora_train_status is None:
-                person.lora_train_status = 'pending'
-                db.session.commit()
-                # TODO: change to real celery task
-                train_lora_group.append(f'train person: {person.id}    ')
-
-        if train_lora_group:
-            person_group = group(train_lora_group)
-            #  TODO: change to real celery task
-            # task_group = group(render.s(scene_id, person_id_list) for scene_id, person_id_list in new_combinations)
-            # person_group.apply_async(link=task_group)
-
-            pack = models.Pack(user_id=user_id, total_img_num=m, start_time= datetime.datetime.now())
-            db.session.add(pack)
+        elif person.lora_train_status is None:
+            person.lora_train_status = 'pending'
             db.session.commit()
-            for scene_id, person_id_list in new_combinations:
-                task = models.Task(
-                    user_id=user_id,
-                    scene_id=scene_id,
-                    person_id_list=person_id_list,
-                    status='pending',
-                    pack_id=pack.pack_id
-                )
-                db.session.add(task)
-            db.session.commit()
+            sources = models.Source.query.filter_by(person_id=person.id).all()
+            base_img_keys = [source.base_img_key for source in sources]
+            train_lora_group.append(celery_app.signature(task_train_lora_str, args=(person.id, base_img_keys, )))
+    logger.info(f'{user_id} has train_lora_group: {train_lora_group}')
 
-            return jsonify({'success': True, 'message': f'{train_lora_group} person and {m} new tasks created'})
+    render_group = []
+    pack = models.Pack(user_id=user_id, total_img_num=m, start_time= datetime.datetime.now())
+    db.session.add(pack)
+    db.session.commit()
+    for scene_id, person_id_list in new_combinations:
+        task = models.Task(
+            user_id=user_id,
+            scene_id=scene_id,
+            person_id_list=person_id_list,
+            status='pending',
+            pack_id=pack.pack_id
+        )
+        db.session.add(task)
+        db.session.commit()
+        render_group.append(celery_app.signature(task_render_scene_str, args=(task.id, )))
 
-    return jsonify({'success': False, 'message': 'No new tasks were created'})
+
+    pipeline = chain(group(train_lora_group), group(render_group))
+
+
+    pipeline.apply_async()
+
+    # ch = chord(train_lora_group, body=group(render_group))
+    # ch.apply_async()
+
+    return jsonify({'success': True, 'message': f'{m} new tasks created for user {user_id}'})
+
 
 # 获取某个用户的所有已经生成的图片，返回结果一个packs数组，
 # python后端程序获取所有generated_images表中，符合user_id 的列。然后将获得的列，把相同的pack_id合并在一个pack项。pack项的值还包括
