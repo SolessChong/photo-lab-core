@@ -1,7 +1,7 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from extensions import db
+import json
+from .extensions import db
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -70,6 +70,13 @@ class Scene(db.Model):
     tags = db.Column(db.String(255), nullable=True)
     
 
+    def update_pose_img(self, pose_img_url):
+        if self.hint_img_list is None:
+            self.hint_img_list = [pose_img_url]
+        else:
+            self.hint_img_list[0] = pose_img_url
+        db.session.commit()
+
 class Task(db.Model):
     __tablename__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -80,3 +87,12 @@ class Task(db.Model):
     debug_img = db.Column(db.JSON, nullable=True)
     pack_id = db.Column(db.Integer, nullable=True)
     user_id = db.Column(db.String(255), nullable=True)
+    def update_result_img_key(self, result_img_key):
+        self.result_img_key = result_img_key
+        db.session.commit()
+
+    def get_person_id_list(self):
+        if self.person_id_list is None:
+            return []
+        return json.loads(self.person_id_list)
+    

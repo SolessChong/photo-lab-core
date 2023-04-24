@@ -4,7 +4,7 @@ TRAIN_UTILS_ROOT = "D:/sd/kohya_ss/"
 # SUBJECT_PLACEHOLDER = "person_MYDEARUSERXX"
 SUBJECT_PLACEHOLDER = "girl_userxx"
 
-DEBUG = False
+DEBUG = True
 
 FILE_STORAGE = 'OSS'   # ['OSS', 'LOCAL']
 
@@ -13,7 +13,7 @@ RENDERING_SETTINGS = {
     "size": (512, 512),
 }
 
-FILE_CONF = {
+PATH_CONF = {
     # Define root as conf.py file loction
     'ROOT': os.path.dirname(os.path.abspath(__file__)),
     'LORA_MODEL': 'train/models/lora',
@@ -27,8 +27,8 @@ FILE_CONF = {
 # create paths if not exists
 path_to_create = ['train/models/lora', 'data']
 for path in path_to_create:
-    if not os.path.exists(os.path.join(FILE_CONF['ROOT'], path)):
-        os.makedirs(os.path.join(FILE_CONF['ROOT'], path))
+    if not os.path.exists(os.path.join(PATH_CONF['ROOT'], path)):
+        os.makedirs(os.path.join(PATH_CONF['ROOT'], path))
 
 MODEL_RESOURCES = {
     'CM.ST': 'D:/sd/stable-diffusion-webui/models/Stable-diffusion/chilloutmix_NiPrunedFp16Fix.safetensors',

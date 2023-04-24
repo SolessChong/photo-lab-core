@@ -5,20 +5,20 @@ import rembg
 import cv2
 import subprocess
 import logging
-import conf
+from core import conf
 import re
 import math
 import shutil
 from pathlib import Path
-import templates
+from core import templates
 import webuiapi
-import face_mask
-from libs.openpose.body import Body
-import pose_detect
+from core import face_mask
+from core.libs.openpose.body import Body
+from core import pose_detect
 import numpy as np
 import typing
-from libs.openpose.util import draw_bodypose
-from resource_manager import ResourceMgr, ResourceType
+from core.libs.openpose.util import draw_bodypose
+from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg
 
 # create API client
 api = webuiapi.WebUIApi()
@@ -76,38 +76,22 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 # prepare task, download base_img, generate pose, download lora.
 def prepare_task(task):
     # download base_img
-    base_img_path = ResourceMgr.get_resource_path(ResourceType.BASE_IMG, task['scene_id'])
-    # raise if base doesn't exist
-    if not os.path.exists(base_img_path):
-        raise Exception(f"Base image not found! {base_img_path}")
+    base_img_url = ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task['scene_id'])
+    pose_img_url = ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task['scene_id'])
+    base_img = read_cv2img(base_img_url)
+    pose_map = read_cv2img(pose_img_url)
 
-    # generate pose_img if not exist
-    pose_img_path = ResourceMgr.get_resource_path(ResourceType.POSE_IMG, task['scene_id'])
-    # if file doesn't exist, generate it using openpose.body.Body
-    if not os.path.exists(pose_img_path):
-        logging.info(f"Generating pose for {base_img_path}, save to {pose_img_path}.")
-        base_img = cv2.imread(base_img_path) # B,G,R order
-        candidate, subset = body_estimate(base_img)
-        # draw pose map on blank image
-        pose_map = np.zeros(base_img.shape)
-        pose_map = draw_bodypose(pose_map, candidate, subset)
-        # save pose map
-        pose_img_dir = os.path.dirname(pose_img_path)
-        if not os.path.exists(pose_img_dir):
-            os.makedirs(pose_img_dir)
-        cv2.imwrite(pose_img_path, pose_map)
-
-    return base_img_path, pose_img_path
+    return base_img, pose_map
 
 
 
 def run_lora_on_base_img(task) -> Image:
     logging.info(f"Running task {task['task_id']}, scene: {task['scene_id']}, lora: {task['lora_list']}")
 
-    prepare_task(task)
+    base_img, pose_img = prepare_task(task)
     # load base_img
-    base_img = Image.open(ResourceMgr.get_resource_path(ResourceType.BASE_IMG, task['scene_id']))
-    pose_img = Image.open(ResourceMgr.get_resource_path(ResourceType.POSE_IMG, task['scene_id']))
+    base_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task['scene_id']))
+    pose_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task['scene_id']))
     lora_list = task['lora_list']
     prompt = task['prompt']
     i2i_args = task['params']
@@ -126,9 +110,10 @@ def run_lora_on_base_img(task) -> Image:
     for i in range(len(mask_list)):
         # prepare prompt with Lora
         prompt_with_lora = prompt + f",<lora:{lora_list[i]}:1>, (photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
+        logging.info(f"prompt_with_lora: {prompt_with_lora}")
         # replace person with subject name using regex
         pattern = r'\b(?:a woman|a man|a girl|a boy)\b'
-        prompt_with_lora = re.sub(pattern, f"photo of a {conf.SUBJECT_PLACEHOLDER}", prompt_with_lora)
+        prompt_with_lora = re.sub(pattern, f"photo of a {conf.SUBJECT_PLACEHOLDER}, {templates.PROMPT_PHOTO}", prompt_with_lora)
 
         upper_body_landmarks = [0, 1, 14, 15, 16, 17]  # Landmark indices for upper body
         upper_body_coords = [(candidates[int(subset[i][k])][0], candidates[int(subset[i][k])][1]) for k in upper_body_landmarks if subset[i][k] != -1]
@@ -150,15 +135,14 @@ def run_lora_on_base_img(task) -> Image:
 
         char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2)
         ######## save char_base_img
-        char_base_path = ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}")
         if conf.DEBUG:
+            char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}")
             if not os.path.exists(os.path.dirname(char_base_path)):
                 os.makedirs(os.path.dirname(char_base_path))
             cv2.imwrite(char_base_path, char_base_img)
 
         char_pose_img = pose_img.copy().crop((bb[0], bb[1], bb[0] + bb[2], bb[1] + bb[3]))
         char_mask_img = mask_list[i].copy().crop((bb[0], bb[1], bb[0] + bb[2], bb[1] + bb[3]))
-
 
         logging.debug(f"bb(x, y, width, height): {bb}")
 
@@ -171,13 +155,13 @@ def run_lora_on_base_img(task) -> Image:
         ### Save tmp image for debug
         if conf.DEBUG:
             # create path if not exist
-            output_dir = os.path.dirname(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, task['scene_id']))
-            char_base_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}"))
-            char_pose_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_pose_img_{i}"))
-            char_mask_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_mask_img_{i}"))
+            output_dir = os.path.dirname(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, task['scene_id']))
+            char_base_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}"))
+            char_pose_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_pose_img_{i}"))
+            char_mask_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_mask_img_{i}"))
             # linearly blend between pose and base image
             blended_img = Image.blend(char_base_img, char_pose_img, 0.5)
-            blended_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_blended_img_{i}"))
+            blended_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_blended_img_{i}"))
 
         char_controlnet_units = [webuiapi.ControlNetUnit(input_image=char_pose_img, model="control_sd15_openpose [fef5e48e]", resize_mode="Inner Fit (Scale to Fit)", guidance=0.9, guidance_end=0.7)]
         char_lora_img = api.img2img(
@@ -198,8 +182,8 @@ def run_lora_on_base_img(task) -> Image:
         if conf.DEBUG:
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
-            char_lora_img.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_lora_{i}.png"))
-            image.save(ResourceMgr.get_resource_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_result_{i}.png"))
+            char_lora_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_lora_{i}.png"))
+            image.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_result_{i}.png"))
 
     # save final image
     # create path if not exist
@@ -207,8 +191,6 @@ def run_lora_on_base_img(task) -> Image:
     # if not os.path.exists(os.path.dirname(output_path)):
     #     os.makedirs(os.path.dirname(output_path))
     # image.save(output_path)
-    img_bytes = io.BytesIO()
-    image.save(img_bytes)
 
     # Log success
     logging.info(f"Task {task['task_id']}, Scene {task['scene_id']} finished successfully.")
