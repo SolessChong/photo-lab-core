@@ -66,8 +66,7 @@ def make_celery(app):
     return celery
 
 app.config.update(
-    CELERY_BROKER_URL='redis://39.108.222.9:6379/0',
-    CELERY_RESULT_BACKEND='redis://39.108.222.9:6379/0'
+    **conf.CELERY_CONFIG
 )
 celery = make_celery(app)
 
@@ -131,7 +130,7 @@ def task_render_scene(task_id):
     scene = models.Scene.query.get(task.scene_id)
     # person_list = models.Person.query.filter(models.Person.id.in_(person_id_list)).all()
     person_id_list = task.get_person_id_list()
-    person_list = [models.Persons.query.get(person_id) for person_id in person_id_list]
+    person_list = [models.Person.query.get(person_id) for person_id in person_id_list]
 
     logging.info(f"======= Task: rendering scene: task_id={task_id}, scene_id={task.scene_id}, person_id_list={person_id_list}")
     # Download person lora

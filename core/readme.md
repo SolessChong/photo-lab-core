@@ -16,4 +16,4 @@ Windows:
 Linux:
 `celery -A core.celery_worker.celery worker -l INFO`
 1. Monitoring
-celery --broker=redis://39.108.222.9:6379 flower --port=5566
+celery --broker=redis://user:pass@39.108.222.9:6379 flower --port=5566
