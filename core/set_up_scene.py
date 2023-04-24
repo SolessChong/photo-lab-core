@@ -25,8 +25,6 @@ from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, o
 
 body_estimate = Body()
 
-app.app_context().push()
-
 def prepare_scene(scene_id):
     # download base_img
     base_img_url = ResourceMgr.get_resource_oss_url( ResourceType.BASE_IMG, scene_id)
@@ -60,6 +58,7 @@ def prepare_scene(scene_id):
 
 
 def main():
+    app.app_context().push()
     for i in range(557, 569):
         prepare_scene(i)
 

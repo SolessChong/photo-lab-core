@@ -39,6 +39,7 @@ import os
 import sys
 from core import conf
 from core import train_lora
+from core import set_up_scene
 from core import render
 from core.resource_manager import ResourceMgr, ResourceType, bucket, str2oss, oss2buf, write_PILimage
 from pathlib import Path
@@ -75,7 +76,7 @@ celery = make_celery(app)
 # test case, 
 # person_id=0
 # train_img_list = ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png']
-@celery.task(name="train-lora")
+@celery.task(name="train_lora")
 def task_train_lora(person_id, train_img_list):
     logging.info(f"======= Task: training LORA model {person_id}")
     # save to local
@@ -123,7 +124,7 @@ def task_train_lora(person_id, train_img_list):
 # test case,
 # scene_id = 557
 # persion_id_list = [0]
-@celery.task(name="render-scene")
+@celery.task(name="render_scene")
 def task_render_scene(task_id):
     # scene_base_img, lora_file_list, hint_img_list, ROI_list[mask_img_list, bbox], prompt, negative_prompt, debug_list[1..10]
     task = models.Task.query.get(task_id)
@@ -162,6 +163,9 @@ def task_render_scene(task_id):
     logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
     return 0
 
+@celery.task(name="set_up_scene")
+def task_set_up_scene(scene_id):
+    set_up_scene.prepare_scene(scene_id)
 
 
 @celery.task(name="hello")
