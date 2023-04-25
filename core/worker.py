@@ -47,14 +47,7 @@ from core import templates
 import json
 import logging
 from backend.extensions import app
-from backend import extensions
 
-import secrets
-from celery import Celery
-from flask import Flask
-from sqlalchemy.orm import sessionmaker
-import time
-import sys
 
 
 # Train LORA model
@@ -146,63 +139,3 @@ def task_render_scene(task_id):
 
 def task_set_up_scene(scene_id):
     set_up_scene.prepare_scene(scene_id)
-
-# main script
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python script_name.py <arg>")
-        sys.exit(1)
-
-    argument = sys.argv[1]  # 获取命令行参数
-    app.app_context().push()
-    Session = sessionmaker(bind=extensions.engine)
-
-    if argument == 'train':
-        while True:
-            # 为每个事务创建一个新的 session
-            session = Session()
-            session.begin()
-            person = None
-            try:
-                person = session.query(models.Person).filter(models.Person.lora_train_status == 'wait').with_for_update().first()
-                if person:
-                    person.lora_train_status = 'training'
-                session.commit()
-            except Exception as e:
-                print(f"Error: {e}")
-            finally:
-                session.close()
-
-            if person:
-                logging.info(f"======= Task: training LORA model: person_id={person.id}")
-                sources = models.Source.query.filter(models.Source.person_id == person.id, models.Source.base_img_key != None).all()
-                task_train_lora(person.id, [source.base_img_key for source in sources])
-            time.sleep(10)
-    else:
-        while True:
-            # 为每个事务创建一个新的 session
-            session = Session()
-            session.begin()
-            todo_task_id_list = []
-            try:
-                tasks = session.query(models.Task).filter(models.Task.status == 'wait').with_for_update().limit(20).all()
-                for task in tasks:
-                    flag = True
-                    for person_id in task.person_id_list:
-                        person = session.query(models.Person).filter(models.Person.id == person_id).first()
-                        if person.lora_train_status != 'finish':
-                            flag = False
-                            break
-                    if flag:
-                        todo_task_id_list.append(task.id)
-                        task.status = 'rendering'
-                session.commit()
-            except Exception as e:
-                print(f"Error: {e}")
-            finally:
-                session.close()
-            for id in todo_task_id_list:
-                logging.info(f"======= Task: render task: task_id={id}")
-                task_render_scene(id)
-            time.sleep(10)
-        
