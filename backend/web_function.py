@@ -53,7 +53,10 @@ def upload_scene():
     base_img_key = None
     # 上传图片到OSS
     if file:
-        base_img_key = f'scenes/sd_collection/{collection_name}/{secrets.token_hex(16)}.png'
+        if action_type == 'sd':
+            base_img_key = f'scenes/sd_collection/{collection_name}/{secrets.token_hex(8)}.png'
+        elif action_type == 'example':
+            base_img_key = f'scenes/example/{collection_name}_{secrets.token_hex(2)}.png'
         oss_put(base_img_key, utils.convert_to_png_bytes(file))
 
     # 将图片信息存入数据库

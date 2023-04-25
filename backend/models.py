@@ -28,6 +28,7 @@ class Person(db.Model):
     sex = db.Column(db.String(255), nullable=True)
     user_id = db.Column(db.String(255), nullable=True)
     lora_train_status = db.Column(db.String(255), nullable=True)
+    head_img_key = db.Column(db.String(255), nullable=True)
 
 class GeneratedImage(db.Model):
     __tablename__ = 'generated_images'

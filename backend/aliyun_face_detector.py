@@ -1,4 +1,5 @@
 import io
+from PIL import Image
 from alibabacloud_facebody20191230.client import Client
 from alibabacloud_facebody20191230.models import DetectFaceAdvanceRequest
 from alibabacloud_tea_openapi.models import Config
@@ -15,8 +16,8 @@ config = Config(
     region_id='cn-shanghai'
 )
 
-# 检测png图片中的人脸
-def detect_face(img):
+
+def aliyun_face_detect(img):
     detect_face_request = DetectFaceAdvanceRequest()
     detect_face_request.image_urlobject = io.BytesIO(img)
     detect_face_request.landmark = True
@@ -30,12 +31,55 @@ def detect_face(img):
         # 初始化Client
         client = Client(config)
         response = client.detect_face_advance(detect_face_request, runtime)
-        # 获取整体结果
-        face_count = response.body.data.face_count
-
+        
     except Exception as error:
         print("Error:", error)
         print("Error code:", error.code)
-        face_count = -1
+    
+    return response
 
-    return face_count
+# 检测png图片中的人脸
+def detect_face(img):
+    return aliyun_face_detect(img).body.data.face_count
+
+def get_face_coordinates(img):
+    return aliyun_face_detect(img).body.data.face_rectangles
+
+def crop_face_pil(image_data, face_coordinates):
+    # 从二进制数据创建一个PIL图像对象
+    img = Image.open(io.BytesIO(image_data))
+
+    # 获取人脸坐标
+    x, y, width, height = face_coordinates
+
+    # 增加高度为原来的30%
+    new_height = int(height * 1.3)
+    
+    # 将宽度设置为与新高度相同
+    new_width = new_height
+
+    # 计算截取区域的中心点
+    center_x = x + width // 2
+    center_y = y + height // 2
+
+    # 计算新的截取区域的左上角和右下角坐标
+    left = center_x - new_width // 2
+    top = center_y - new_height // 2
+    right = center_x + new_width // 2
+    bottom = center_y + new_height // 2
+
+    # 处理超出原图大小的情况
+    left = max(0, left)
+    top = max(0, top)
+    right = min(img.width, right)
+    bottom = min(img.height, bottom)
+
+    # 截取图像中的人脸区域
+    cropped_face = img.crop((left, top, right, bottom))
+
+    # 将截取后的图像转换为字节对象
+    cropped_face_bytes = io.BytesIO()
+    cropped_face.save(cropped_face_bytes, format='JPEG')
+    cropped_face_bytes = cropped_face_bytes.getvalue()
+
+    return cropped_face_bytes

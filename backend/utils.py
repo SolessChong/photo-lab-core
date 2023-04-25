@@ -109,3 +109,8 @@ def convert_to_png_bytes(image_file):
     except Exception as e:
         print(f"Error while converting image to PNG: {e}")
         raise
+
+def get_image_size(img_url):
+    response = requests.get(img_url)
+    img = Image.open(BytesIO(response.content))
+    return img.height, img.width
