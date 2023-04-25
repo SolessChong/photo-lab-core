@@ -1,4 +1,5 @@
 # This code from https://github.com/lllyasviel/ControlNet
+# Model for openpose: https://huggingface.co/lllyasviel/ControlNet/tree/main/annotator/ckpts
 
 import cv2
 import numpy as np

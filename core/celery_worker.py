@@ -66,8 +66,7 @@ def make_celery(app):
     return celery
 
 app.config.update(
-    CELERY_BROKER_URL='redis://39.108.222.9:6379/0',
-    CELERY_RESULT_BACKEND='redis://39.108.222.9:6379/0'
+    **conf.CELERY_CONFIG
 )
 celery = make_celery(app)
 
@@ -77,7 +76,7 @@ celery = make_celery(app)
 # person_id=0
 # train_img_list = ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png']
 @celery.task(name="train_lora")
-def task_train_lora(person_id, train_img_list):
+def task_train_lora(person_id, train_img_list, epoch=5):
     logging.info(f"======= Task: training LORA model {person_id}")
     # save to local
     dataset_path = Path(ResourceMgr.get_resource_local_path(ResourceType.TRAIN_DATASET, person_id))
@@ -102,7 +101,7 @@ def task_train_lora(person_id, train_img_list):
     ## 3. Train LORA model
     #
     logging.info(f"  === start training LORA model {person_id}")
-    train_lora.train_lora(dataset_path, person_id, 'girl')
+    train_lora.train_lora(dataset_path, person_id, 'girl', epoch=epoch)
 
     # TODO: save to db @fengyi. Re: 爸爸替你写了
     person = models.Persons.query.get(person_id)
@@ -131,7 +130,7 @@ def task_render_scene(task_id):
     scene = models.Scene.query.get(task.scene_id)
     # person_list = models.Person.query.filter(models.Person.id.in_(person_id_list)).all()
     person_id_list = task.get_person_id_list()
-    person_list = [models.Persons.query.get(person_id) for person_id in person_id_list]
+    person_list = [models.Person.query.get(person_id) for person_id in person_id_list]
 
     logging.info(f"======= Task: rendering scene: task_id={task_id}, scene_id={task.scene_id}, person_id_list={person_id_list}")
     # Download person lora

@@ -24,3 +24,7 @@ Data/
 
 # Train models
 train/
+
+# env
+**/venv/**
+.python-version
