@@ -75,7 +75,7 @@ celery = make_celery(app)
 # test case, 
 # person_id=0
 # train_img_list = ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png']
-@celery.task(name="train_lora")
+@celery.task(name="train_lora", queue="train_queue")
 def task_train_lora(person_id, train_img_list, epoch=5):
     logging.info(f"======= Task: training LORA model {person_id}")
     # save to local
@@ -104,26 +104,24 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     train_lora.train_lora(dataset_path, person_id, 'girl', epoch=epoch)
 
     # TODO: save to db @fengyi. Re: 爸爸替你写了
-    person = models.Persons.query.get(person_id)
+    person = models.Person.query.get(person_id)
     # model file local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
     model_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person_id)
     if not os.path.exists(model_path):
         logging.error(f"  --- LORA model {person_id} not found")
-        person.lora_train_status = "failed"
-        person.save()
         return -1
     else:
         url = ResourceMgr.get_resource_oss_url(ResourceType.LORA_MODEL, person_id)
         bucket.put_object_from_file(url, model_path)
         person.lora_train_status = "success"
-        person.save()
+        person.update_model_file(url)
         logging.info(f"  --- LORA model {person_id} Success")
         return 0
 
 # test case,
 # scene_id = 557
 # persion_id_list = [0]
-@celery.task(name="render_scene")
+@celery.task(name="render_scene", queue="render_queue")
 def task_render_scene(task_id):
     # scene_base_img, lora_file_list, hint_img_list, ROI_list[mask_img_list, bbox], prompt, negative_prompt, debug_list[1..10]
     task = models.Task.query.get(task_id)
