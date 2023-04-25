@@ -12,7 +12,10 @@ from . import web_function
 from . import utils
 from . import models
 
-celery_app = Celery('myapp', broker='r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com', backend='r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com')
+celery_app = Celery('myapp',
+                    broker='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0',
+                    backend='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0')
+
 # Create the tasks as strings
 task_train_lora_str = 'train_lora'
 task_render_scene_str = 'render_scene'
@@ -132,8 +135,6 @@ def start_sd_generate():
 
 
     pipeline = chain(group(train_lora_group), group(render_group))
-
-
     pipeline.apply_async()
 
     # ch = chord(train_lora_group, body=group(render_group))
