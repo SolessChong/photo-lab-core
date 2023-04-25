@@ -41,41 +41,24 @@ class ResourceMgr:
     @staticmethod
     def get_resource_local_path(resource_type, id):
         root = Path(PATH_CONF['ROOT'])
-        # For local file:
-        if FILE_STORAGE == 'local':
-            # switch resource_type
-            match resource_type:
-                case ResourceType.LORA_MODEL:
-                    return str(root / PATH_CONF['LORA_MODEL'] / (id + '.safetensors'))
-                case ResourceType.TRAIN_DATASET:
-                    return str(root / PATH_CONF['TRAIN_DATASET'] / str(id))
-                case ResourceType.POSE_IMG:
-                    return str(root / PATH_CONF['POSE_IMG'] / (id + '.png'))
-                case ResourceType.BASE_IMG:
-                    return str(root / PATH_CONF['BASE_IMG'] / (id + '.png'))
-                case ResourceType.RESULT_IMG:
-                    return str(root / PATH_CONF['OUTPUT'] / (id + '.png'))
-                case ResourceType.TMP_OUTPUT:
-                    return str(root / PATH_CONF['TMP_OUTPUT'] / (id + '.png'))
-                case ResourceType.TRAIN_LOG:
-                    return str(root / PATH_CONF['TRAIN_DATASET'] / str(id) / 'train.log')
-                case _:
-                    raise Exception("Unknown resource type: " + str(resource_type))
-        elif FILE_STORAGE == 'OSS':
-            match resource_type:
-                case ResourceType.LORA_MODEL:
-                    return str(root / PATH_CONF['LORA_MODEL'] / ('user_' + str(id) + '.safetensors'))
-                case ResourceType.TRAIN_DATASET:
-                    return str(root / PATH_CONF['TRAIN_DATASET'] / str(id))
-                case ResourceType.RESULT_IMG:
-                    task = models.Task.query.get(id)
-                    return task.result_img_key
-                case ResourceType.TMP_OUTPUT:
-                    return str(root / PATH_CONF['TMP_OUTPUT'] / (str(id) + '.png'))
-                case ResourceType.TRAIN_LOG:
-                    return str(root / PATH_CONF['TRAIN_DATASET'] / str(id) / 'train.log')
-        else:
-            raise Exception("Unknown FILE_STORAGE: " + FILE_STORAGE)
+        # switch resource_type
+        match resource_type:
+            case ResourceType.LORA_MODEL:
+                return str(root / PATH_CONF['LORA_MODEL'] / ('user_' + str(id) + '.safetensors'))
+            case ResourceType.TRAIN_DATASET:
+                return str(root / PATH_CONF['TRAIN_DATASET'] / str(id))
+            case ResourceType.POSE_IMG:
+                return str(root / PATH_CONF['POSE_IMG'] / (str(id) + '.png'))
+            case ResourceType.BASE_IMG:
+                return str(root / PATH_CONF['BASE_IMG'] / (str(id) + '.png'))
+            case ResourceType.RESULT_IMG:
+                return str(root / PATH_CONF['OUTPUT'] / (str(id) + '.png'))
+            case ResourceType.TMP_OUTPUT:
+                return str(root / PATH_CONF['TMP_OUTPUT'] / (str(id) + '.png'))
+            case ResourceType.TRAIN_LOG:
+                return str(root / PATH_CONF['TRAIN_DATASET'] / str(id) / 'train.log')
+            case _:
+                raise Exception("Unknown resource type: " + str(resource_type))
         
     @staticmethod
     def get_resource_oss_url(resource_type, id):
@@ -83,7 +66,7 @@ class ResourceMgr:
             case ResourceType.LORA_MODEL:
                 return str('/models/lora/' + str(id) + '.safetensors')
             case ResourceType.TRAIN_DATASET:
-                raise Exception("Not implemented")
+                return str(PATH_CONF['TRAIN_DATASET'] + str(id) + '/')
             case ResourceType.POSE_IMG:
                 scene = models.Scene.query.get(id)
                 if scene.hint_img_list is None:
@@ -97,8 +80,7 @@ class ResourceMgr:
                 else:
                     return scene.base_img_key
             case ResourceType.RESULT_IMG:
-                task = models.Task.query.get(id)
-                return task.result_img_key
+                return f'result/render/{id}.png'
             case _:
                 raise Exception("Unknown resource type: " + str(resource_type))
             

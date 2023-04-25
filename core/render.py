@@ -20,9 +20,6 @@ import typing
 from core.libs.openpose.util import draw_bodypose
 from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg
 
-# create API client
-api = webuiapi.WebUIApi()
-
 # create API client with custom host, port
 api = webuiapi.WebUIApi(host='127.0.0.1', port=7890)
 

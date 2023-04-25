@@ -1,6 +1,6 @@
 import os
 
-TRAIN_UTILS_ROOT = "D:/sd/kohya_ss/"
+TRAIN_UTILS_ROOT = "/home/chong/photolab/kohya_ss/"
 # SUBJECT_PLACEHOLDER = "person_MYDEARUSERXX"
 SUBJECT_PLACEHOLDER = "girl_userxx"
 
@@ -16,8 +16,8 @@ RENDERING_SETTINGS = {
 PATH_CONF = {
     # Define root as conf.py file loction
     'ROOT': os.path.dirname(os.path.abspath(__file__)),
-    'LORA_MODEL': 'train/models/lora',
-    'TRAIN_DATASET': 'data/train_dataset',
+    'LORA_MODEL': 'train/models/lora/',
+    'TRAIN_DATASET': 'data/train_dataset/',
     'POSE_IMG': 'data/pose_img',
     'BASE_IMG': 'data/base_img',
     'OUTPUT': 'data/output',

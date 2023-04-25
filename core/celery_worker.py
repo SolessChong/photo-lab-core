@@ -76,7 +76,7 @@ celery = make_celery(app)
 # person_id=0
 # train_img_list = ['source/meizi/0/d95b7c8648e55e04ab015bf4b7628462.png', 'source/meizi/0/552b77aaad3d2e878d610163de058729.png']
 @celery.task(name="train_lora")
-def task_train_lora(person_id, train_img_list):
+def task_train_lora(person_id, train_img_list, epoch=5):
     logging.info(f"======= Task: training LORA model {person_id}")
     # save to local
     dataset_path = Path(ResourceMgr.get_resource_local_path(ResourceType.TRAIN_DATASET, person_id))
@@ -101,7 +101,7 @@ def task_train_lora(person_id, train_img_list):
     ## 3. Train LORA model
     #
     logging.info(f"  === start training LORA model {person_id}")
-    train_lora.train_lora(dataset_path, person_id, 'girl')
+    train_lora.train_lora(dataset_path, person_id, 'girl', epoch=epoch)
 
     # TODO: save to db @fengyi. Re: 爸爸替你写了
     person = models.Persons.query.get(person_id)
