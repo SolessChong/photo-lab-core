@@ -188,7 +188,7 @@ def start_sd_generate():
             db.session.commit()
             sources = models.Source.query.filter_by(person_id=person.id).all()
             base_img_keys = [source.base_img_key for source in sources]
-            train_lora_group.append(celery_app.signature(task_train_lora_str, args=(person.id, base_img_keys, )))
+            train_lora_group.append(celery_app.signature(task_train_lora_str, args=(person.id, base_img_keys, 1), queue='train_queue'))
     logger.info(f'{user_id} has train_lora_group: {train_lora_group}')
 
     render_group = []
@@ -205,14 +205,13 @@ def start_sd_generate():
         )
         db.session.add(task)
         db.session.commit()
-        render_group.append(celery_app.signature(task_render_scene_str, args=(task.id, )))
+        render_group.append(celery_app.signature(task_render_scene_str, args=(task.id, ), queue='render_queue', imutable=True))
 
+    # pipeline = chord(train_lora_group)(group(render_group))
+    # pipeline.apply_async()
 
-    pipeline = chain(group(train_lora_group), group(render_group))
-    pipeline.apply_async()
-
-    # ch = chord(train_lora_group, body=group(render_group))
-    # ch.apply_async()
+    ch = chord(tuple(train_lora_group), group(render_group))
+    ch.apply_async()
 
     return jsonify({'code': 0, 'msg': f'启动{m}张照片的AI拍摄任务'})
 
