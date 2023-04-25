@@ -37,6 +37,7 @@
 
 import os
 import sys
+import shutil
 from core import conf
 from core import train_lora
 from core import set_up_scene
@@ -83,8 +84,9 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     img_train_path = dataset_path / "img_train"
     img_raw_path = dataset_path / "img_raw"
     for path in [img_train_path, img_raw_path]:
-        if not path.exists():
-            path.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            shutil.rmtree(path)
+        path.mkdir(parents=True, exist_ok=True)
     # enumerate train_img_list with index
     for i, img_url in enumerate(train_img_list):
         # download img using oss2

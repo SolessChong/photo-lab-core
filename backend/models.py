@@ -29,6 +29,11 @@ class Person(db.Model):
     user_id = db.Column(db.String(255), nullable=True)
     lora_train_status = db.Column(db.String(255), nullable=True)
 
+    def update_model_file(self, modek_file_key):
+        self.model_file_key = modek_file_key
+        self.lora_train_status = "finish"
+        db.session.commit()
+
 class GeneratedImage(db.Model):
     __tablename__ = 'generated_images'
     img_url = db.Column(db.String(2000), nullable=True)
