@@ -28,6 +28,7 @@ class Person(db.Model):
     sex = db.Column(db.String(255), nullable=True)
     user_id = db.Column(db.String(255), nullable=True)
     lora_train_status = db.Column(db.String(255), nullable=True)
+    head_img_key = db.Column(db.String(255), nullable=True)
 
     def update_model_file(self, modek_file_key):
         self.model_file_key = modek_file_key
@@ -52,6 +53,8 @@ class Pack(db.Model):
     description = db.Column(db.String(255), nullable=True)
     start_time = db.Column(db.DateTime, nullable=True)
     total_img_num = db.Column(db.Integer, nullable=True)
+    price = db.Column(db.Integer, nullable=True)
+    is_unlock = db.Column(db.Integer, nullable=True, default=0, comment='0代表上锁，1代表已经付费解锁')
 
 
 class Scene(db.Model):

@@ -12,7 +12,10 @@ from . import web_function
 from . import utils
 from . import models
 
-celery_app = Celery('myapp', broker='r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com', backend='r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com')
+celery_app = Celery('myapp',
+                    broker='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0',
+                    backend='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0')
+
 # Create the tasks as strings
 task_train_lora_str = 'train_lora'
 task_render_scene_str = 'render_scene'
@@ -33,9 +36,82 @@ def create_user():
     db.session.add(new_user)
     db.session.commit()
 
-    # Return the generated user_id as a JSON response
+    # Create the response object with the specified format
     response = {
-        'user_id': user_id
+        "code": 0,
+        "msg": "create user successfully",
+        "data": {
+            "user_id": user_id
+        }
+    }
+
+    # Return the response object as a JSON response
+    return jsonify(response)
+
+@app.route('/api/get_user', methods=['GET'])
+def get_user():
+    user_id = request.args.get('user_id')
+    if not user_id:
+        return jsonify({"error": "user_id is required"}), 400
+
+    persons = models.Person.query.filter_by(user_id=user_id).all()
+
+    result_persons = []
+
+    for person in persons:
+        if not person.head_img_key:
+            person_source = models.Source.query.filter(models.Source.person_id==person.id, models.Source.base_img_key != None).first()
+
+            if person_source:
+                image_data = utils.oss_get(person_source.base_img_key)
+
+                face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+                print(face_coordinates)
+                cropped_face = aliyun_face_detector.crop_face_pil(image_data, face_coordinates)
+
+                person.head_img_key = f'head_img/{user_id}.jpg'
+                utils.oss_put(person.head_img_key, cropped_face)
+
+                db.session.commit()
+
+        head_img_url = utils.get_signed_url(person.head_img_key)
+        result_persons.append({
+            "person_name": person.name,
+            "head_img_url": head_img_url,
+            "lora_train_status": person.lora_train_status,
+        })
+    
+    response = {
+        "data": {
+            "persons": result_persons
+        },
+        "msg": "get user successfully",
+        "code": 0
+    }
+
+    return jsonify(response), 200
+
+@app.route('/api/get_example_images', methods=['GET'])
+def get_example_images():
+    scenes = models.Scene.query.filter(models.Scene.action_type == 'example', models.Scene.base_img_key != None).all()
+    result = []
+
+    for scene in scenes:
+        img_url = utils.get_signed_url(scene.base_img_key)
+        img_height, img_width = utils.get_image_size(img_url)
+
+        result.append({
+            'img_url': img_url,
+            'img_height': img_height,
+            'img_width': img_width,
+            'style_name': scene.collection_name,
+            'id': scene.scene_id
+        })
+
+    response = {
+        'data': result,
+        'msg': '成功获取示例图片',
+        'code': 200
     }
     return jsonify(response)
 
@@ -46,17 +122,17 @@ def upload_source():
     img_file = request.files['img_file']
     png_img = utils.convert_to_png_bytes(img_file)
     if aliyun_face_detector.detect_face(png_img) != 1:
-        return {"success" : False,  "message": "Not only one face in the picture"}, 200
+        return {"msg": "上传失败，图片中没有人脸或有多个人脸", "code": 1, "data" : ''}, 200
 
     user_id = request.form['user_id']
     source_type = request.form.get('type', None)
     person_name = request.form['person_name']
 
     # 查找 persons 表中是否存在相应的记录
-    person = models.Persons.query.filter_by(user_id=user_id, name=person_name).first()
+    person = models.Person.query.filter_by(user_id=user_id, name=person_name).first()
     if not person:
         # 如果不存在，创建一个新的 Person 对象并将其保存到数据库中
-        new_person = models.Persons(name=person_name, user_id=user_id)
+        new_person = models.Person(name=person_name, user_id=user_id)
         db.session.add(new_person)
         db.session.commit()
         person_id = new_person.id
@@ -71,7 +147,7 @@ def upload_source():
     db.session.add(source)
     db.session.commit()
 
-    return {"success" : True, "message": f"upload source successfully"}, 200
+    return {"msg": "上传人像图片成功", "code": 0, "data" : ''}, 200
 
 @app.route('/api/start_sd_generate', methods=['POST'])
 def start_sd_generate():
@@ -82,6 +158,7 @@ def start_sd_generate():
     person_id_list = request.form['person_id_list']
     category = request.form['category']
 
+    #TODO: use new method to choose which scene to render
     # 1. Get all scenes with the same category
     scenes = models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type=='sd', models.Scene.hint_img_list != None).all()
 
@@ -95,23 +172,23 @@ def start_sd_generate():
     
     # 3. If there are new combinations, handle them based on lora_train_status
     if m == 0:
-        return jsonify({'success': False, 'message': 'No new tasks were created'})
+        return jsonify({'code': 1, 'msg': 'no new task to start'})
     
     persons = models.Person.query.filter(models.Person.id.in_(tuple(person_id_list))).all()
     train_lora_group = []
     for person in persons:
         if person.lora_train_status == 'pending':
-            return jsonify({'success': False, 'message': '请等待之前的AI拍摄任务完成再开始'})
+            return jsonify({'code': 2, 'msg': '请等待之前的AI拍摄任务完成再开始'})
 
         elif person.lora_train_status == 'failed':
-            return jsonify({'success': False, 'message': '数字人物训练失败，请选择其他数字人物或新创建数字人物'})
+            return jsonify({'code': 3, 'msg': '数字人物训练失败，请选择其他数字人物或新创建数字人物'})
 
         elif person.lora_train_status is None:
             person.lora_train_status = 'pending'
             db.session.commit()
             sources = models.Source.query.filter_by(person_id=person.id).all()
             base_img_keys = [source.base_img_key for source in sources]
-            train_lora_group.append(celery_app.signature(task_train_lora_str, args=(person.id, base_img_keys, )))
+            train_lora_group.append(celery_app.signature(task_train_lora_str, args=(person.id, base_img_keys, 1), queue='train_queue'))
     logger.info(f'{user_id} has train_lora_group: {train_lora_group}')
 
     render_group = []
@@ -128,18 +205,15 @@ def start_sd_generate():
         )
         db.session.add(task)
         db.session.commit()
-        render_group.append(celery_app.signature(task_render_scene_str, args=(task.id, )))
+        render_group.append(celery_app.signature(task_render_scene_str, args=(task.id, ), queue='render_queue', imutable=True))
 
+    # pipeline = chord(train_lora_group)(group(render_group))
+    # pipeline.apply_async()
 
-    pipeline = chain(group(train_lora_group), group(render_group))
+    ch = chord(tuple(train_lora_group), group(render_group))
+    ch.apply_async()
 
-
-    pipeline.apply_async()
-
-    # ch = chord(train_lora_group, body=group(render_group))
-    # ch.apply_async()
-
-    return jsonify({'success': True, 'message': f'{m} new tasks created for user {user_id}'})
+    return jsonify({'code': 0, 'msg': f'启动{m}张照片的AI拍摄任务'})
 
 
 # 获取某个用户的所有已经生成的图片，返回结果一个packs数组，
@@ -176,54 +250,6 @@ def get_generated_images():
 
     result = {"packs": list(pack_dict.values())}
     return jsonify(result), 200
-
-
-# 1）从数据库scenes表获得所有img_type与person_name对应type相同的scene
-# 2）假设得到了n个scene， 这n个scene分别与person_id进行一次组合，查看generated_images表里是否存在这个组合，每一个不存在表里的组合，则待生成图片+1。
-# 3）假设总共带生成图片为m个。如果m为0，则没有新需要生成的图片，返回false，message为”没有新生成图片“。如果m大于0，在packers表中插入一行，给定 user_id， description 值为"to add", total_img_num值为m， start_time为当前时间。 
-# 4）如果m大于0，调用一个异步函数，启动专门生成图片任务。
-@app.route('/api/start_generate', methods=['POST'])
-def start_generate():
-    user_id = request.form.get('user_id')
-    source_id = request.form.get('source_id')
-    img_type = request.form.get('type')
-
-    if not all([user_id, source_id, img_type]):
-        return jsonify({"error": "user_id, source_id and type are required"}), 400
-
-    # 1) Get all scenes with the specified type
-    scenes = models.Scene.query.filter_by(img_type=img_type).all()
-
-    # 2) Check if the combination of each scene with source_id exists in the generated_images table
-    new_combinations = []
-    for scene in scenes:
-        existing_image = models.GeneratedImage.query.filter_by(user_id=user_id, source_id=source_id, scene_id=scene.scene_id).first()
-        if not existing_image:
-            new_combinations.append(scene.scene_id)
-
-    m = len(new_combinations)
-    # 3) If m > 0, insert a new row in the packs table
-    if m > 0:
-        random.shuffle(new_combinations)
-        new_combinations = new_combinations[:min(20, len(new_combinations))]
-        new_pack = models.Pack(
-            user_id=user_id,
-            description="to add",
-            total_img_num=m,
-            start_time= datetime.datetime.now()
-        )
-        db.session.add(new_pack)
-        db.session.commit()
-
-        # 4) Call the async function to start the image generation task
-        celery_worker.generate_images_task.delay(source_id, new_combinations, new_pack.pack_id, user_id)
-
-        return jsonify({"success": True, "message": f"Started generating {len(new_combinations)} new images"}), 200
-    else:
-        return jsonify({"success": False, "message": "No new images to generate"}), 200
-
-# Remember to add your imports and other necessary code
-
 
 @app.route('/')
 def index():

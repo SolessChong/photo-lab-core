@@ -127,6 +127,7 @@ document.getElementById('upload-form').addEventListener('submit', async function
     // 获取所选文件
     const files = event.target.elements.img_file.files;
 
+    num = 0;
     // 逐个上传文件
     for (const file of files) {
         const currentFormData = new FormData();
@@ -145,11 +146,14 @@ document.getElementById('upload-form').addEventListener('submit', async function
             body: currentFormData
         });
 
+        // 获取upload-results元素并更新内容
+        const uploadResults = document.getElementById('upload-results');
         if (response.ok) {
-            alert('图片上传成功');
+            num++;
+            uploadResults.innerHTML = '图片上传成功: ' + num;
             // 如果有其他更新图片列表的函数，请在这里调用
         } else {
-            alert('图片上传失败');
+            uploadResults.innerHTML = '图片上传失败';
         }
     }
 });
