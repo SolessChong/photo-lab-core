@@ -24,6 +24,8 @@ celery --broker=redis://user:pass@39.108.222.9:6379 flower --port=5566
 celery -A core.celery_worker.celery events
 celery -A core.celery_worker.celery inspect reserved
 
+redis-cli -u redis://'default':'Yzkj8888!'@r-wz9d9mt4zsofl3s0pnpd.redis.rds.aliyuncs.com/0 llen train_queue
+
 # Chord for Train and Render:
 
 chord(

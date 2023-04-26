@@ -97,6 +97,7 @@ class Task(db.Model):
 
     def update_result_img_key(self, result_img_key):
         self.result_img_key = result_img_key
+        self.status = 'finish'
         db.session.commit()
 
     def get_person_id_list(self):
