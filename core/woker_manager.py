@@ -5,7 +5,16 @@ import json
 from backend import app, extensions, models
 from sqlalchemy.orm import sessionmaker
 
-from . import worker
+from core import worker
+
+# train status:             null -> wait -> processing -> finish
+# task render status:       null -> wait -> processing -> finish
+# scene setup status:       null -> wait -> processing -> finish 
+# 
+# Lifecycle:
+#   - null -> wait:         user interaction. from FE.
+#   - wait -> processing:   worker_manager. keep running.
+#   - processing -> finish: task specific handlers.
 
 def train(Session):
     session = Session()
@@ -15,7 +24,7 @@ def train(Session):
     try:
         person = session.query(models.Person).filter(models.Person.lora_train_status == 'wait').with_for_update().first()
         if person:
-            person.lora_train_status = 'training'
+            person.lora_train_status = 'processing'
         session.commit()
     except Exception as e:
         print(f"Error: {e}")
@@ -43,7 +52,7 @@ def render(Session):
                     break
             if flag:
                 todo_task_id_list.append(task.id)
-                task.status = 'rendering'
+                task.status = 'processing'
         session.commit()
     except Exception as e:
         print(f"Error: {e}")
@@ -54,7 +63,7 @@ def render(Session):
         logging.info(f"======= Task: render task: task_id={id}")
         worker.task_render_scene(id)
 
-def hint(Session):
+def setup_scene(Session):
     session = Session()
     session.begin()
 
@@ -63,7 +72,7 @@ def hint(Session):
         scenes = session.query(models.Scene).filter(models.Scene.hint_status == None).with_for_update().limit(30).all()
         for scene in scenes:
             scene_id_list.append(scene.id)
-            scene.hint_status = 'start hint'
+            scene.hint_status = 'processing'
         session.commit()
     except Exception as e:
         print(f"Error: {e}")
@@ -93,13 +102,13 @@ if __name__ == '__main__':
             time.sleep(10)
     elif argument == 'hint':
         while True:
-            hint(Session)
+            setup_scene(Session)
             time.sleep(10)
     elif argument == 'all':
         while True:
             train(Session)
             render(Session)
-            hint(Session)
+            setup_scene(Session)
             time.sleep(10)
     else:
         print("Usage: python script_name.py <arg>")
