@@ -31,11 +31,11 @@ for path in path_to_create:
         os.makedirs(os.path.join(PATH_CONF['ROOT'], path))
 
 MODEL_RESOURCES = {
-    'CM.ST': 'D:/sd/stable-diffusion-webui/models/Stable-diffusion/chilloutmix_NiPrunedFp16Fix.safetensors',
+    'CM.ST': '/home/chong/photolab/stable-diffusion-webui/models/Stable-diffusion/chilloutmix_NiPrunedFp16Fix.safetensors',
 }
 
 DATA_RESOURCES = {
-    'REG.WOMEN': 'D:/sd/data/regularization/Stable-Diffusion-Regularization-Images-color_photo_of_a_woman_ddim',
+    'REG.WOMEN': '/home/chong/photolab/data/Stable-Diffusion-Regularization-Images-color_photo_of_a_woman_ddim',
 }
 
 TRAIN_PARAMS = {

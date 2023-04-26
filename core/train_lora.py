@@ -38,9 +38,10 @@ def detect_subject_and_crop(dataset_path, size=512, remove_bg=True, enlarge=1.2)
     img_train_path = Path(dataset_path) / "img_train"
     img_list = os.listdir(img_raw_path)
 
-    # if folder "img_train" does not exist, create it
-    if not os.path.exists(img_train_path):
-        os.makedirs(img_train_path)
+    # clear folder if already exists
+    if os.path.exists(img_train_path):
+        shutil.rmtree(img_train_path)        
+    os.makedirs(img_train_path)
 
     # log the number of images
     logging.info(f"number of images: {len(img_list)}")
@@ -78,7 +79,7 @@ def captioning(img_path, remove_bg=True):
     os.chdir(conf.TRAIN_UTILS_ROOT)
 
     # Path to the Python executable inside the virtual environment
-    venv_python_executable = os.path.join(conf.TRAIN_UTILS_ROOT, "./venv/Scripts/python.exe")
+    venv_python_executable = os.path.join(conf.TRAIN_UTILS_ROOT, "venv/bin/python")
 
     # Path to the Python script you want to run
     #   join conf.TRAIN_UTILS_ROOT to the path
@@ -93,20 +94,18 @@ def captioning(img_path, remove_bg=True):
         "--min_length", "5",
         "--beam_search",
         "--caption_extension", ".txt",
-        img_path,
+        str(img_path),
         "--caption_weights", "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large_caption.pth"
     ]
 
     logging.info("captioning image: " + str(img_path))
     # Run the script using the Python executable from the virtual environment and pass the arguments
-    process = subprocess.Popen([venv_python_executable, script_to_run] + arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-    # Read the output line by line and print it in real-time
-    for line in process.stdout:
-        logging.info(line.strip())
-
-    # Wait for the process to finish
-    process.wait()
+    with open('my-stdout.txt', 'w') as fp: 
+        subprocess.run(
+            ' '.join([venv_python_executable, script_to_run] + arguments), 
+            stdout=fp, stderr=fp, 
+            shell=True, text=True, encoding='utf-8', 
+        )
 
     # Replace subject name
     # Get all files ending in ".txt"
@@ -133,14 +132,16 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
     # Change dir to train_utils
     os.chdir(conf.TRAIN_UTILS_ROOT)
 
-    # create a new folder for the model if it doesn't exist
-    if not os.path.exists(os.path.join(dataset_path, "model_lora")):
-        os.mkdir(os.path.join(dataset_path, "model_lora"))
+    model_path = os.path.join(dataset_path, "model_lora")
+    # rm dir if exists
+    if os.path.exists(model_path):
+        shutil.rmtree(model_path)
+    os.mkdir(model_path)
 
     # TODO: optimize this step. Too ugly
     # Copy dataset into folder naming format required by training script
     img_count = len([f for f in os.listdir(os.path.join(dataset_path, "img_train")) if f.endswith(".txt")])
-    repeats = math.ceil(2500 / img_count)
+    repeats = math.floor(2500 / img_count)
     logging.info(f"{img_count} images found. Repeating dataset {repeats} times.")
     # remove tree if exists
     if os.path.exists(Path(dataset_path) /  f"img_train_n"):
@@ -150,10 +151,10 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
         Path(dataset_path) / f"img_train_n/{repeats}_{conf.SUBJECT_PLACEHOLDER} {class_name}/"
     )
 
-    print(os.path.join(conf.TRAIN_UTILS_ROOT, "./venv/scripts/accelerate.exe"))
+    print(os.path.join(conf.TRAIN_UTILS_ROOT, "venv/bin/accelerate"))
 
     # 2500 images with repeat
-    cmd = f"""{os.path.join(conf.TRAIN_UTILS_ROOT, "./venv/scripts/accelerate.exe")} \
+    cmd = f"""{os.path.join(conf.TRAIN_UTILS_ROOT, "venv/bin/accelerate")} \
         launch \
         --num_cpu_threads_per_process=2 \
         "{Path(conf.TRAIN_UTILS_ROOT) / "train_network.py"}" --enable_bucket \
@@ -168,9 +169,11 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
         --text_encoder_lr=5e-5 --unet_lr=0.0001 --network_dim=256 \
         --output_name="{subject_name}" \
         --lr_scheduler_num_cycles="10" --learning_rate="0.001" --lr_scheduler="cosine" \
-        --lr_warmup_steps="300" --train_batch_size="18" \
+        --lr_warmup_steps="70" --train_batch_size="12" \
         --max_train_epochs="{epoch}" \
-        --save_every_n_epochs="1" --mixed_precision="fp16" --save_precision="fp16" --optimizer_type="AdamW" --max_data_loader_n_workers="0" --bucket_reso_steps=64 --xformers --bucket_no_upscale --random_crop \
+        --save_every_n_epochs="1" --mixed_precision="fp16" --save_precision="fp16" \
+        --optimizer_type="AdamW8bit" --max_data_loader_n_workers="0" --bucket_reso_steps=64 \
+        --xformers --bucket_no_upscale --random_crop \
         > {Path(dataset_path) / "train.log"} 2>&1
         """
         # --max_train_steps="2"

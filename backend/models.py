@@ -30,6 +30,11 @@ class Person(db.Model):
     lora_train_status = db.Column(db.String(255), nullable=True)
     head_img_key = db.Column(db.String(255), nullable=True)
 
+    def update_model_file(self, modek_file_key):
+        self.model_file_key = modek_file_key
+        self.lora_train_status = "finish"
+        db.session.commit()
+
 class GeneratedImage(db.Model):
     __tablename__ = 'generated_images'
     img_url = db.Column(db.String(2000), nullable=True)
@@ -92,6 +97,7 @@ class Task(db.Model):
 
     def update_result_img_key(self, result_img_key):
         self.result_img_key = result_img_key
+        self.status = 'finish'
         db.session.commit()
 
     def get_person_id_list(self):

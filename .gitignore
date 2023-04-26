@@ -24,7 +24,11 @@ Data/
 
 # Train models
 train/
+data/
 
 # env
 **/venv/**
 .python-version
+
+# Local
+fake*

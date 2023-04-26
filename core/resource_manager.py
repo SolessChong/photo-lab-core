@@ -64,7 +64,7 @@ class ResourceMgr:
     def get_resource_oss_url(resource_type, id):
         match resource_type:
             case ResourceType.LORA_MODEL:
-                return str('/models/lora/' + str(id) + '.safetensors')
+                return str('models/lora/' + str(id) + '.safetensors')
             case ResourceType.TRAIN_DATASET:
                 return str(PATH_CONF['TRAIN_DATASET'] + str(id) + '/')
             case ResourceType.POSE_IMG:
