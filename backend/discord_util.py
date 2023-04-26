@@ -1,5 +1,4 @@
 #strings
-
 DAVINCI_TOKEN = 'MTA5MTc2Mzg4NzQ1MzUwNzcwNA.GspQDe.qnWTlStz8jtf3Y9v-HtWRi6zCcfjAQ1gJHsxTE' #[Token of Discord bot]
 
 SERVER_ID = '1091783093465128980' # [Server id here]
@@ -40,3 +39,50 @@ def PassPromptToSelfBot(prompt : str):
 
     return requests.post("https://discord.com/api/v9/interactions", json = payload, headers = header)
 
+import time
+from datetime import datetime, timedelta
+from .models import db, GeneratedImage
+from . import utils
+from . import models
+# main.py
+
+# GeneratedImage status: init -> processing -> finish
+#                                           -> failed
+# 一个轮询程序，
+# 1） 从generated_image表中 读取当前所有status为processing的imgae， 如果运行时间超时（计算逻辑为当前时间减去create_time 超过3分钟），设为failed
+# 2） 如果当前总计processing的image数量小于2，再读取一个status为init的GenerateImage，并把status设为processing，同时调用PassPromptToSelfBot，以启动discord mj 生成图片
+# 3） 休息10秒
+def get_processing_images():
+    return GeneratedImage.query.filter(GeneratedImage.status == 'processing').all()
+
+def get_init_image():
+    return GeneratedImage.query.filter(GeneratedImage.status == 'init').first()
+
+def set_image_failed(image):
+    image.status = 'failed'
+    db.session.commit()
+
+def set_image_processing(image):
+    image.status = 'processing'
+    db.session.commit()
+
+
+def main():
+    while True:
+        processing_images = get_processing_images()
+
+        for image in processing_images:
+            if datetime.utcnow() - image.create_time > timedelta(minutes=3):
+                set_image_failed(image)
+
+        if len(processing_images) < 2:
+            init_image = get_init_image()
+            if init_image:
+                set_image_processing(init_image)
+                base_img_key = models.Source.query.filter(models.Source.source_id == init_image.source_id).first().base_img_key
+                PassPromptToSelfBot(utils.get_signed_url(base_img_key) + ' ' + init_image.prompt)
+
+        time.sleep(10)
+
+if __name__ == "__main__":
+    main()
