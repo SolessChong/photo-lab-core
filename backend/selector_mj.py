@@ -22,7 +22,7 @@ def generate_mj_task(person_id, category, pack_id, user_id):
     logger.info("start generate_mj_task")
 
     
-    sources = models.Source.query.filter_by(person_id=person_id).all()
+    sources = models.Source.query.filter(models.Source.person_id==person_id, models.Source.base_img_key != None).all()
     scenes = models.Scene.query.filter_by(img_type=category, action_type='mj').all()
 
     new_combinations = []
