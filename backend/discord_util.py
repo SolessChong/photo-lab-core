@@ -1,10 +1,8 @@
-#strings
-DAVINCI_TOKEN = 'MTA5MTc2Mzg4NzQ1MzUwNzcwNA.GspQDe.qnWTlStz8jtf3Y9v-HtWRi6zCcfjAQ1gJHsxTE' #[Token of Discord bot]
 
 SERVER_ID = '1091783093465128980' # [Server id here]
 
-SALAI_TOKEN = 'OTAyNDY5MzcyNTYyNTM0NDEw.GzQhLp.PCerC9nXcbBlMktavcTXRhDLtYO4H5mBKtNTOg' #[Token of the Account from which you paid MidJourney ]
-
+# SALAI_TOKEN = 'OTAyNDY5MzcyNTYyNTM0NDEw.GzQhLp.PCerC9nXcbBlMktavcTXRhDLtYO4H5mBKtNTOg' #[Token of the Michael bot]
+SALAI_TOKEN = 'MTA5MjIzNzkyMDExMjQ5MjU1NQ.GqefWm.Vy6dDDG8Ux0JHVSqDpg1YAY1xyeAu0cxNO_hNY'  #zihan Token
 CHANNEL_ID = '1091783093465128983' #[Channel in which commands are sent]
 
 #boolean
@@ -16,9 +14,11 @@ targetID       = ""
 targetHash     = ""
 
 
+import logging
 import requests
 
 def PassPromptToSelfBot(prompt : str):
+    logging.info('start to send prompt to discord: ' + prompt)
     payload ={"type":2,"application_id":"936929561302675456","guild_id":SERVER_ID,
               "channel_id":CHANNEL_ID,"session_id":"2fb980f65e5c9a77c96ca01f2c242cf6",
               "data":{"version":"1077969938624553050","id":"938956540159881230","name":"imagine","type":1,"options":[{"type":3,"name":"prompt","value":prompt}],
@@ -44,6 +44,7 @@ from datetime import datetime, timedelta
 from .models import db, GeneratedImage
 from . import utils
 from . import models
+from .extensions import app
 # main.py
 
 # GeneratedImage status: init -> processing -> finish
@@ -64,10 +65,13 @@ def set_image_failed(image):
 
 def set_image_processing(image):
     image.status = 'processing'
+    image.create_time = datetime.utcnow()
     db.session.commit()
 
 
 def main():
+    app.app_context().push()
+
     while True:
         processing_images = get_processing_images()
 
