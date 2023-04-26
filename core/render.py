@@ -106,7 +106,7 @@ def run_lora_on_base_img(task) -> Image:
     
     for i in range(len(mask_list)):
         # prepare prompt with Lora
-        prompt_with_lora = prompt + f",<lora:{lora_list[i]}:1>, (photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
+        prompt_with_lora = prompt + f",<lora:{lora_list[i]}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
         logging.info(f"prompt_with_lora: {prompt_with_lora}")
         # replace person with subject name using regex
         pattern = r'\b(?:a woman|a man|a girl|a boy)\b'
@@ -161,6 +161,9 @@ def run_lora_on_base_img(task) -> Image:
             blended_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_blended_img_{i}"))
 
         char_controlnet_units = [webuiapi.ControlNetUnit(input_image=char_pose_img, model="control_sd15_openpose [fef5e48e]", resize_mode="Inner Fit (Scale to Fit)", guidance=0.9, guidance_end=0.7)]
+        # log params
+        logging.info(f"prompt_with_lora: {prompt_with_lora}, i2i_args: {i2i_args}")
+
         char_lora_img = api.img2img(
             prompt=prompt_with_lora, 
             images=[char_base_img],

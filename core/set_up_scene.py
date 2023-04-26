@@ -27,7 +27,7 @@ body_estimate = Body()
 
 def prepare_scene(scene_id):
     # download base_img
-    base_img_url = ResourceMgr.get_resource_oss_url( ResourceType.BASE_IMG, scene_id)
+    base_img_url = models.Scene.query.get(scene_id).base_img_key
     if base_img_url is None:
         return False
     # # raise if base doesn't exist

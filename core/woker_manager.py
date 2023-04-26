@@ -2,7 +2,8 @@ import sys
 import time
 import logging
 import json
-from backend import app, extensions, models
+from backend import extensions, models
+from backend.extensions import app
 from sqlalchemy.orm import sessionmaker
 
 from core import worker
@@ -21,20 +22,22 @@ def train(Session):
     session.begin()
 
     person = None
+    person_id = None
     try:
         person = session.query(models.Person).filter(models.Person.lora_train_status == 'wait').with_for_update().first()
         if person:
             person.lora_train_status = 'processing'
+            person_id = person.id
         session.commit()
     except Exception as e:
         print(f"Error: {e}")
     finally:
         session.close()
 
-    if person:
-        logging.info(f"======= Task: training LORA model: person_id={person.id}")
-        sources = models.Source.query.filter(models.Source.person_id == person.id, models.Source.base_img_key != None).all()
-        worker.task_train_lora(person.id, [source.base_img_key for source in sources])
+    if person_id:
+        logging.info(f"======= Task: training LORA model: person_id={person_id}")
+        sources = models.Source.query.filter(models.Source.person_id == person_id, models.Source.base_img_key != None).all()
+        worker.task_train_lora(person_id, [source.base_img_key for source in sources], epoch=10)
 
 def render(Session):
     session = Session()
@@ -69,10 +72,10 @@ def setup_scene(Session):
 
     scene_id_list = []
     try:
-        scenes = session.query(models.Scene).filter(models.Scene.hint_status == None).with_for_update().limit(30).all()
+        scenes = session.query(models.Scene).filter(models.Scene.hint_img_list == None, models.Scene.action_type == "sd").with_for_update().limit(30).all()
         for scene in scenes:
-            scene_id_list.append(scene.id)
-            scene.hint_status = 'processing'
+            scene_id_list.append(scene.scene_id)
+            scene.hint_img_list = 'processing'
         session.commit()
     except Exception as e:
         print(f"Error: {e}")
@@ -80,7 +83,7 @@ def setup_scene(Session):
         session.close()
 
     for id in scene_id_list:
-        worker.set_up_scene(id)
+        worker.set_up_scene.prepare_scene(id)
 
 # main script
 if __name__ == '__main__':
@@ -100,7 +103,7 @@ if __name__ == '__main__':
         while True:
             render(Session)
             time.sleep(10)
-    elif argument == 'hint':
+    elif argument == 'set_up':
         while True:
             setup_scene(Session)
             time.sleep(10)

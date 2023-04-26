@@ -256,7 +256,7 @@ LORA_INPAINT_PARAMS = {
     "width": conf.RENDERING_SETTINGS['size'][0],
     "height": conf.RENDERING_SETTINGS['size'][1],
     "cfg_scale": 7,
-    "steps": 50,
+    "steps": 100,
     "denoising_strength": 0.25
 }
 
