@@ -42,7 +42,7 @@ from core import conf
 from core import train_lora
 from core import set_up_scene
 from core import render
-from core.resource_manager import ResourceMgr, ResourceType, bucket, str2oss, oss2buf, write_PILimage
+from core.resource_manager import ResourceMgr, ResourceType, bucket, str2oss, oss2buf, write_PILimg
 from pathlib import Path
 from backend import models
 from core import templates
@@ -158,11 +158,11 @@ def task_render_scene(task_id):
     rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
     task.update_result_img_key(rst_img_key)
     
-    write_PILimage(rst_img, task.result_img_key)
+    write_PILimg(rst_img, task.result_img_key)
     logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
     return 0
 
-@celery.task(name="set_up_scene")
+@celery.task(name="set_up_scene", queue="render_queue")
 def task_set_up_scene(scene_id):
     set_up_scene.prepare_scene(scene_id)
 
