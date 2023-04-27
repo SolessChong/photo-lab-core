@@ -84,6 +84,11 @@ class Scene(db.Model):
             self.hint_img_list[0] = pose_img_url
         db.session.commit()
 
+    def get_pose_img(self):
+        if self.hint_img_list is None:
+            return None
+        return self.hint_img_list[0]
+
 class Task(db.Model):
     __tablename__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
