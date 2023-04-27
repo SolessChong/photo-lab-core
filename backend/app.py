@@ -11,6 +11,7 @@ from . import aliyun_face_detector
 from . import web_function
 from . import utils
 from . import models
+from . import selector_mj
 
 celery_app = Celery('myapp',
                     broker='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0',
@@ -147,7 +148,18 @@ def upload_source():
     db.session.add(source)
     db.session.commit()
 
-    return {"msg": "上传人像图片成功", "code": 0, "data" : ''}, 200
+    count = models.Source.query.filter(models.Source.person_id == person_id).count()
+
+    response = {
+        "msg": "上传人像图片成功", 
+        "code": 0, 
+        "data": {
+            "person_id": person_id,
+            "person_name": person_name,
+            "source_num": count
+        }
+    }
+    return jsonify(response)
 
 @app.route('/api/start_sd_generate', methods=['POST'])
 def start_sd_generate():
@@ -170,28 +182,15 @@ def start_sd_generate():
     m = len(new_combinations)
     logger.info(f'{user_id} has new_combinations: {new_combinations}')
     
-    # 3. If there are new combinations, handle them based on lora_train_status
-    if m == 0:
-        return jsonify({'code': 1, 'msg': 'no new task to start'})
-    
+    # 3. start train lora 
     persons = models.Person.query.filter(models.Person.id.in_(tuple(person_id_list))).all()
-    train_lora_group = []
+    
     for person in persons:
-        if person.lora_train_status == 'pending':
-            return jsonify({'code': 2, 'msg': '请等待之前的AI拍摄任务完成再开始'})
-
-        elif person.lora_train_status == 'failed':
-            return jsonify({'code': 3, 'msg': '数字人物训练失败，请选择其他数字人物或新创建数字人物'})
-
-        elif person.lora_train_status is None:
-            person.lora_train_status = 'pending'
+        if person.lora_train_status is None:
+            person.lora_train_status = 'wait' # 等待woker_manager启动训练任务
             db.session.commit()
-            sources = models.Source.query.filter_by(person_id=person.id).all()
-            base_img_keys = [source.base_img_key for source in sources]
-            train_lora_group.append(celery_app.signature(task_train_lora_str, args=(person.id, base_img_keys, 1), queue='train_queue'))
-    logger.info(f'{user_id} has train_lora_group: {train_lora_group}')
+            logger.info(f'{user_id} start to  train lora {person.id}')
 
-    render_group = []
     pack = models.Pack(user_id=user_id, total_img_num=m, start_time= datetime.datetime.now())
     db.session.add(pack)
     db.session.commit()
@@ -200,20 +199,28 @@ def start_sd_generate():
             user_id=user_id,
             scene_id=scene_id,
             person_id_list=person_id_list,
-            status='pending',
+            status='wait',
             pack_id=pack.pack_id
         )
         db.session.add(task)
         db.session.commit()
-        render_group.append(celery_app.signature(task_render_scene_str, args=(task.id, ), queue='render_queue', imutable=True))
+        
+    # --------------------------- 以上是SD 生成任务 -------------------------------
 
-    # pipeline = chord(train_lora_group)(group(render_group))
-    # pipeline.apply_async()
+    # --------------------------- 以下是启动mj的任务 ------------------------------
+    m += selector_mj.generate_mj_task(person_id=person_id_list[0], category = category, pack_id=pack.pack_id, user_id=user_id)
 
-    ch = chord(tuple(train_lora_group), group(render_group))
-    ch.apply_async()
-
-    return jsonify({'code': 0, 'msg': f'启动{m}张照片的AI拍摄任务'})
+    # --------------------------- 以下是返回结果 ----------------------------------
+    response = {
+        'code': 0, 
+        'msg': f'启动{m}张照片的AI拍摄任务',
+        'data': {
+            "total_time_seconds":3600,
+            "img_num": m,
+            "des": f"AI拍摄完成后，您将获得{m}张照片"
+        }
+    }
+    return jsonify(response)
 
 
 # 获取某个用户的所有已经生成的图片，返回结果一个packs数组，

@@ -1,14 +1,13 @@
 import sys
 import os
 import json
+from datetime import datetime
 from .extensions import db
 
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(255), nullable=False)
-    pack_num = db.Column(db.Integer, nullable=True)
-    source_num = db.Column(db.Integer, nullable=True)
 
 class Source(db.Model):
     __tablename__ = 'source'
@@ -45,6 +44,9 @@ class GeneratedImage(db.Model):
     prompt = db.Column(db.Text, nullable=True)
     source_id = db.Column(db.Integer, nullable=True)
     scene_id = db.Column(db.Integer, nullable=True)
+    img_oss_key = db.Column(db.String(255), nullable=True)
+    status = db.Column(db.String(255), nullable=True)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
 class Pack(db.Model):
     __tablename__ = 'packs'
