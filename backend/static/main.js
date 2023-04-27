@@ -25,6 +25,17 @@ async function getScenes() {
             const sceneDetails = document.createElement('div');
             sceneDetails.className = 'scene-details';
 
+            const sceneIdLabel = document.createElement('span');
+            sceneIdLabel.className = 'label';
+            sceneIdLabel.innerText = 'Action Type:   ';
+            sceneDetails.appendChild(sceneIdLabel);
+
+            const sceneId = document.createElement('span');
+            sceneId.className = 'editable';
+            sceneId.contentEditable = 'true';
+            sceneId.innerText = scene.sceneId;
+            sceneDetails.appendChild();
+
             const actionTypeLabel = document.createElement('span');
             actionTypeLabel.className = 'label';
             actionTypeLabel.innerText = 'Action Type:   ';
