@@ -1,8 +1,8 @@
 ######################
 # data structure
-######################
 # 
 # 1. Scene
+######################
 #  - id
 #  - name
 #  - base_img_key
@@ -34,8 +34,8 @@
 #  - result_img_key
 #  - debug_img[1..10]
 #
-
 import os
+
 from core import conf
 from core import train_lora
 from core import set_up_scene
@@ -46,7 +46,7 @@ from backend import models
 from core import templates
 import json
 import logging
-from backend.extensions import app
+from backend.extensions import app, db
 
 
 
@@ -124,7 +124,7 @@ def task_render_scene(task_id):
         'task_id': task.id,
         'scene_id': task.scene_id,
         'lora_list': ['user_' + str(person.id) for person in person_list],
-        'prompt': scene.prompt,
+        'prompt': '' if scene.prompt is None else scene.prompt,
         'params': lora_inpaint_params
     }
     logging.info(f"    ----\n    task_dict: {task_dict}\n  ----")
@@ -138,4 +138,7 @@ def task_render_scene(task_id):
     return 0
 
 def task_set_up_scene(scene_id):
+    logging.info('real set up scne')
     set_up_scene.prepare_scene(scene_id)
+    scene = models.Scene.query.get(scene_id)
+    scene.update_setup_status('finish')

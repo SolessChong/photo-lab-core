@@ -92,6 +92,11 @@ class Scene(db.Model):
         if self.hint_img_list is None:
             return None
         return self.hint_img_list[0]
+    
+    def update_setup_status(self, setup_status):
+        self.setup_status = setup_status
+        db.session.commit()
+    
 
 class Task(db.Model):
     __tablename__ = 'tasks'
@@ -113,4 +118,5 @@ class Task(db.Model):
         if self.person_id_list is None:
             return []
         return json.loads(self.person_id_list)
+
     

@@ -170,6 +170,8 @@ def task_render_scene(task_id):
 def task_set_up_scene(scene_id):
     logging.info(f"======= Task: set up scene: scene_id={scene_id}")
     set_up_scene.prepare_scene(scene_id)
+    scene = models.Scene.query.get(scene_id)
+    scene.update_setup_status('finish')
     logging.info(f"--- Set up scene success. scene_id={scene_id}")
     db.session.close()
     return 0
