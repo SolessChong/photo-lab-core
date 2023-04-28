@@ -98,7 +98,7 @@ def run_lora_on_base_img(task) -> Image:
 
     image = base_img.copy()
     # detect face and draw mask
-    mask_list = face_mask.get_face_mask(base_img, expand_face=1.5)
+    mask_list = face_mask.get_face_mask(base_img, expand_face=2)
     if len(mask_list) != len(lora_list):
         raise Exception("Lora and Face mask count mismatch!")
     # detect human and crop img
@@ -133,7 +133,7 @@ def run_lora_on_base_img(task) -> Image:
 
         upper_body_coords.append((forehead_x, forehead_y))
 
-        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2)
+        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=3)
         ######## save char_base_img
         if conf.DEBUG:
             char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}")
