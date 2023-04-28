@@ -3,7 +3,7 @@ import time
 import logging
 import json
 from backend import extensions, models
-from backend.extensions import app
+from backend.extensions import app, db
 from sqlalchemy.orm import sessionmaker
 import sys
 import argparse
@@ -11,9 +11,9 @@ import multiprocessing as mp
 
 from core import worker
 
-# train status:             null -> wait -> processing -> finish
-# task render status:       null -> wait -> processing -> finish
-# scene setup status:       null -> wait -> processing -> finish 
+# train status:             null -> wait -> processing -> finish ( -> fail )
+# task render status:       null -> wait -> processing -> finish ( -> fail )
+# scene setup status:       null -> wait -> processing -> finish ( -> fail )
 # 
 # Lifecycle:
 #   - null -> wait:         user interaction. from FE.
@@ -52,7 +52,7 @@ def render(Session):
         logging.info(f"======= Task: render task: waiting tasks number: {len(tasks)}, tasks: {tasks}")
         for task in tasks:
             flag = True
-            for person_id in json.loads(task.person_id_list):
+            for person_id in task.person_id_list:
                 person = session.query(models.Person).filter(models.Person.id == person_id).first()
                 logging.info(f"    ---- Task: render task: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
                 if person.lora_train_status != 'finish':
@@ -72,7 +72,16 @@ def render(Session):
 
     for id in todo_task_id_list:
         logging.info(f"     ------ Task: render task: task_id={id}")
-        worker.task_render_scene(id)
+        try:
+            worker.task_render_scene(id)
+        except Exception as e:
+            print(f"Error: {e}")
+            task = models.Task.query.get(id)
+            task.status = 'fail'
+            db.session.add(task)
+            db.session.commit()
+            db.session.close()
+            
 
 def setup_scene(Session):
     session = Session()
