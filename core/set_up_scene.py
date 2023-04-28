@@ -62,6 +62,8 @@ def prepare_scene(scene_id):
         scene.update_pose_img(pose_img_url)
 
         logging.info(f"Pose map generated and saved to {pose_img_url}.")
+    else:
+        logging.info(f"Pose map already exists, skip generating.")
 
     return True
 
