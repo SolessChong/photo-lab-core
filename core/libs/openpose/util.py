@@ -37,7 +37,7 @@ def transfer(model, model_weights):
 
 # draw the body keypoint and lims
 def draw_bodypose(canvas, candidate, subset):
-    stickwidth = 4
+    stickwidth = 10
     limbSeq = [[2, 3], [2, 6], [3, 4], [4, 5], [6, 7], [7, 8], [2, 9], [9, 10], \
                [10, 11], [2, 12], [12, 13], [13, 14], [2, 1], [1, 15], [15, 17], \
                [1, 16], [16, 18], [3, 17], [6, 18]]
@@ -51,7 +51,7 @@ def draw_bodypose(canvas, candidate, subset):
             if index == -1:
                 continue
             x, y = candidate[index][0:2]
-            cv2.circle(canvas, (int(x), int(y)), 4, colors[i], thickness=-1)
+            cv2.circle(canvas, (int(x), int(y)), stickwidth, colors[i], thickness=-1)
             # print index on each point
             # cv2.putText(canvas, str(i), (int(x+3), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv2.LINE_AA)
     for i in range(17):

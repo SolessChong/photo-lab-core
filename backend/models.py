@@ -1,14 +1,13 @@
 import sys
 import os
 import json
+from datetime import datetime
 from .extensions import db
 
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(255), nullable=False)
-    pack_num = db.Column(db.Integer, nullable=True)
-    source_num = db.Column(db.Integer, nullable=True)
 
 class Source(db.Model):
     __tablename__ = 'source'
@@ -45,6 +44,9 @@ class GeneratedImage(db.Model):
     prompt = db.Column(db.Text, nullable=True)
     source_id = db.Column(db.Integer, nullable=True)
     scene_id = db.Column(db.Integer, nullable=True)
+    img_oss_key = db.Column(db.String(255), nullable=True)
+    status = db.Column(db.String(255), nullable=True)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
 class Pack(db.Model):
     __tablename__ = 'packs'
@@ -70,6 +72,7 @@ class Scene(db.Model):
     name = db.Column(db.String(255), nullable=True)
     base_img_key = db.Column(db.String(2550), nullable=True)
     hint_img_list = db.Column(db.JSON, nullable=True)
+    setup_status = db.Column(db.String(255), nullable=True)
     roi_list = db.Column(db.JSON, nullable=True)
     model_name = db.Column(db.String(2550), nullable=True)
     negative_prompt = db.Column(db.Text, nullable=True)
@@ -83,6 +86,16 @@ class Scene(db.Model):
         else:
             self.hint_img_list[0] = pose_img_url
         db.session.commit()
+
+    def get_pose_img(self):
+        if self.hint_img_list is None:
+            return None
+        return self.hint_img_list[0]
+    
+    def update_setup_status(self, setup_status):
+        self.setup_status = setup_status
+        db.session.commit()
+    
 
 class Task(db.Model):
     __tablename__ = 'tasks'
@@ -104,4 +117,5 @@ class Task(db.Model):
         if self.person_id_list is None:
             return []
         return json.loads(self.person_id_list)
+
     

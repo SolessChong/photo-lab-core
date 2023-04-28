@@ -17,10 +17,10 @@ Linux:
 `celery -A core.celery_worker.celery worker -l INFO`
 
 For queues
-`celery -A core.celery_worker.celery worker -l INFO -P solo -n train_worker -Q train_queue`
-`celery -A core.celery_worker.celery worker -l INFO -P solo -n render_worker -Q render_queue`
+`celery -A core.celery_worker.celery worker -l INFO -P eventlet -n train_worker -Q train_queue`
+`celery -A core.celery_worker.celery worker -l INFO -P eventlet -n render_worker -Q render_queue`
 1. Monitoring
-celery --broker=redis://user:pass@39.108.222.9:6379 flower --port=5566
+celery --broker=redis://:'Yzkj8888!'@r-wz9d9mt4zsofl3s0pnpd.redis.rds.aliyuncs.com/0 flower --port=5566
 celery -A core.celery_worker.celery events
 celery -A core.celery_worker.celery inspect reserved
 
