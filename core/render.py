@@ -21,7 +21,10 @@ from core.libs.openpose.util import draw_bodypose
 from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg
 
 # create API client with custom host, port
+options = {}
+options['sd_model_checkpoint'] = 'chilloutmix_NiPrunedFp16Fix.safetensors [59ffe2243a]'
 api = webuiapi.WebUIApi(host='127.0.0.1', port=7890)
+api.set_options(options)
 
 body_estimate = Body()
 
@@ -95,7 +98,7 @@ def run_lora_on_base_img(task) -> Image:
 
     image = base_img.copy()
     # detect face and draw mask
-    mask_list = face_mask.get_face_mask(base_img, expand_face=1.0)
+    mask_list = face_mask.get_face_mask(base_img, expand_face=1.5)
     if len(mask_list) != len(lora_list):
         raise Exception("Lora and Face mask count mismatch!")
     # detect human and crop img
@@ -106,7 +109,7 @@ def run_lora_on_base_img(task) -> Image:
     
     for i in range(len(mask_list)):
         # prepare prompt with Lora
-        prompt_with_lora = prompt + f",<lora:{lora_list[i]}:1>, (photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
+        prompt_with_lora = prompt + f",<lora:{lora_list[i]}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
         logging.info(f"prompt_with_lora: {prompt_with_lora}")
         # replace person with subject name using regex
         pattern = r'\b(?:a woman|a man|a girl|a boy)\b'
@@ -130,7 +133,7 @@ def run_lora_on_base_img(task) -> Image:
 
         upper_body_coords.append((forehead_x, forehead_y))
 
-        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2)
+        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=3)
         ######## save char_base_img
         if conf.DEBUG:
             char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}")
@@ -161,6 +164,9 @@ def run_lora_on_base_img(task) -> Image:
             blended_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_blended_img_{i}"))
 
         char_controlnet_units = [webuiapi.ControlNetUnit(input_image=char_pose_img, model="control_sd15_openpose [fef5e48e]", resize_mode="Inner Fit (Scale to Fit)", guidance=0.9, guidance_end=0.7)]
+        # log params
+        logging.info(f"prompt_with_lora: {prompt_with_lora}, i2i_args: {i2i_args}")
+
         char_lora_img = api.img2img(
             prompt=prompt_with_lora, 
             images=[char_base_img],

@@ -42,13 +42,14 @@ from core import conf
 from core import train_lora
 from core import set_up_scene
 from core import render
-from core.resource_manager import ResourceMgr, ResourceType, bucket, str2oss, oss2buf, write_PILimage
+from core.resource_manager import ResourceMgr, ResourceType, bucket, str2oss, oss2buf, write_PILimg
 from pathlib import Path
 from backend import models
 from core import templates
 import json
 import logging
 from backend.extensions import app, migrate, db
+from backend.config import CELERY_CONFIG
 
 import secrets
 from celery import Celery
@@ -67,7 +68,7 @@ def make_celery(app):
     return celery
 
 app.config.update(
-    **conf.CELERY_CONFIG
+    **CELERY_CONFIG
 )
 celery = make_celery(app)
 
@@ -109,6 +110,8 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     person = models.Person.query.get(person_id)
     # model file local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
     model_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person_id)
+
+    db.session.close()
     if not os.path.exists(model_path):
         logging.error(f"  --- LORA model {person_id} not found")
         return -1
@@ -149,7 +152,7 @@ def task_render_scene(task_id):
         'task_id': task.id,
         'scene_id': task.scene_id,
         'lora_list': ['user_' + str(person.id) for person in person_list],
-        'prompt': scene.prompt,
+        'prompt': '' if scene.prompt is None else scene.prompt,
         'params': lora_inpaint_params
     }
     logging.info(f"    ----\n    task_dict: {task_dict}\n  ----")
@@ -158,13 +161,18 @@ def task_render_scene(task_id):
     rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
     task.update_result_img_key(rst_img_key)
     
-    write_PILimage(rst_img, task.result_img_key)
-    logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
+    write_PILimg(rst_img, task.result_img_key)
+    logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
+    db.session.close()
     return 0
 
-@celery.task(name="set_up_scene")
+@celery.task(name="set_up_scene", queue="render_queue")
 def task_set_up_scene(scene_id):
+    logging.info(f"======= Task: set up scene: scene_id={scene_id}")
     set_up_scene.prepare_scene(scene_id)
+    logging.info(f"--- Set up scene success. scene_id={scene_id}")
+    db.session.close()
+    return 0
 
 
 @celery.task(name="hello")

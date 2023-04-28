@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- baguetteBox.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
+
+
+    <style>
+  .task-img {
+    width: 100%;
+    height: auto;
+  }
+  .task-panel {
+    width: calc(50% - 4px);
+    display: inline-block;
+    margin: 2px;
+  }
+        
+    </style>
+
+    <!-- Add the following Bootstrap CSS and JavaScript links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles_fake.css">
+</head>
+<body>
+<!-- baguetteBox.js JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="createPerson-tab" data-bs-toggle="tab" data-bs-target="#createPerson" type="button" role="tab" aria-controls="createPerson" aria-selected="true">Create Person</button>
+        </li>
+        <li class="nav-item" role="presentation">
+        <button class="nav-link" id="scenes-tab" data-bs-toggle="tab" data-bs-target="#scenes" type="button" role="tab" aria-controls="scenes" aria-selected="false">Scenes</button>
+        </li>
+        <li class="nav-item" role="presentation">
+        <button class="nav-link" id="taskViewer-tab" data-bs-toggle="tab" data-bs-target="#taskViewer" type="button" role="tab" aria-controls="taskViewer" aria-selected="false">Task Viewer</button>
+        </li>
+        <button class="nav-link" id="taskViewer-tab" data-bs-toggle="tab" data-bs-target="#createTask" type="button" role="tab" aria-controls="taskViewer" aria-selected="false">Create Task</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="mainTabsContent">
+        <div class="tab-pane fade show active" id="createPerson" role="tabpanel" aria-labelledby="createPerson-tab">
+        <!-- Create Person content -->
+        </div>
+        <div class="tab-pane fade" id="scenes" role="tabpanel" aria-labelledby="scenes-tab">
+        <!-- Scenes content -->
+        </div>
+        <div class="tab-pane fade" id="taskViewer" role="tabpanel" aria-labelledby="taskViewer-tab">
+            <!-- Task Viewer content -->
+            <div class="row" id="task-container">
+                <div id="task-viewer"></div>
+            </div>
+            <button id="load-more-btn" class="btn btn-primary">Load More</button>
+        </div>
+        <div class="tab-pane fade" id="createTask" role="tabpanel" aria-labelledby="createTask-tab">
+            <!-- Create Task content -->
+            <div class="row" id="create-task-container">
+                <select id="collection-select">
+                    <!-- Collections options will be populated here -->
+                </select>
+                <select id="person-select">
+                    <!-- Persons options will be populated here -->
+                </select>
+                
+            </div>
+            <button id="generate-tasks">Generate Tasks</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+
+        function addTaskPanel(task) {
+            const taskViewer = document.getElementById('task-viewer');
+            const panel = document.createElement('div');
+            panel.className = 'card task-panel';
+            
+            const img = document.createElement('img');
+            img.src = 'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/' + task.result_img_key;
+            img.classList.add('card-img-top', 'task-img');
+
+            // Add the baguetteBox functionality
+            const lightboxLink = document.createElement('a');
+            lightboxLink.href = img.src;
+            lightboxLink.className = 'task-lightbox';
+            lightboxLink.appendChild(img);
+            panel.appendChild(lightboxLink);
+
+            const info = document.createElement('div');
+            info.className = 'card-body';
+            info.innerHTML = '<h5 class="card-title">Task ID: ' + task.id + 
+                '</h5><p class="card-text">Person IDs: ' + task.person_id_list.join(', ') + 
+                '</p>' + '<p class="card-text">Scene ID: ' + task.scene_id + '</p>';
+            panel.appendChild(info);
+
+            taskViewer.appendChild(panel);
+        }
+
+
+
+        function loadTasks(page) {
+            fetch(`/get_tasks?page=${page}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const tasks = data.tasks;
+                totalPages = data.total_pages;
+
+                tasks.forEach(addTaskPanel);
+
+                if (currentPage === totalPages) {
+                    const loadMoreBtn = document.getElementById('load-more-btn');
+                    loadMoreBtn.disabled = true;
+                    loadMoreBtn.textContent = 'No More Tasks';
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching tasks:', error);
+            });
+        }
+
+        // Initialize the baguetteBox library
+        baguetteBox.run('.task-viewer', {
+            captions: function(element) {
+                return 'Task ID: ' + element.parentNode.parentNode.querySelector('.card-title').textContent.replace('Task ID: ', '');
+            }
+        });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasks(currentPage);
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            loadMoreBtn.addEventListener('click', () => {
+                currentPage += 1;
+                loadTasks(currentPage);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasks(currentPage);
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            loadMoreBtn.addEventListener('click', () => {
+                currentPage += 1;
+                loadTasks(currentPage);
+            });
+        });
+
+
+        // Populate collection and person dropdowns
+    function loadCollectionsAndPersons() {
+        fetch('/get_collections')
+            .then(response => response.json())
+            .then(collections => {
+                const select = document.getElementById('collection-select');
+                collections.forEach(collection => {
+                    const option = document.createElement('option');
+                    option.value = collection;
+                    option.textContent = collection;
+                    select.appendChild(option);
+                });
+            });
+
+        fetch('/get_persons')
+            .then(response => response.json())
+            .then(persons => {
+                const select = document.getElementById('person-select');
+                persons.forEach(person => {
+                    const option = document.createElement('option');
+                    option.value = person.id;
+                    option.textContent = person.name;
+                    select.appendChild(option);
+                });
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadCollectionsAndPersons);
+
+    // Generate tasks
+    document.getElementById('generate-tasks').addEventListener('click', function () {
+        const collectionName = document.getElementById('collection-select').value;
+        const personId = document.getElementById('person-select').value;
+        fetch('/generate_tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ collection_name: collectionName, person_id: personId })
+        });
+    });
+</script>
+</body>
+</html>
+

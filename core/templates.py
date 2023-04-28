@@ -257,7 +257,7 @@ LORA_INPAINT_PARAMS = {
     "height": conf.RENDERING_SETTINGS['size'][1],
     "cfg_scale": 7,
     "steps": 50,
-    "denoising_strength": 0.25
+    "denoising_strength": 0.4
 }
 
 PROMPT_PHOTO = ",(8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1.37),professional lighting, photon mapping, radiosity, physically-based rendering,"

@@ -100,18 +100,36 @@ def oss2str(url):
     return bucket.get_object(url).read()
 
 def read_cv2img(url):
-    buf = oss2buf(url)
-    img = cv2.imdecode(np.frombuffer(buf.read(), np.uint8), cv2.IMREAD_COLOR)
+    # buf = oss2buf(url)
+    # img = cv2.imdecode(np.frombuffer(buf.read(), np.uint8), cv2.IMREAD_COLOR)
+    img = read_PILimg(url)
+    img = pil_to_cv2(img)
     return img
+
+def write_cv2img(img, url):
+    img = cv2_to_pil(img)
+    write_PILimg(img, url)
+    return True
 
 def read_PILimg(url):
     buf = oss2buf(url)
     img = Image.open(buf).convert('RGB')
     return img
 
-def write_PILimage(img, url):
+def write_PILimg(img, url):
     # img_bytes = io.BytesIO()
     # image.save(img_bytes)
     buf = io.BytesIO()
     img.save(buf, format='PNG')
     str2oss(buf.getvalue(), url)
+    return True
+
+
+def cv2_to_pil(img: np.ndarray) -> Image:
+    # return Image.fromarray(img)
+    return Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
+
+def pil_to_cv2(img: Image) -> np.ndarray:
+    # return np.asarray(img)
+    return cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
