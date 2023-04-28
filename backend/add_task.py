@@ -126,12 +126,13 @@ if __name__ == "__main__":
     #         ]))
     # ch.apply_async()
 
+    
     for collection_name_prefix in collection_name_prefix_list:
         logging.info(f'collection_name_prefix: {collection_name_prefix}')
         scene_list = Scene.query.filter(Scene.collection_name.startswith(collection_name_prefix.replace('\\', '\\\\'))).all()
         task_id_list = []
         for scene in scene_list:
-            for person_id in [6, 8, 10]:
+            for person_id in [10]:
                 task = Task(scene_id=scene.scene_id, person_id_list = f'[{person_id}]')
                 db.session.add(task)
                 db.session.commit()
