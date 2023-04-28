@@ -100,18 +100,22 @@ def process(cmd):
     Session = sessionmaker(bind=extensions.engine)
 
     if cmd == 'train':
+        logging.info(f"======= Worker Manager: Start TRAINING workers ========")
         while True:
             train(Session)
             time.sleep(10)
     elif cmd == 'render':
+        logging.info(f"======= Worker Manager: Start RENDERING workers ========")
         while True:
             render(Session)
             time.sleep(10)
     elif cmd == 'set_up':
+        logging.info(f"======= Worker Manager: Start SCENE SETUP workers ========")
         while True:
             setup_scene(Session)
             time.sleep(2)
     elif cmd == 'all':
+        logging.info(f"======= Worker Manager: Start ALL workers ========")
         while True:
             train(Session)
             render(Session)
@@ -128,6 +132,6 @@ if __name__ == '__main__':
     parser.add_argument('cmd', type=str, help='Jobs to run. Available jobs: train, render, set_up, all')
     parser.add_argument('-p', type=int, default=1, help='Process number')
     args = parser.parse_args()
-    
+
     process(args.cmd)
 
