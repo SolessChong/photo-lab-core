@@ -5,7 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from backend.extensions import  app, db
 from flask_cors import CORS
 from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task
+from celery import Celery, chain, chord, group, signature
+from backend.config import CELERY_CONFIG
 
+app.app_context().push()
 
 OSS_ACCESS_KEY_ID = 'LTAINBTpPolLKWoX'
 OSS_ACCESS_KEY_SECRET = '1oQVQkxt7VlqB0fO7r7JEforkPgwOw'
@@ -14,6 +17,23 @@ OSS_ENDPOINT = 'oss-cn-shenzhen.aliyuncs.com'
 
 auth = oss2.Auth(OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET)
 bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
+
+def make_celery(app):
+    celery = Celery('pipeline.core.celery_worker', broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'])
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
+
+app.config.update(
+    **CELERY_CONFIG
+)
+celery = make_celery(app)
+celery.conf.task_routes = {'set_up_scene': {'queue': 'render_queue'}, 'render_scene': {'queue': 'render_queue'}}
 
 
 class ResourceType:
@@ -69,10 +89,58 @@ def get_tasks():
 
     return jsonify({"tasks": tasks_data, "total_pages": total_pages})
 
+@app.route('/get_collections', methods=['GET'])
+def get_collections():
+    collections = Scene.query.with_entities(Scene.collection_name).distinct().all()
+    return jsonify([collection[0] for collection in collections])
+
+@app.route('/get_persons', methods=['GET'])
+def get_persons():
+    persons = Person.query.with_entities(Person.id, Person.name).all()
+    return jsonify([{"id": person[0], "name": person[1]} for person in persons])
+
+@app.route('/generate_tasks', methods=['POST'])
+def generate_tasks():
+
+    app.config.update(
+        **CELERY_CONFIG
+    )
+    celery = make_celery(app)
+    celery.conf.task_routes = {'set_up_scene': {'queue': 'render_queue'}, 'render_scene': {'queue': 'render_queue'}}
+
+
+    data = request.get_json()
+    collection_name = data['collection_name']
+    person_id = data['person_id']
+    person_id_list = f'[{person_id}]'
+
+    # Filter all scenes with collection_name
+    scene_list = Scene.query.filter_by(collection_name=collection_name).all()
+
+    # Create tasks with person_id and collection_name
+    task_id_list = []
+    for scene in scene_list:
+        task = Task(scene_id=scene.scene_id, person_id_list=person_id_list)
+        db.session.add(task)
+        db.session.flush()
+        task_id_list.append(task.id)
+    db.session.commit()
+
+    # Send out Celery tasks
+    ch = chain(
+        group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
+        group([signature('render_scene', (task_id,), immutable=True) for task_id in task_id_list])
+    )
+    ch.apply_async()
+
+    return jsonify({"message": "Tasks generated and sent to the queue."})
 
 
 @app.route('/create_person', methods=['POST'])
 def create_person():
+    celery = make_celery(app)
+    celery.conf.task_routes = {'set_up_scene': {'queue': 'render_queue'}, 'render_scene': {'queue': 'render_queue'}}
+
     name = request.form.get('name')
     sex = request.form.get('sex')
     model_type = request.form.get('model_type')
