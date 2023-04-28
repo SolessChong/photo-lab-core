@@ -76,7 +76,7 @@ class Scene(db.Model):
     roi_list = db.Column(db.JSON, nullable=True)
     model_name = db.Column(db.String(2550), nullable=True)
     negative_prompt = db.Column(db.Text, nullable=True)
-    params = db.Column(db.Text, nullable=True)
+    params = db.Column(db.JSON, nullable=True)  # usually dict
     collection_name = db.Column(db.String(255), nullable=True)
     tags = db.Column(db.String(255), nullable=True)
     
@@ -116,6 +116,6 @@ class Task(db.Model):
     def get_person_id_list(self):
         if self.person_id_list is None:
             return []
-        return json.loads(self.person_id_list)
+        return self.person_id_list
 
     

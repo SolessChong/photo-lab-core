@@ -119,7 +119,7 @@ def task_render_scene(task_id):
     logging.info(f"  --- Local person lora finished")
     lora_inpaint_params = templates.LORA_INPAINT_PARAMS
     if scene.params:
-        lora_inpaint_params.update(json.loads(scene.params))
+        lora_inpaint_params.update(scene.params)
     task_dict = {
         'task_id': task.id,
         'scene_id': task.scene_id,
