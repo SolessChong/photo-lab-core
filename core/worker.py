@@ -138,7 +138,6 @@ def task_render_scene(task_id):
     return 0
 
 def task_set_up_scene(scene_id):
-    logging.info('real set up scne')
     set_up_scene.prepare_scene(scene_id)
     scene = models.Scene.query.get(scene_id)
     scene.update_setup_status('finish')
