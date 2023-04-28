@@ -98,7 +98,7 @@ def run_lora_on_base_img(task) -> Image:
 
     image = base_img.copy()
     # detect face and draw mask
-    mask_list = face_mask.get_face_mask(base_img, expand_face=2)
+    mask_list = face_mask.get_face_mask(base_img, expand_face=1.5)
     if len(mask_list) != len(lora_list):
         raise Exception("Lora and Face mask count mismatch!")
     # detect human and crop img

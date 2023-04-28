@@ -67,7 +67,7 @@ def LEGACY():
 
     task_range = (606, 614)  # Diana, user_10
 
-    task_range = (2384, 2394)  # WZ, user_9
+    task_range = (2384, 2894)  # WZ, user_9
     for i in range(*task_range):
         celery_worker.task_render_scene.delay(i)
 
@@ -92,28 +92,28 @@ def LEGACY():
 if __name__ == "__main__":
 
     ### Collection name X user -> task
-    # collection_name_prefix_list = [u'风摄影师作品合集\\疯子Charles']
-    collection_name_prefix_list = [
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\#好想看你穿制服的样子#',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\#花儿和少年#',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\#阴阳师手游#',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\HiKarii光酱',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\Madmoiselle',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\Makiyamy',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\shio___',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\WinkyWinky88',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\一个漏刀狂魔',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\一盘饮料',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\佳茗w',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\修老虎',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\六月遇见温柔的你',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\化 桀',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\十井源子',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\向音Yuny',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\夏日 蓝天 草莓味的你',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\多芒小yico',
-        u'古风摄影师作品合集\\七奈Nanako\\2017\\婀娜少女羞，岁月无忧愁。',
-    ]
+    collection_name_prefix_list = [u'风摄影师作品合集\\疯子Charles']
+    # collection_name_prefix_list = [
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\#好想看你穿制服的样子#',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\#花儿和少年#',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\#阴阳师手游#',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\HiKarii光酱',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\Madmoiselle',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\Makiyamy',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\shio___',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\WinkyWinky88',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\一个漏刀狂魔',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\一盘饮料',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\佳茗w',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\修老虎',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\六月遇见温柔的你',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\化 桀',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\十井源子',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\向音Yuny',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\夏日 蓝天 草莓味的你',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\多芒小yico',
+    #     u'古风摄影师作品合集\\七奈Nanako\\2017\\婀娜少女羞，岁月无忧愁。',
+    # ]
     # collection_name_prefix_list = [u'古风摄影师作品合集\\七奈Nanako\\2017\\#好想看你穿制服的样子#', u'古风摄影师作品合集\\七奈Nanako\\2017\\#花儿和少年#']
     # ch = chain(
     #         group([
