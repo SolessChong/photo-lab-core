@@ -169,7 +169,7 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
         --text_encoder_lr=5e-5 --unet_lr=0.0001 --network_dim=256 \
         --output_name="{subject_name}" \
         --lr_scheduler_num_cycles="10" --learning_rate="0.001" --lr_scheduler="cosine" \
-        --lr_warmup_steps="70" --train_batch_size="12" \
+        --lr_warmup_steps="100" --train_batch_size="36" \
         --max_train_epochs="{epoch}" \
         --save_every_n_epochs="1" --mixed_precision="fp16" --save_precision="fp16" \
         --optimizer_type="AdamW8bit" --max_data_loader_n_workers="0" --bucket_reso_steps=64 \
