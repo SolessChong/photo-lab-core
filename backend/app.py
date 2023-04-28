@@ -5,6 +5,7 @@ import random
 import string
 from celery import group, Celery, chain, chord
 import logging
+import argparse
 
 from backend.extensions import  app, db
 from . import aliyun_face_detector
@@ -281,4 +282,9 @@ def update_scene_route():
     return web_function.update_scene()
     
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    # Add argument parser: -p: port
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', type=int, default=8000, help='port to listen on')
+    args = parser.parse_args()
+
+    app.run(host='0.0.0.0', port=args.port)
