@@ -110,6 +110,8 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     person = models.Person.query.get(person_id)
     # model file local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
     model_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person_id)
+
+    db.session.close()
     if not os.path.exists(model_path):
         logging.error(f"  --- LORA model {person_id} not found")
         return -1
@@ -160,12 +162,17 @@ def task_render_scene(task_id):
     task.update_result_img_key(rst_img_key)
     
     write_PILimg(rst_img, task.result_img_key)
-    logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
+    logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
+    db.session.close()
     return 0
 
 @celery.task(name="set_up_scene", queue="render_queue")
 def task_set_up_scene(scene_id):
+    logging.info(f"======= Task: set up scene: scene_id={scene_id}")
     set_up_scene.prepare_scene(scene_id)
+    logging.info(f"--- Set up scene success. scene_id={scene_id}")
+    db.session.close()
+    return 0
 
 
 @celery.task(name="hello")
