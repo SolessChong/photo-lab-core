@@ -222,8 +222,6 @@ def start_sd_generate():
     }
     return jsonify(response)
 
-
-
 def create_new_pack(pack_dict, pack_id, img_key):
     img_url = utils.get_signed_url(img_key)
 
