@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from flask import Flask, request, jsonify, render_template
 import secrets
 import random
@@ -192,7 +192,7 @@ def start_sd_generate():
             db.session.commit()
             logger.info(f'{user_id} start to  train lora {person.id}')
 
-    pack = models.Pack(user_id=user_id, total_img_num=m, start_time= datetime.datetime.now())
+    pack = models.Pack(user_id=user_id, total_img_num=m, start_time= datetime.utcnow())
     db.session.add(pack)
     db.session.commit()
     for scene_id, person_id_list in new_combinations:
@@ -223,6 +223,37 @@ def start_sd_generate():
     }
     return jsonify(response)
 
+def create_new_pack(pack_dict, pack_id, img_key):
+    img_url = utils.get_signed_url(img_key)
+
+    if not pack_id in pack_dict:
+        pack = models.Pack.query.filter_by(pack_id=pack_id).first()
+        if not pack.banner_img_key:
+            image_data = utils.oss_get(img_key)
+            face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+            banner_img = aliyun_face_detector.crop_16_9_pil(image_data, face_coordinates)
+            pack.banner_img_key = f'banner_img/{pack_id}.jpg'
+            utils.oss_put(pack.banner_img_key , banner_img)
+            db.session.commit()
+            
+        pack_dict[pack_id] = {
+            "pack_id": pack.pack_id,
+            "description": pack.description,
+            "total_img_num": pack.total_img_num,
+            "is_unlock": pack.is_unlock,
+            "imgs": [],
+            "finish_time_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+            'total_seconds': 60*60,
+            'heights': [],
+            'widths': [],
+            'banner_img_url': utils.get_signed_url(pack.banner_img_key),
+            'price': pack.price,
+        }
+
+    height, width = utils.get_image_size(img_url)
+    pack_dict[pack_id]["imgs"].append(img_url)
+    pack_dict[pack_id]["heights"].append(height)
+    pack_dict[pack_id]["widths"].append(width)
 
 # 获取某个用户的所有已经生成的图片，返回结果一个packs数组，
 # python后端程序获取所有generated_images表中，符合user_id 的列。然后将获得的列，把相同的pack_id合并在一个pack项。pack项的值还包括
@@ -234,30 +265,23 @@ def get_generated_images():
     if user_id is None:
         return jsonify({"error": "user_id is required"}), 400
 
-    packs = models.Pack.query.filter_by(user_id=user_id).all()
-
     pack_dict = {}
-    for pack in packs:
-        pack_dict[pack.pack_id] = {
-            "pack_id": pack.pack_id,
-            "description": pack.description,
-            "total_img_num": pack.total_img_num,
-            "imgs": [],
-            "finish_time_left": 30*60 - int((datetime.datetime.now() - pack.start_time).total_seconds())
-        }
-
     images = models.GeneratedImage.query.filter(models.GeneratedImage.user_id == user_id, models.GeneratedImage.img_url != None).all()
     for image in images:
-        img_url = utils.get_signed_url(image.img_url)  # 使用你已经实现的get_oss_url函数替换
-        pack_dict[image.pack_id]["imgs"].append(img_url)
+        create_new_pack(pack_dict, image.pack_id, image.img_url)
 
     tasks = models.Task.query.filter(models.Task.user_id == user_id, models.Task.result_img_key != None).all()
     for task in tasks:
-        img_url = utils.get_signed_url(task.result_img_key)
-        pack_dict[task.pack_id]["imgs"].append(img_url)
+        create_new_pack(pack_dict, task.pack_id, task.result_img_key)
 
-    result = {"packs": list(pack_dict.values())}
-    return jsonify(result), 200
+    response = {
+        'code': 0,
+        'msg': 'success',
+        'data': {
+            'packs': list(pack_dict.values())
+        }
+    }
+    return jsonify(response), 200
 
 @app.route('/')
 def index():
