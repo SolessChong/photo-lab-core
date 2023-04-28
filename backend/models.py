@@ -119,4 +119,12 @@ class Task(db.Model):
             return []
         return json.loads(self.person_id_list)
 
+class Payment(db.Model):
+    __tablename__ = 'payments'
     
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(45), nullable=True)
+    payment_amount = db.Column(db.Integer, nullable=True)
+    receipt = db.Column(db.String(45), nullable=True)
+    pack_id = db.Column(db.Integer, nullable=True)
+    product_id = db.Column(db.String(45), nullable=True)
