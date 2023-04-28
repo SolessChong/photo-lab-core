@@ -73,6 +73,7 @@ class Scene(db.Model):
     name = db.Column(db.String(255), nullable=True)
     base_img_key = db.Column(db.String(2550), nullable=True)
     hint_img_list = db.Column(db.JSON, nullable=True)
+    setup_status = db.Column(db.String(255), nullable=True)
     roi_list = db.Column(db.JSON, nullable=True)
     model_name = db.Column(db.String(2550), nullable=True)
     negative_prompt = db.Column(db.Text, nullable=True)
