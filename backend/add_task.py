@@ -1,3 +1,4 @@
+import logging
 from backend.models import *
 from backend.extensions import db, app
 from backend.config import CELERY_CONFIG
@@ -91,8 +92,29 @@ def LEGACY():
 if __name__ == "__main__":
 
     ### Collection name X user -> task
-    collection_name_list = [u'风摄影师作品合集\\疯子Charles\\2016\\暗香凉影']
-    # collection_name_list = [u'风摄影师作品合集\\疯子Charles\\2016\\暗香凉影', u'古风摄影师作品合集\\七奈Nanako\\2017\\#好想看你穿制服的样子#', u'古 风摄影师作品合集\\七奈Nanako\\2017\\#花儿和少年#']
+    # collection_name_prefix_list = [u'风摄影师作品合集\\疯子Charles']
+    collection_name_prefix_list = [
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\#好想看你穿制服的样子#',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\#花儿和少年#',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\#阴阳师手游#',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\HiKarii光酱',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\Madmoiselle',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\Makiyamy',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\shio___',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\WinkyWinky88',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\一个漏刀狂魔',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\一盘饮料',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\佳茗w',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\修老虎',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\六月遇见温柔的你',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\化 桀',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\十井源子',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\向音Yuny',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\夏日 蓝天 草莓味的你',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\多芒小yico',
+        u'古风摄影师作品合集\\七奈Nanako\\2017\\婀娜少女羞，岁月无忧愁。',
+    ]
+    # collection_name_prefix_list = [u'古风摄影师作品合集\\七奈Nanako\\2017\\#好想看你穿制服的样子#', u'古风摄影师作品合集\\七奈Nanako\\2017\\#花儿和少年#']
     # ch = chain(
     #         group([
     #             signature('set_up_scene', (830,)), 
@@ -104,9 +126,11 @@ if __name__ == "__main__":
     #         ]))
     # ch.apply_async()
 
-    for collection_name in collection_name_list:
+    for collection_name_prefix in collection_name_prefix_list:
+        logging.info(f'collection_name_prefix: {collection_name_prefix}')
+        scene_list = Scene.query.filter(Scene.collection_name.startswith(collection_name_prefix.replace('\\', '\\\\'))).all()
         task_id_list = []
-        for scene in Scene.query.filter(Scene.collection_name==collection_name).all():
+        for scene in scene_list:
             for person_id in [6, 8, 10]:
                 task = Task(scene_id=scene.scene_id, person_id_list = f'[{person_id}]')
                 db.session.add(task)
@@ -114,7 +138,7 @@ if __name__ == "__main__":
                 task_id_list.append(task.id)
 
         ch = chain(
-                group([signature('set_up_scene', (scene.scene_id,)) for scene in Scene.query.filter(Scene.collection_name==collection_name).all()]),
+                group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
                 group([signature('render_scene', (task_id,), immutable=True) for task_id in task_id_list])
         )
         ch.apply_async()
