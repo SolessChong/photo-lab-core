@@ -49,6 +49,7 @@ from core import templates
 import json
 import logging
 from backend.extensions import app, migrate, db
+from backend.config import CELERY_CONFIG
 
 import secrets
 from celery import Celery
@@ -67,7 +68,7 @@ def make_celery(app):
     return celery
 
 app.config.update(
-    **conf.CELERY_CONFIG
+    **CELERY_CONFIG
 )
 celery = make_celery(app)
 
@@ -149,7 +150,7 @@ def task_render_scene(task_id):
         'task_id': task.id,
         'scene_id': task.scene_id,
         'lora_list': ['user_' + str(person.id) for person in person_list],
-        'prompt': scene.prompt,
+        'prompt': '' if scene.prompt is None else scene.prompt,
         'params': lora_inpaint_params
     }
     logging.info(f"    ----\n    task_dict: {task_dict}\n  ----")

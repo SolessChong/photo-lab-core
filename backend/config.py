@@ -8,3 +8,8 @@ OSS_ACCESS_KEY_ID = 'LTAINBTpPolLKWoX'
 OSS_ACCESS_KEY_SECRET = '1oQVQkxt7VlqB0fO7r7JEforkPgwOw'
 OSS_BUCKET_NAME = 'photolab-test'
 OSS_ENDPOINT = 'oss-cn-shenzhen.aliyuncs.com'
+
+CELERY_CONFIG = {
+    'CELERY_BROKER_URL': 'redis://:Yzkj8888!@r-wz9d9mt4zsofl3s0pnpd.redis.rds.aliyuncs.com/0',
+    'CELERY_RESULT_BACKEND': 'redis://:Yzkj8888!@r-wz9d9mt4zsofl3s0pnpd.redis.rds.aliyuncs.com/0'
+}
