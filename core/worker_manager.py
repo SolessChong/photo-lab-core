@@ -101,7 +101,15 @@ def setup_scene(Session):
         session.close()
 
     for id in scene_id_list:
-        worker.task_set_up_scene(id)
+        try:
+            worker.task_set_up_scene(id)
+        except Exception as e:
+            print(f"Error: {e}")
+            scene = models.Scene.query.get(id)
+            scene.setup_status = 'fail'
+            db.session.add(scene)
+            db.session.commit()
+            db.session.close()
 
 
 def process(cmd):
