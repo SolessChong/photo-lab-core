@@ -11,6 +11,8 @@ import multiprocessing as mp
 
 from core import worker
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 # train status:             null -> wait -> processing -> finish ( -> fail )
 # task render status:       null -> wait -> processing -> finish ( -> fail )
 # scene setup status:       null -> wait -> processing -> finish ( -> fail )
@@ -57,21 +59,22 @@ def render(Session):
                 logging.info(f"    ---- Task: render task: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
                 if person.lora_train_status != 'finish':
                     flag = False
+                    logging.info(f"    ---- 🙅‍♀️ Task: Not Ready: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
+                    task.status = 'fail'
                     break
             scene = models.Scene.query.get(task.scene_id)
             if scene and scene.setup_status != 'finish':
                 flag = False
-            else:
                 logging.info(f"    ---- 🙅‍♀️ Task: Not Ready: scene_id={task.scene_id}, scene={scene}, scene.setup_status={scene.setup_status}")
                 task.status = 'fail'
-                a_c_c(task, db)
+            # Ready to render
             if flag:
                 todo_task_id_list.append(task.id)
                 task.status = 'processing'
-        session.commit()
     except Exception as e:
         print(f"Error: {e}")
     finally:
+        session.commit()
         session.close()
 
     for id in todo_task_id_list:
