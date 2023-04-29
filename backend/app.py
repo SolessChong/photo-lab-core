@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from flask import Flask, request, jsonify, render_template
 import secrets
 import random
@@ -93,6 +94,42 @@ def get_user():
 
     return jsonify(response), 200
 
+@app.route('/api/upload_payment', methods=['GET'])
+def upload_payment():
+    missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id'] 
+                      if request.args.get(param) is None]
+    if missing_params:
+        return jsonify({"error": f"Missing parameters: {', '.join(missing_params)}"}), 400
+
+    user_id = request.args.get('user_id')
+    payment_amount = request.args.get('payment_amount')
+    receipt = request.args.get('receipt')
+    pack_id = request.args.get('pack_id')
+    product_id = request.args.get('product_id')
+    
+    # Create a new payment
+    new_payment = models.Payment(
+        user_id=user_id, 
+        payment_amount=int(payment_amount) if payment_amount else None, 
+        receipt=receipt, 
+        pack_id=int(pack_id) if pack_id else None, 
+        product_id=product_id
+    )
+    db.session.add(new_payment)
+
+    # Update is_unlock to 1 for the pack with the given pack_id
+    pack = models.Pack.query.get(pack_id)
+    if pack:
+        pack.is_unlock = 1
+    else:
+        return jsonify({"msg": "error: Pack not found", 'code': 1}), 404
+
+    # Commit the changes
+    db.session.commit()
+
+    return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
+
+
 @app.route('/api/get_example_images', methods=['GET'])
 def get_example_images():
     scenes = models.Scene.query.filter(models.Scene.action_type == 'example', models.Scene.base_img_key != None).all()
@@ -123,7 +160,8 @@ def upload_source():
         return {"status": "error", "message": "Missing img_file, user_id or person_name"}, 400
     img_file = request.files['img_file']
     png_img = utils.convert_to_png_bytes(img_file)
-    if aliyun_face_detector.detect_face(png_img) != 1:
+    jpg_img = utils.convert_to_jpg_bytes(png_img)
+    if aliyun_face_detector.detect_face(jpg_img) != 1:
         return {"msg": "上传失败，图片中没有人脸或有多个人脸", "code": 1, "data" : ''}, 200
 
     user_id = request.form['user_id']
@@ -168,8 +206,10 @@ def start_sd_generate():
         return {"status": "error", "message": "Missing user_id, person_id_list or category"}, 400
 
     user_id = request.form['user_id']
-    person_id_list = request.form['person_id_list']
+    person_id_list = json.loads(request.form['person_id_list'])
+    person_id_list.sort()
     category = request.form['category']
+    limit = request.form.get('limit', 30, type=int)
 
     #TODO: use new method to choose which scene to render
     # 1. Get all scenes with the same category
@@ -180,14 +220,14 @@ def start_sd_generate():
     for scene in scenes:
         if not models.Task.query.filter_by(scene_id=scene.scene_id, person_id_list=person_id_list, user_id=user_id).first():
             new_combinations.append((scene.scene_id, person_id_list))
+    new_combinations = new_combinations[:limit]
     m = len(new_combinations)
     logger.info(f'{user_id} has new_combinations: {new_combinations}')
     
     # 3. start train lora 
-    persons = models.Person.query.filter(models.Person.id.in_(tuple(person_id_list))).all()
-    
-    for person in persons:
-        if person.lora_train_status is None:
+    for person_id in person_id_list:
+        person = models.Person.query.filter(models.Person.id == person_id).first()
+        if person and person.lora_train_status is None:
             person.lora_train_status = 'wait' # 等待woker_manager启动训练任务
             db.session.commit()
             logger.info(f'{user_id} start to  train lora {person.id}')
@@ -209,7 +249,7 @@ def start_sd_generate():
     # --------------------------- 以上是SD 生成任务 -------------------------------
 
     # --------------------------- 以下是启动mj的任务 ------------------------------
-    m += selector_mj.generate_mj_task(person_id=person_id_list[0], category = category, pack_id=pack.pack_id, user_id=user_id)
+    # m += selector_mj.generate_mj_task(person_id=person_id_list[0], category = category, pack_id=pack.pack_id, user_id=user_id)
 
     # --------------------------- 以下是返回结果 ----------------------------------
     response = {

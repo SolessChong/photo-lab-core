@@ -110,6 +110,21 @@ def convert_to_png_bytes(image_file):
         print(f"Error while converting image to PNG: {e}")
         raise
 
+def convert_to_jpg_bytes(png_bytes):
+    # 从 bytes 数据中加载 PNG 图像
+    png_image = Image.open(BytesIO(png_bytes))
+    
+    # 创建一个 bytes 流来保存 JPG 图像
+    jpg_image_io = BytesIO()
+    
+    # 将图像转换为 'RGB' 模式以确保不会有 alpha 通道，然后保存为 JPG 格式
+    png_image.convert('RGB').save(jpg_image_io, format='JPEG')
+    
+    # 获取 JPG 图像的 bytes 数据
+    jpg_bytes = jpg_image_io.getvalue()
+
+    return jpg_bytes
+
 def get_image_size(img_url):
     response = requests.get(img_url)
     img = Image.open(BytesIO(response.content))
