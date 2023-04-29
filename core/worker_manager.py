@@ -3,7 +3,7 @@ import time
 import logging
 import json
 from backend import extensions, models
-from backend.extensions import app, db
+from backend.extensions import app, db, a_c_c
 from sqlalchemy.orm import sessionmaker
 import sys
 import argparse
@@ -64,9 +64,7 @@ def render(Session):
             else:
                 logging.info(f"    ---- 🙅‍♀️ Task: Not Ready: scene_id={task.scene_id}, scene={scene}, scene.setup_status={scene.setup_status}")
                 task.status = 'fail'
-                db.session.add(task)
-                db.session.commit()
-                db.session.close()
+                a_c_c(task, db)
             if flag:
                 todo_task_id_list.append(task.id)
                 task.status = 'processing'
@@ -84,9 +82,7 @@ def render(Session):
             print(f"Error: {e}")
             task = models.Task.query.get(id)
             task.status = 'fail'
-            db.session.add(task)
-            db.session.commit()
-            db.session.close()
+            a_c_c(task, db)
             
 
 def setup_scene(Session):
@@ -113,10 +109,7 @@ def setup_scene(Session):
             print(f"Error: {e}")
             scene = models.Scene.query.get(id)
             scene.setup_status = 'fail'
-            db.session.add(scene)
-            db.session.commit()
-            db.session.close()
-
+            a_c_c(scene, db)
 
 def process(cmd):
     app.app_context().push()
