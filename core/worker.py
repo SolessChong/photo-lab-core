@@ -119,7 +119,7 @@ def task_render_scene(task_id):
     logging.info(f"  --- Local person lora finished")
     lora_inpaint_params = templates.LORA_INPAINT_PARAMS
     if scene.params:
-        lora_inpaint_params.update(json.loads(scene.params))
+        lora_inpaint_params.update(scene.params)
     task_dict = {
         'task_id': task.id,
         'scene_id': task.scene_id,
@@ -138,7 +138,6 @@ def task_render_scene(task_id):
     return 0
 
 def task_set_up_scene(scene_id):
-    logging.info('real set up scne')
     set_up_scene.prepare_scene(scene_id)
     scene = models.Scene.query.get(scene_id)
     scene.update_setup_status('finish')
