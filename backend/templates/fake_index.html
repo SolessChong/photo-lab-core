@@ -35,25 +35,25 @@
     <!-- Tabs -->
     <ul class="nav nav-tabs" id="mainTabs" role="tablist">
         <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="createPerson-tab" data-bs-toggle="tab" data-bs-target="#createPerson" type="button" role="tab" aria-controls="createPerson" aria-selected="true">Create Person</button>
+            <button class="nav-link" id="scenes-tab" data-bs-toggle="tab" data-bs-target="#scenes" type="button" role="tab" aria-controls="scenes" aria-selected="false">Scenes</button>
         </li>
         <li class="nav-item" role="presentation">
-        <button class="nav-link" id="scenes-tab" data-bs-toggle="tab" data-bs-target="#scenes" type="button" role="tab" aria-controls="scenes" aria-selected="false">Scenes</button>
+            <button class="nav-link active" id="taskViewer-tab" data-bs-toggle="tab" data-bs-target="#taskViewer" type="button" role="tab" aria-controls="taskViewer" aria-selected="false">Task Viewer</button>
+        </li>
+            <button class="nav-link" id="createTask-tab" data-bs-toggle="tab" data-bs-target="#createTask" type="button" role="tab" aria-controls="taskViewer" aria-selected="false">Create Task</button>
         </li>
         <li class="nav-item" role="presentation">
-        <button class="nav-link" id="taskViewer-tab" data-bs-toggle="tab" data-bs-target="#taskViewer" type="button" role="tab" aria-controls="taskViewer" aria-selected="false">Task Viewer</button>
-        </li>
-        <button class="nav-link" id="taskViewer-tab" data-bs-toggle="tab" data-bs-target="#createTask" type="button" role="tab" aria-controls="taskViewer" aria-selected="false">Create Task</button>
+            <button class="nav-link" id="createPerson-tab" data-bs-toggle="tab" data-bs-target="#createPerson" type="button" role="tab" aria-controls="createPerson" aria-selected="true">Create Person</button>
         </li>
     </ul>
     <div class="tab-content" id="mainTabsContent">
-        <div class="tab-pane fade show active" id="createPerson" role="tabpanel" aria-labelledby="createPerson-tab">
+        <div class="tab-pane fade show" id="createPerson" role="tabpanel" aria-labelledby="createPerson-tab">
         <!-- Create Person content -->
         </div>
         <div class="tab-pane fade" id="scenes" role="tabpanel" aria-labelledby="scenes-tab">
         <!-- Scenes content -->
         </div>
-        <div class="tab-pane fade" id="taskViewer" role="tabpanel" aria-labelledby="taskViewer-tab">
+        <div class="tab-pane fade active" id="taskViewer" role="tabpanel" aria-labelledby="taskViewer-tab">
             <!-- Task Viewer content -->
             <div class="row" id="task-container">
                 <div id="task-viewer"></div>
@@ -144,16 +144,6 @@
             });
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadTasks(currentPage);
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            loadMoreBtn.addEventListener('click', () => {
-                currentPage += 1;
-                loadTasks(currentPage);
-            });
-        });
-
-
         // Populate collection and person dropdowns
     function loadCollectionsAndPersons() {
         fetch('/get_collections')
@@ -195,6 +185,8 @@
             body: JSON.stringify({ collection_name: collectionName, person_id: personId })
         });
     });
+
+    loadTasks(0);
 </script>
 </body>
 </html>

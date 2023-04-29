@@ -134,7 +134,7 @@ def task_render_scene(task_id):
     task.update_result_img_key(rst_img_key)
     
     write_PILimg(rst_img, task.result_img_key)
-    logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
+    logging.info(f"  --- ✅ Render scene success.  save to oss: {task.result_img_key}")
     return 0
 
 def task_set_up_scene(scene_id):

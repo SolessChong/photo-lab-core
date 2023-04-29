@@ -13,3 +13,10 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 engine = create_engine('mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab?charset=utf8')
+
+# shorthand for add, commit and close
+def acc(obj, db):
+    db.session.add(obj)
+    db.session.commit()
+    db.session.close()
+    return obj

@@ -61,6 +61,12 @@ def render(Session):
             scene = models.Scene.query.get(task.scene_id)
             if scene and scene.setup_status != 'finish':
                 flag = False
+            else:
+                logging.info(f"    ---- 🙅‍♀️ Task: Not Ready: scene_id={task.scene_id}, scene={scene}, scene.setup_status={scene.setup_status}")
+                task.status = 'fail'
+                db.session.add(task)
+                db.session.commit()
+                db.session.close()
             if flag:
                 todo_task_id_list.append(task.id)
                 task.status = 'processing'
