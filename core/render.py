@@ -196,7 +196,7 @@ def run_lora_on_base_img(task) -> Image:
     # image.save(output_path)
 
     # Log success
-    logging.info(f"Task {task['task_id']}, Scene {task['scene_id']} finished successfully.")
+    logging.info(f"    ----  ✅ Task {task['task_id']}, Scene {task['scene_id']} finished successfully.")
     return image
 
 
@@ -235,5 +235,5 @@ if __name__ == "__main__":
                     
                     run_lora_on_base_img(task)
                 except Exception as e:
-                    logging.error(f"ERROR: {fn}, {e}")
+                    logging.error(f" ❌ ERROR: {fn}, {e}")
                     continue

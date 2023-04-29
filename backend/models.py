@@ -57,6 +57,7 @@ class Pack(db.Model):
     total_img_num = db.Column(db.Integer, nullable=True)
     price = db.Column(db.Integer, nullable=True)
     is_unlock = db.Column(db.Integer, nullable=True, default=0, comment='0代表上锁，1代表已经付费解锁')
+    banner_img_key = db.Column(db.String(2000), nullable=True)
 
 
 class Scene(db.Model):
@@ -76,7 +77,7 @@ class Scene(db.Model):
     roi_list = db.Column(db.JSON, nullable=True)
     model_name = db.Column(db.String(2550), nullable=True)
     negative_prompt = db.Column(db.Text, nullable=True)
-    params = db.Column(db.Text, nullable=True)
+    params = db.Column(db.JSON, nullable=True)  # usually dict
     collection_name = db.Column(db.String(255), nullable=True)
     tags = db.Column(db.String(255), nullable=True)
     
@@ -116,6 +117,14 @@ class Task(db.Model):
     def get_person_id_list(self):
         if self.person_id_list is None:
             return []
-        return json.loads(self.person_id_list)
+        return self.person_id_list
 
+class Payment(db.Model):
+    __tablename__ = 'payments'
     
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(45), nullable=True)
+    payment_amount = db.Column(db.Integer, nullable=True)
+    receipt = db.Column(db.String(45), nullable=True)
+    pack_id = db.Column(db.Integer, nullable=True)
+    product_id = db.Column(db.String(45), nullable=True)

@@ -92,7 +92,17 @@ def LEGACY():
 if __name__ == "__main__":
 
     ### Collection name X user -> task
-    collection_name_prefix_list = [u'风摄影师作品合集\\疯子Charles']
+    collection_name_prefix_list = [
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\夏日炎炎下的可爱子', 
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\响当当的大铭', 
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\云知笑 3', 
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\云知笑 @王楚Dino',
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\Shirley-Dan花祀',
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\云知笑',
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\lulusmile露露斯麦尔',
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\lolita',
+        u'古风摄影师作品合集\\七奈Nanako\\2021\\Elpress',
+    ]
     # collection_name_prefix_list = [
     #     u'古风摄影师作品合集\\七奈Nanako\\2017\\#好想看你穿制服的样子#',
     #     u'古风摄影师作品合集\\七奈Nanako\\2017\\#花儿和少年#',
@@ -127,19 +137,28 @@ if __name__ == "__main__":
     # ch.apply_async()
 
     
-    for collection_name_prefix in collection_name_prefix_list:
-        logging.info(f'collection_name_prefix: {collection_name_prefix}')
-        scene_list = Scene.query.filter(Scene.collection_name.startswith(collection_name_prefix.replace('\\', '\\\\'))).all()
-        task_id_list = []
-        for scene in scene_list:
-            for person_id in [10]:
-                task = Task(scene_id=scene.scene_id, person_id_list = f'[{person_id}]')
-                db.session.add(task)
-                db.session.commit()
-                task_id_list.append(task.id)
+    # for collection_name_prefix in collection_name_prefix_list:
+    #     logging.info(f'collection_name_prefix: {collection_name_prefix}')
+    #     scene_list = Scene.query.filter(Scene.collection_name.startswith(collection_name_prefix.replace('\\', '\\\\'))).all()
+    #     task_id_list = []
+    #     for scene in scene_list:
+    #         for person_id in [10]:
+    #             task = Task(scene_id=scene.scene_id, person_id_list = f'[{person_id}]')
+    #             db.session.add(task)
+    #             db.session.commit()
+    #             task_id_list.append(task.id)
 
-        ch = chain(
-                group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
-                group([signature('render_scene', (task_id,), immutable=True) for task_id in task_id_list])
-        )
-        ch.apply_async()
+    #     ch = chain(
+    #             group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
+    #             group([signature('render_scene', (task_id,), immutable=True) for task_id in task_id_list])
+    #     )
+    #     ch.apply_async()
+
+
+    for collection_name_prefix in collection_name_prefix_list:
+        scene_list = Scene.query.filter(Scene.collection_name.startswith(collection_name_prefix.replace('\\', '\\\\'))).all()
+        person_id = 8
+        for scene in scene_list:
+            task = Task(scene_id=scene.scene_id, person_id_list =[person_id], status='wait')
+            db.session.add(task)
+        db.session.commit()

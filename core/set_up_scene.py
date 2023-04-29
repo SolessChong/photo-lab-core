@@ -45,10 +45,13 @@ def prepare_scene(scene_id):
         # super res if base img too small
         if base_img.width < 1500 or base_img.height < 1500:
             resize = 2048 / base_img.width
-            rst = api.extra_single_image(base_img, upscaler_1=webuiapi.Upscaler.ESRGAN_4x, upscaling_resize=resize)
-            base_img = rst.image
-            write_PILimg(base_img, base_img_url)
-            logging.info(f"Base image super-res by {resize}, saved to {base_img_url}.")
+            if resize > 1.2:
+                rst = api.extra_single_image(base_img, upscaler_1=webuiapi.Upscaler.ESRGAN_4x, upscaling_resize=resize)
+                base_img = rst.image
+                write_PILimg(base_img, base_img_url)
+                logging.info(f"Base image super-res by {resize}, saved to {base_img_url}.")
+            else:
+                logging.info(f"Resize < 1.2, skip super-res.")
         pose_img_url = f'source/pose/{scene_id}.png'
         base_img_cv2 = pil_to_cv2(base_img)
         candidate, subset = body_estimate(base_img_cv2)
