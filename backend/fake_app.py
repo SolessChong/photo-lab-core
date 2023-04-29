@@ -166,6 +166,24 @@ def create_person():
 
     return jsonify({"success": "Person created successfully", "person_id": person.id}), 201
 
+### Stats tab
+@app.route('/get_task_stats', methods=['GET'])
+def task_stats():
+    stats = ['wait', 'finish', 'fail']
+    task_counts = {}
+    for stat in stats:
+        task_counts[stat] = Task.query.filter(Task.status == stat).count()
+    return jsonify(task_counts)
+
+@app.route('/get_scene_stats', methods=['GET'])
+def scene_stats():
+    setup_statuses = ['wait', 'finish', 'fail']
+    scene_counts = {}
+    for status in setup_statuses:
+        scene_counts[status] = Scene.query.filter(Scene.setup_status == status).count()
+    return jsonify(scene_counts)
+
+
 # Other endpoints remain the same...
 
 if __name__ == '__main__':
