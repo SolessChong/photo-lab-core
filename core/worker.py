@@ -129,7 +129,7 @@ def task_render_scene(task_id):
         write_PILimg(rst_img, task.result_img_key)
         logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
     except Exception as e:
-        logging.error(f"  --- ❌ Render scene failed. {e}")
+        logging.exception(f"  --- ❌ Render scene failed. {e}")
         task.task_fail()
 
     db.session.close()
