@@ -61,8 +61,9 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     img_train_path = dataset_path / "img_train"
     img_raw_path = dataset_path / "img_raw"
     for path in [img_train_path, img_raw_path]:
-        if not path.exists():
-            path.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            shutil.rmtree(path)
+        path.mkdir(parents=True, exist_ok=True)
     # enumerate train_img_list with index
     for i, img_url in enumerate(train_img_list):
         # download img using oss2
@@ -85,6 +86,8 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     person = models.Person.query.get(person_id)
     # model file local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
     model_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person_id)
+
+    db.session.close()
     if not os.path.exists(model_path):
         logging.error(f"  --- LORA model {person_id} not found")
         return -1
