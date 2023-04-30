@@ -35,7 +35,7 @@
 #  - debug_img[1..10]
 #
 import os
-
+import time
 from core import conf
 from core import train_lora
 from core import set_up_scene
@@ -44,11 +44,12 @@ from core.resource_manager import ResourceMgr, ResourceType, bucket, str2oss, os
 from pathlib import Path
 from backend import models
 from core import templates
+import shutil
 import json
 import logging
 from backend.extensions import app, db
 
-
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # Train LORA model
 # test case, 
@@ -116,9 +117,17 @@ def task_render_scene(task_id):
     for person in person_list:
         # if not exists, download
         lora_file_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person.id)
-        if not os.path.exists(lora_file_path):
+        # check lora file exists
+        if os.path.exists(lora_file_path):
+            # Has lora file but no complete flag: some other process is downloading
+            # TODO: if the process is dead, or HTTP timeout, the worker process will hang forever causing task congestion.
+            if not os.path.exists(lora_file_path + '.0'):
+                time.sleep(10)
+        # No lora file, download
+        else:
             logging.info(f"  --- Downloading person lora {person.id}")
             bucket.get_object_to_file(person.model_file_key, lora_file_path)
+            Path(lora_file_path + '.0').touch()
     logging.info(f"  --- Local person lora finished")
 
     try:

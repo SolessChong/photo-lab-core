@@ -89,7 +89,7 @@ def LEGACY():
 def render_person_on_scenes(person_id, scene_list):
     task_list = []
     for scene in scene_list:
-        task = Task(scene_id=scene.scene_id, person_id_list = [person_id])
+        task = Task(scene_id=scene.scene_id, person_id_list = [person_id], status="wait")
         db.session.add(task)
         task_list.append(task)
     db.session.commit()
