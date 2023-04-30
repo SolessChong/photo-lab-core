@@ -87,15 +87,16 @@ def LEGACY():
             celery_worker.task_render_scene.delay(task.id)
 
 def render_person_on_scenes(person_id, scene_list):
-    task_id_list = []
+    task_list = []
     for scene in scene_list:
         task = Task(scene_id=scene.scene_id, person_id_list = [person_id])
         db.session.add(task)
-        db.session.commit()
-        task_id_list.append(task.id)
+        task_list.append(task)
+    db.session.commit()
+    
     ch = chain(
         group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
-        group([signature('render_scene', (task_id,), immutable=True) for task_id in task_id_list])
+        group([signature('render_scene', (task.id,), immutable=True) for task in task_list])
     )
     ch.apply_async()
 
@@ -107,9 +108,10 @@ if __name__ == "__main__":
     # when cmd is ['collection_prefix', 'collection_name'], arg 'name' is required.
     import argparse
     parser = argparse.ArgumentParser(description='Add task to Celery srender queue.')
-    parser.add_argument('cmd', type=str, choices=['render_all_wait', 'collection_prefix', 'collection_name'], help='Command to execute.')
+    parser.add_argument('cmd', type=str, choices=['render_all_wait', 'collection_prefix', 'collection_name', 'rate'], help='Command to execute.')
     parser.add_argument('-n', '--name', type=str, help='Name of collection or prefix of collection name.')
     parser.add_argument('-p', '--person_list', type=int, nargs='+', required=True, help='Person id list.')
+    parser.add_argument('--rate', type=int, default=1)
 
     args = parser.parse_args()
     logging.info(f'args: {args}')
@@ -141,6 +143,12 @@ if __name__ == "__main__":
         logging.info(f'Found {len(scene_list)} scenes.')
         for person in args.person_list:
             render_person_on_scenes(person, scene_list)
+    elif cmd == 'rate':
+        scene_list = Scene.query.filter(Scene.rate >= args.rate).filter(Scene.scene_id > 500).all()
+        logging.info(f'Found {len(scene_list)} scenes.')
+        for person in args.person_list:
+            render_person_on_scenes(person, scene_list)
+
 
     # ### Collection name X user -> task
     # collection_name_prefix_list = [

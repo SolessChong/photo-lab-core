@@ -84,6 +84,9 @@ class ResourceMgr:
             case _:
                 raise Exception("Unknown resource type: " + str(resource_type))
             
+    @staticmethod
+    def get_lora_name_by_person_id(person_id):
+        return f'user_{person_id}'
 
 
 def oss2buf(url):

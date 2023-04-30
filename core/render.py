@@ -17,6 +17,7 @@ from core.libs.openpose.body import Body
 from core import pose_detect
 import numpy as np
 import typing
+from backend import models
 from core.libs.openpose.util import draw_bodypose
 from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg
 
@@ -31,70 +32,92 @@ body_estimate = Body()
 # Logging to stdout
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
-# render_i2i()
-# result1 = api.txt2img(
-#     prompt="a girl standing,(8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1.37),<lora:arknightsTexasThe_v10:1>,omertosa,1girl,(Kpop idol), (aegyo sal:1),cute,cityscape, night, rain, wet, professional lighting, photon mapping, radiosity, physically-based rendering,",
-#     # prompt="<lora:ycy2:1> a MA_TRAINING_SUBJECT standing,(8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1.37),<lora:arknightsTexasThe_v10:1>,omertosa,1girl,(Kpop idol), (aegyo sal:1),cute,cityscape, night, rain, wet, professional lighting, photon mapping, radiosity, physically-based rendering,",
-#     negative_prompt="EasyNegative, paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans,extra fingers,fewer fingers,strange fingers,bad hand",
-#     seed = -1,
-#     sampler_name="DPM++ SDE Karras",
-#     restore_faces=True,
-#     width=512, height=768,
-#     styles=[],
-#     cfg_scale=7,
-#     steps=30,
-# )
-# result1.images[0].save("result1.png")
-
-# ## Face mask
-# mask_list = face_mask.get_face_mask(result1.images[0])
-# for i in range(len(mask_list)):
-#     mask_list[i].save(f"mask_{i}.png")
-
-# ## Openpose hint
-
-
-# result2 = api.img2img(
-#     prompt="<lora:yml-000002:1> a MA_TRAINING_SUBJECT standing,(8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1.37),omertosa,1girl,(Kpop idol),cityscape, night, rain, wet, professional lighting, photon mapping, radiosity, physically-based rendering,",
-#     # prompt="a boy standing,(8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1.37),<lora:arknightsTexasThe_v10:1>,omertosa,1boy,(Kpop idol), (aegyo sal:1),cute,cityscape, night, rain, wet, professional lighting, photon mapping, radiosity, physically-based rendering,",
-#     negative_prompt="EasyNegative, paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans,extra fingers,fewer fingers,strange fingers,bad hand",
-#     images=[result1.images[0]],
-#     inpainting_fill=1,
-#     inpaint_full_res=False,
-#     mask_image=mask,
-#     seed = 11223348,
-#     sampler_name="DPM++ SDE Karras",
-#     restore_faces=True,
-#     width=512, height=768,
-#     cfg_scale=7,
-#     steps=30,
-#     denoising_strength=0.7
-# )
-# result2.images[0].save("result2.png")
-
 # prepare task, download base_img, generate pose, download lora.
 def prepare_task(task):
     # download base_img
-    base_img_url = ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task['scene_id'])
-    pose_img_url = ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task['scene_id'])
+    base_img_url = ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task.scene_id)
+    pose_img_url = ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task.scene_id)
     base_img = read_cv2img(base_img_url)
     pose_map = read_cv2img(pose_img_url)
 
     return base_img, pose_map
 
+"""
+Process model info in params, and set model for API.
+Delete model field from params to make it work for API args.
+"""
+def process_model(params: dict) -> int:
+    if not 'model' in params:
+        return 0
+    else:
+        options['sd_model_checkpoint'] = params.pop('model')
+        api.set_options(options)
+        return 1
+
+def generate_prompt_with_lora(prompt, lora):
+    if not prompt:
+        prompt = ''
+    prompt_with_lora = prompt + f",<lora:{lora}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
+    logging.info(f"prompt_with_lora: {prompt_with_lora}")
+    # replace person with subject name using regex
+    pattern = r'\b(?:a woman|a man|a girl|a boy)\b'
+    prompt_with_lora = re.sub(pattern, f"photo of a {conf.SUBJECT_PLACEHOLDER}, {templates.PROMPT_PHOTO}", prompt_with_lora)
+    return prompt_with_lora
+
+"""
+Render LORA on Task with prompt, using t2i method.
+Typically for comic style.
+- task: task dict
+    - task_id
+    - scene_id
+    - lora_list: list of lora name, e.g. user_1, user_2. <list>
+    - prompt: override default prompt. <str>
+    - params: overwrite default params, task specific params. <dict>
+"""
+def render_lora_on_prompt(task) -> Image:
+    scene = models.Scene.query.get(task.scene_id)
+    assert scene.prompt is not None, "  -- ❌ Prompt is required for t2i method."
+    logging.info(f"Running task {task.id}, scene: {task.scene_id}, lora: {task.person_id_list}")
+
+    lora_list = [ResourceMgr.get_lora_name_by_person_id(person_id) for person_id in task.person_id_list]
+    assert len(lora_list) == 1, "  -- ❌ Multi-person scene not implemented."
+    t2i_args = templates.LORA_T2I_PARAMS
+    if scene.params:
+        t2i_args.update(scene.params)
+    process_model(t2i_args)
+    prompt_with_lora = generate_prompt_with_lora(scene.prompt, lora_list[0])
+    rst = api.txt2img(
+        prompt=prompt_with_lora,
+        **t2i_args
+    ).images[0]
+
+    return rst
 
 
-def run_lora_on_base_img(task) -> Image:
-    logging.info(f"Running task {task['task_id']}, scene: {task['scene_id']}, lora: {task['lora_list']}")
-
+"""
+Render lora on Task with base_img, using i2i method.
+- task: task dict
+    - task_id
+    - scene_id
+    - lora_list: list of lora name, e.g. user_1, user_2. <list>
+    - prompt: override default prompt. <str>
+    - params: overwrite default params, task specific params. <dict>
+- return: rendered image, <PIL Image>
+"""
+def render_lora_on_base_img(task) -> Image:
+    logging.info(f"Running task {task.id}, scene: {task.scene_id}, lora: {task.person_id_list}")
+    scene = models.Scene.query.get(task.scene_id)
     base_img, pose_img = prepare_task(task)
     # load base_img
-    base_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task['scene_id']))
-    pose_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task['scene_id']))
-    lora_list = task['lora_list']
-    prompt = task['prompt']
-    i2i_args = task['params']
+    base_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task.scene_id))
+    pose_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task.scene_id))
+    # e.g. lora_list[0] = 'user_1', --> <lora:user_1:1> in prompt.
+    lora_list = [ResourceMgr.get_lora_name_by_person_id(person_id) for person_id in task.person_id_list]
+    prompt = scene.prompt
+    i2i_args = templates.LORA_INPAINT_PARAMS
+    if scene.params:
+        i2i_args.update(scene.params)
+    scene_id = task.scene_id
 
     image = base_img.copy()
     # detect face and draw mask
@@ -108,13 +131,7 @@ def run_lora_on_base_img(task) -> Image:
         raise Exception("Lora and Human count mismatch!")
     
     for i in range(len(mask_list)):
-        # prepare prompt with Lora
-        prompt_with_lora = prompt + f",<lora:{lora_list[i]}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
-        logging.info(f"prompt_with_lora: {prompt_with_lora}")
-        # replace person with subject name using regex
-        pattern = r'\b(?:a woman|a man|a girl|a boy)\b'
-        prompt_with_lora = re.sub(pattern, f"photo of a {conf.SUBJECT_PLACEHOLDER}, {templates.PROMPT_PHOTO}", prompt_with_lora)
-
+        prompt_with_lora =  generate_prompt_with_lora(prompt, lora_list[i])
         upper_body_landmarks = [0, 1, 14, 15, 16, 17]  # Landmark indices for upper body
         upper_body_coords = [(candidates[int(subset[i][k])][0], candidates[int(subset[i][k])][1]) for k in upper_body_landmarks if subset[i][k] != -1]
         # calculate foread
@@ -136,7 +153,7 @@ def run_lora_on_base_img(task) -> Image:
         char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=3)
         ######## save char_base_img
         if conf.DEBUG:
-            char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}")
+            char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_char_base_img_{i}")
             if not os.path.exists(os.path.dirname(char_base_path)):
                 os.makedirs(os.path.dirname(char_base_path))
             cv2.imwrite(char_base_path, char_base_img)
@@ -155,13 +172,13 @@ def run_lora_on_base_img(task) -> Image:
         ### Save tmp image for debug
         if conf.DEBUG:
             # create path if not exist
-            output_dir = os.path.dirname(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, task['scene_id']))
-            char_base_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_base_img_{i}"))
-            char_pose_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_pose_img_{i}"))
-            char_mask_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_char_mask_img_{i}"))
+            output_dir = os.path.dirname(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, scene_id))
+            char_base_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_char_base_img_{i}"))
+            char_pose_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_char_pose_img_{i}"))
+            char_mask_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_char_mask_img_{i}"))
             # linearly blend between pose and base image
             blended_img = Image.blend(char_base_img, char_pose_img, 0.5)
-            blended_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_blended_img_{i}"))
+            blended_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_blended_img_{i}"))
 
         char_controlnet_units = [webuiapi.ControlNetUnit(input_image=char_pose_img, model="control_sd15_openpose [fef5e48e]", resize_mode="Inner Fit (Scale to Fit)", guidance=0.9, guidance_end=0.7)]
         # log params
@@ -185,18 +202,11 @@ def run_lora_on_base_img(task) -> Image:
         if conf.DEBUG:
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
-            char_lora_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_lora_{i}.png"))
-            image.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{task['scene_id']}_result_{i}.png"))
-
-    # save final image
-    # create path if not exist
-    # output_path = ResourceMgr.get_resource_path(ResourceType.OUTPUT, task['task_id'])
-    # if not os.path.exists(os.path.dirname(output_path)):
-    #     os.makedirs(os.path.dirname(output_path))
-    # image.save(output_path)
+            char_lora_img.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_lora_{i}.png"))
+            image.save(ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_result_{i}.png"))
 
     # Log success
-    logging.info(f"    ----  ✅ Task {task['task_id']}, Scene {task['scene_id']} finished successfully.")
+    logging.info(f"    ----  ✅ Task {task.id}, Scene {scene_id} finished successfully.")
     return image
 
 
@@ -225,15 +235,15 @@ if __name__ == "__main__":
                             "seed": -1,
                             "sampler_name": "DPM++ SDE Karras",
                             "restore_faces": True,
-                            "width": conf.RENDERING_SETTINGS['size'][0],
-                            "height": conf.RENDERING_SETTINGS['size'][1],
+                            "width": conf.LORA_ROI_RENDERING_SETTINGS['size'][0],
+                            "height": conf.LORA_ROI_RENDERING_SETTINGS['size'][1],
                             "cfg_scale": 7,
                             "steps": 40,
                             "denoising_strength": 0.4
                         }
                     }
                     
-                    run_lora_on_base_img(task)
+                    render_lora_on_base_img(task)
                 except Exception as e:
                     logging.error(f" ❌ ERROR: {fn}, {e}")
                     continue

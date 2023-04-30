@@ -117,24 +117,19 @@ def task_render_scene(task_id):
             logging.info(f"  --- Downloading person lora {person.id}")
             bucket.get_object_to_file(person.model_file_key, lora_file_path)
     logging.info(f"  --- Local person lora finished")
-    lora_inpaint_params = templates.LORA_INPAINT_PARAMS
-    if scene.params:
-        lora_inpaint_params.update(scene.params)
-    task_dict = {
-        'task_id': task.id,
-        'scene_id': task.scene_id,
-        'lora_list': ['user_' + str(person.id) for person in person_list],
-        'prompt': '' if scene.prompt is None else scene.prompt,
-        'params': lora_inpaint_params
-    }
-    logging.info(f"    ----\n    task_dict: {task_dict}\n  ----")
-    rst_img = render.run_lora_on_base_img(task_dict)
-    # compose rst_img_key
-    rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
-    task.update_result_img_key(rst_img_key)
-    
-    write_PILimg(rst_img, task.result_img_key)
-    logging.info(f"  --- ✅ Render scene success.  save to oss: {task.result_img_key}")
+
+    try:
+        rst_img = render.render_lora_on_base_img(task)
+        # compose rst_img_key
+        rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
+        task.update_result_img_key(rst_img_key)
+        write_PILimg(rst_img, task.result_img_key)
+        logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
+    except Exception as e:
+        logging.error(f"  --- ❌ Render scene failed. {e}")
+        task.task_fail()
+
+    db.session.close()
     return 0
 
 def task_set_up_scene(scene_id):
