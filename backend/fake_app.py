@@ -1,3 +1,4 @@
+# Author: ChatGPT v4.0. Prompter: the humble Solesschong
 import os
 import oss2
 from flask import Flask, request, jsonify, render_template
@@ -56,12 +57,67 @@ def get_resource_oss_url(resource_type, id):
 def index():
     return render_template('fake_index.html')
 
+#####################
+## Scene Tab
 @app.route('/list_scenes', methods=['GET'])
 def list_scenes():
-    scenes = Scene.query.filter(Scene.action_type=='sd')
-    scene_list = [{'scene_id': scene.scene_id, 'base_img': f'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/{scene.base_img_key}', 'prompt': scene.prompt} for scene in scenes]
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+
+    scenes = Scene.query.paginate(page=page, per_page=per_page, error_out=False)
+    scene_list = [scene.to_dict() for scene in scenes.items]
+
     return jsonify(scene_list)
 
+
+@app.route('/api/scene/<int:scene_id>/update_params', methods=['POST'])
+def update_scene_params(scene_id):
+    updated_params = request.form.get('params')
+    scene = Scene.query.get(scene_id)
+
+    if scene is None:
+        return jsonify({"error": "Scene not found"}), 404
+
+    if updated_params == "":
+        scene.params = None
+    else:
+        try:
+            scene.params = json.loads(updated_params)
+        except json.JSONDecodeError:
+            return jsonify({"error": "Invalid JSON"}), 400
+
+    db.session.commit()
+    return jsonify({"success": True, "params": scene.params})
+
+@app.route('/update_scene_rate', methods=['POST'])
+def update_scene_rate():
+    scene_id = request.json.get('scene_id')
+    action = request.json.get('action')
+
+    scene = Scene.query.get(scene_id)
+
+    if not scene:
+        return jsonify({'error': 'Scene not found'}), 404
+
+    if action == 'add':
+        scene.rate += 1
+    elif action == 'minus':
+        scene.rate -= 1
+    else:
+        return jsonify({'error': 'Invalid action'}), 400
+
+    db.session.commit()
+    return jsonify({'success': True, 'rate': scene.rate})
+
+@app.route('/list_tasks/<int:scene_id>', methods=['GET'])
+def list_tasks_filtered(scene_id):
+    tasks = Task.query.filter_by(scene_id=scene_id).all()
+    task_list = [{'task_id': task.id, 'result_img_key': f'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/{task.result_img_key}'} for task in tasks]
+    return jsonify(task_list)
+
+
+#####################
+## Task Tab 
 @app.route('/list_tasks', methods=['GET'])
 def list_tasks():
     tasks = Task.query.all()
@@ -166,6 +222,7 @@ def create_person():
 
     return jsonify({"success": "Person created successfully", "person_id": person.id}), 201
 
+####################
 ### Stats tab
 @app.route('/get_task_stats', methods=['GET'])
 def task_stats():

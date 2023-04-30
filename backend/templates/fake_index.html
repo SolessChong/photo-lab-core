@@ -46,6 +46,10 @@
             <a class="nav-link" id="createPerson-tab" data-bs-toggle="tab" href="#createPerson" role="tab"
                 aria-controls="createPerson" aria-selected="true">Create Person</a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="scene-edit-tab" data-bs-toggle="tab" href="#scene-edit" role="tab"
+                aria-controls="scene-edit" aria-selected="false">Scene Edit</a>
+        </li>
     </ul>
     <div class="tab-content" id="mainTabsContent">
         <div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
@@ -99,6 +103,32 @@
                 </select>
             </div>
             <button id="generate-tasks">Generate Tasks</button>
+        </div>
+        <div class="tab-pane fade" id="scene-edit" role="tabpanel" aria-labelledby="scene-edit-tab">
+            <!-- Scene edit content -->
+            <div class="container">
+                <div id="scene-pagination" class="text-center mt-4">
+                    <nav aria-label="Scene pagination">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous" onclick="changeScenePage(-1)">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" id="scene-current-page">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next" onclick="changeScenePage(1)">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                
+                <!-- Add the scene edit HTML structure here -->
+            </div>
         </div>
     </div>
 
@@ -243,18 +273,18 @@
         });
 
         // Populate collection and person dropdowns
-    function loadCollectionsAndPersons() {
-        fetch('/get_collections')
-            .then(response => response.json())
-            .then(collections => {
-                const select = document.getElementById('collection-select');
-                collections.forEach(collection => {
-                    const option = document.createElement('option');
-                    option.value = collection;
-                    option.textContent = collection;
-                    select.appendChild(option);
+        function loadCollectionsAndPersons() {
+            fetch('/get_collections')
+                .then(response => response.json())
+                .then(collections => {
+                    const select = document.getElementById('collection-select');
+                    collections.forEach(collection => {
+                        const option = document.createElement('option');
+                        option.value = collection;
+                        option.textContent = collection;
+                        select.appendChild(option);
+                    });
                 });
-            });
 
         fetch('/get_persons')
             .then(response => response.json())
@@ -269,6 +299,139 @@
             });
         }
 
+        ////////////////////////////////////////////////
+        // Scene tab
+        function updateSceneRate(sceneId, action) {
+            fetch('/update_scene_rate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    scene_id: sceneId,
+                    action: action
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update rate value in the DOM
+                    const rateElem = document.querySelector(`.scene-info[data-scene-id="${sceneId}"] .rate-value`);
+                    if (rateElem) {
+                        rateElem.textContent = data.rate;
+                    }
+                } else {
+                    console.error("Error updating rate:", data.error);
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+        }
+
+        // Helper functions
+        function createImageElement(src, className) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.classList.add(className);
+            return img;
+        }
+
+        function updateSceneParams(sceneId, params) {
+            fetch(`/api/scene/${sceneId}/update_params`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({ params: JSON.stringify(params) }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        console.log("Params updated");
+                    } else {
+                        console.error("Error updating params:", data.error);
+                    }
+                })
+                .catch((error) => console.error("Error:", error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load scene edit data when the "Scene Edit" tab is clicked
+            document.getElementById('scene-edit-tab').addEventListener('click', loadSceneEditData);
+        });
+
+        let sceneCurrentPage = 1;
+
+        function loadSceneEditData(page = 1, per_page = 10) {
+            sceneCurrentPage = page;
+
+            // Fetch the scenes
+            fetch(`/list_scenes?page=${page}&per_page=${per_page}`)
+                .then(response => response.json())
+                .then(scenes => {
+                    const container = document.querySelector('#scene-edit .container');
+                    container.innerHTML = '';
+
+                    scenes.forEach(scene => {
+                        // Create scene row
+                        const sceneRow = document.createElement('div');
+                        sceneRow.className = 'row scene-row';
+                        container.appendChild(sceneRow);
+
+                        // Add base_img
+                        const baseImgCol = document.createElement('div');
+                        baseImgCol.className = 'col-2';
+                        const baseImg = document.createElement('img');
+                        baseImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.base_img_key}`;
+                        baseImg.className = 'img-thumbnail';
+                        baseImgCol.appendChild(baseImg);
+                        sceneRow.appendChild(baseImgCol);
+
+                        // Add hint_img if exists
+                        if (scene.hint_img_list && scene.hint_img_list.length > 0) {
+                            const hintImgCol = document.createElement('div');
+                            hintImgCol.className = 'col-2';
+                            const hintImg = document.createElement('img');
+                            hintImg.src = scene.hint_img_list[0];
+                            hintImg.className = 'img-thumbnail';
+                            hintImgCol.appendChild(hintImg);
+                            sceneRow.appendChild(hintImgCol);
+                        }
+
+                        // Fetch tasks for this scene
+                        fetch(`/list_tasks?scene_id=${scene.scene_id}`)
+                            .then(response => response.json())
+                            .then(tasks => {
+                                const tasksCol = document.createElement('div');
+                                tasksCol.className = 'col';
+                                sceneRow.appendChild(tasksCol);
+
+                                tasks.forEach(task => {
+                                    const taskImg = document.createElement('img');
+                                    taskImg.src = task.result_img_key;
+                                    taskImg.className = 'img-thumbnail task-img';
+                                    tasksCol.appendChild(taskImg);
+                                });
+                            });
+
+                        // Add additional scene info and editable fields
+                        // Add your code here for scene.scene_id, scene.collection_name, scene.prompt, scene.params, and scene.rate
+
+                    });
+                })
+                .catch(error => console.error('Error fetching scenes:', error));
+        }
+
+        function changeScenePage(offset) {
+            sceneCurrentPage += offset;
+            if (sceneCurrentPage < 1) sceneCurrentPage = 1; // Ensure the page number doesn't go below 1
+            loadSceneEditData(sceneCurrentPage);
+            document.getElementById('scene-current-page').textContent = sceneCurrentPage;
+        }
+
+
+
+        ////////////////////////////////////////////////
+        // Create Task Tab
         document.addEventListener('DOMContentLoaded', loadCollectionsAndPersons);
 
         // Generate tasks
