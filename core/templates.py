@@ -1,3 +1,5 @@
+# Where magic happens
+
 from core import conf
 
 i2i_para_template = {
@@ -247,17 +249,28 @@ i2i_lut = {
 }
 
 LORA_INPAINT_PARAMS = {
-    "negative_prompt": "EasyNegative, paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans,extra fingers,fewer fingers,strange fingers,bad hand",
+    "negative_prompt": "EasyNegative, paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans,extra fingers,fewer fingers,strange fingers,bad hand, NSFW, nude, sexy, porn, underwear, big breasts, pussy,",
     "inpainting_fill": 1,
     "inpaint_full_res": False,
     "seed": -1,
     "sampler_name": "DPM++ SDE Karras",
     "restore_faces": True,
-    "width": conf.RENDERING_SETTINGS['size'][0],
-    "height": conf.RENDERING_SETTINGS['size'][1],
+    "width": conf.LORA_ROI_RENDERING_SETTINGS['size'][0],
+    "height": conf.LORA_ROI_RENDERING_SETTINGS['size'][1],
     "cfg_scale": 7,
     "steps": 50,
     "denoising_strength": 0.4
+}
+
+LORA_T2I_PARAMS = {
+    "negative_prompt": "EasyNegative, paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans,extra fingers,fewer fingers,strange fingers,bad hand, NSFW, nude, sexy, porn, underwear, big breasts, pussy,",
+    "seed": -1,
+    "sampler_name": "DPM++ SDE Karras",
+    "restore_faces": True,
+    "width": conf.DIRECT_RENDERING_SETTINGS['size'][0],
+    "height": conf.DIRECT_RENDERING_SETTINGS['size'][1],
+    "cfg_scale": 7,
+    "steps": 30,
 }
 
 PROMPT_PHOTO = ",(8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1.37),professional lighting, photon mapping, radiosity, physically-based rendering,"
@@ -267,5 +280,5 @@ def make_params(template, lut, **kwargs):
         if k in lut:
             template[lut[k]] = v
     params = [template[f'arg{i + 1}'] for i in range(len(template.items()))]
-    return template
+    return params
 

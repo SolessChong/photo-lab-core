@@ -15,3 +15,5 @@
 1. Config manager
     1. Dynamic loading config from file
     1. Manage config overwrite using Mgr.
+1. Use WEBUI's batch rendering feature to accelerate.
+1. Cache more models for performance.
