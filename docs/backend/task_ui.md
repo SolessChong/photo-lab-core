@@ -21,3 +21,19 @@ Show all tasks. Task info is shown in data panel. All task shown in two column f
                 group([signature('render_scene', (task_id,), immutable=True) for task_id in task_id_list])
             )
             ```
+
+## Scene edit view
+1. Show scene info in a complete row. Card layout.
+1. In each row, list the scene base_img at the left most position.
+1. In each row, next to base_img, is hint_img, if exists.
+1. In each row, list all the tasks for this scene, in a horizontal flow layout. `Task.scene_id == scene.scene_id` is the filter.
+1. Also show the additional info of scene:
+    1. `scene.scene_id`
+    1. `scene.collection_name`
+    1. `scene.prompt`
+    1. `scene.params`, a json string, show in a json editor, with expandable tree view, editable each field. Save button to update this field. If frontend editor is empty, save python none (Mysql NULL) object for this.
+    1. `scene.rate`, a int. Add 'add', 'minus' button for this field, click will add or minus 1, update the db.
+
+
+## Utils
+Image url: https://photolab-test.oss-cn-shenzhen.aliyuncs.com/ + image's some `key` field in db.
