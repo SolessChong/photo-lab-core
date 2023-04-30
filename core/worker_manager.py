@@ -83,6 +83,8 @@ def render(Session):
             worker.task_render_scene(id)
         except Exception as e:
             print(f"Error: {e}")
+            session = Session()
+            session.begin()
             task = models.Task.query.get(id)
             task.status = 'fail'
             a_c_c(task, db)

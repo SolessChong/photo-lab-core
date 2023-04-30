@@ -156,13 +156,17 @@ def task_render_scene(task_id):
         'params': lora_inpaint_params
     }
     logging.info(f"    ----\n    task_dict: {task_dict}\n  ----")
-    rst_img = render.run_lora_on_base_img(task_dict)
-    # compose rst_img_key
-    rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
-    task.update_result_img_key(rst_img_key)
-    
-    write_PILimg(rst_img, task.result_img_key)
-    logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
+    try:
+        rst_img = render.run_lora_on_base_img(task_dict)
+        # compose rst_img_key
+        rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
+        task.update_result_img_key(rst_img_key)
+        write_PILimg(rst_img, task.result_img_key)
+        logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
+    except Exception as e:
+        logging.error(f"  --- ❌ Render scene failed. {e}")
+        task.task_fail()
+
     db.session.close()
     return 0
 
