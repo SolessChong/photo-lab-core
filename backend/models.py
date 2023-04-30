@@ -114,6 +114,10 @@ class Task(db.Model):
         self.status = 'finish'
         db.session.commit()
 
+    def task_fail(self):
+        self.status = 'fail'
+        db.session.commit()
+
     def get_person_id_list(self):
         if self.person_id_list is None:
             return []
