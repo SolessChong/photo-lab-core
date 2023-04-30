@@ -20,6 +20,24 @@
             max-width: 100%;
             height: auto;
         }
+        .scene-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .scene-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        .task-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-right: 5px;
+        }
     </style>
 </head>
 
@@ -107,6 +125,9 @@
         <div class="tab-pane fade" id="scene-edit" role="tabpanel" aria-labelledby="scene-edit-tab">
             <!-- Scene edit content -->
             <div class="container">
+                <div id="scene-edit-data">
+                    <!-- Add the scene edit HTML structure here -->
+                </div>
                 <div id="scene-pagination" class="text-center mt-4">
                     <nav aria-label="Scene pagination">
                         <ul class="pagination">
@@ -126,9 +147,8 @@
                         </ul>
                     </nav>
                 </div>
-                
-                <!-- Add the scene edit HTML structure here -->
             </div>
+            <button id="load-more-scenes" class="btn btn-primary" onclick="loadMoreScenes()">Load More</button>
         </div>
     </div>
 
@@ -214,9 +234,6 @@
             taskContainer.appendChild(column);
         }
 
-
-
-
         function fetchTasks(page) {
             fetch(`/get_tasks?page=${page}`)
             .then((response) => response.json())
@@ -258,7 +275,7 @@
         }
 
         // Initialize Task Viewer
-        fetchTasks(currentPage);
+        // fetchTasks(currentPage);
 
         ////////////////////////////////////////////////
         // Create Task Tab
@@ -354,21 +371,22 @@
                 .catch((error) => console.error("Error:", error));
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Load scene edit data when the "Scene Edit" tab is clicked
-            document.getElementById('scene-edit-tab').addEventListener('click', loadSceneEditData);
-        });
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     // Load scene edit data when the "Scene Edit" tab is clicked
+        //     document.getElementById('scene-edit-tab').addEventListener('click', loadSceneEditData);
+        // });
+        document.getElementById('scene-edit-tab').addEventListener('shown.bs.tab', loadSceneEditData);
 
-        let sceneCurrentPage = 1;
+        let currentScenePage = 1;
 
-        function loadSceneEditData(page = 1, per_page = 10) {
-            sceneCurrentPage = page;
-
+        function loadSceneEditData() {
             // Fetch the scenes
-            fetch(`/list_scenes?page=${page}&per_page=${per_page}`)
+            fetch('/list_scenes?page=${currentScenePage}')
                 .then(response => response.json())
-                .then(scenes => {
-                    const container = document.querySelector('#scene-edit .container');
+                .then(data => {
+                    const scenes = data.scenes;
+                    const total_pages = data.total_pages;
+                    const container = document.querySelector('#scene-edit-data');
                     container.innerHTML = '';
 
                     scenes.forEach(scene => {
@@ -398,7 +416,7 @@
                         }
 
                         // Fetch tasks for this scene
-                        fetch(`/list_tasks?scene_id=${scene.scene_id}`)
+                        fetch(`/list_tasks/${scene.scene_id}`)
                             .then(response => response.json())
                             .then(tasks => {
                                 const tasksCol = document.createElement('div');
@@ -414,20 +432,32 @@
                             });
 
                         // Add additional scene info and editable fields
-                        // Add your code here for scene.scene_id, scene.collection_name, scene.prompt, scene.params, and scene.rate
-
+                        const sceneInfo = document.createElement('div');
+                        sceneInfo.innerHTML = `
+                            <p><strong>Scene ID:</strong> ${scene.scene_id}</p>
+                            <p><strong>Collection Name:</strong> ${scene.collection_name}</p>
+                            <p><strong>Prompt:</strong> ${scene.prompt}</p>
+                            <p><strong>Params:</strong></p>
+                            <pre>${JSON.stringify(scene.params, null, 2)}</pre>
+                            <button onclick="updateSceneParams(${scene.scene_id}, {});">Save Params</button>
+                            <p><strong>Rate:</strong> ${scene.rate}</p>
+                            <button onclick="updateSceneRate(${scene.scene_id}, 'add');">Add</button>
+                            <button onclick="updateSceneRate(${scene.scene_id}, 'minus');">Minus</button>
+                        `;
+                        sceneRow.appendChild(sceneInfo);
                     });
+                    // If there are no more scenes to load, hide the "Load More" button
+                    if (currentScenePage >= total_pages) {
+                        document.getElementById('load-more-scenes').style.display = 'none';
+                    }
                 })
                 .catch(error => console.error('Error fetching scenes:', error));
         }
 
-        function changeScenePage(offset) {
-            sceneCurrentPage += offset;
-            if (sceneCurrentPage < 1) sceneCurrentPage = 1; // Ensure the page number doesn't go below 1
-            loadSceneEditData(sceneCurrentPage);
-            document.getElementById('scene-current-page').textContent = sceneCurrentPage;
+        function loadMoreScenes() {
+            currentScenePage += 1;
+            loadSceneEditData();
         }
-
 
 
         ////////////////////////////////////////////////
