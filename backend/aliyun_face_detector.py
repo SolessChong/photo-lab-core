@@ -31,12 +31,13 @@ def aliyun_face_detect(img):
         # 初始化Client
         client = Client(config)
         response = client.detect_face_advance(detect_face_request, runtime)
+        return response
         
     except Exception as error:
         print("Error:", error)
         print("Error code:", error.code)
     
-    return response
+    return None
 
 # 检测png图片中的人脸
 def detect_face(img):
@@ -79,7 +80,8 @@ def crop_face_pil(image_data, face_coordinates):
 
     # 截取图像中的人脸区域
     cropped_face = img.crop((left, top, right, bottom))
-
+    cropped_face = cropped_face.convert("RGB")
+    
     # 将截取后的图像转换为字节对象
     cropped_face_bytes = io.BytesIO()
     cropped_face.save(cropped_face_bytes, format='JPEG')

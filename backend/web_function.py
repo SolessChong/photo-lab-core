@@ -1,30 +1,69 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import secrets
+import requests
 
 from . import utils
 from .utils import(get_signed_url, oss_put, db_execute)
 from . import models
+from sqlalchemy import and_
+
+
+def meiyan_face(img_url): 
+    url = 'https://api-cn.faceplusplus.com/facepp/v2/beautify'  # 替换为你的API endpoint
+
+    data = {
+        'api_key': 'nF8M_ebap8esjHo72acnNgtxaauansrM',
+        'api_secret': 'Pc1BaJ6qZUfL02peelpc-rlnukU-ZhRD',
+        'image_url': img_url  # 替换为你的图片URL
+    }
+
+    response = requests.post(url, data=data)
+
+    # 检查请求是否成功
+    if response.status_code == 200:
+        print('face++ Request was successful.')
+        return response.json()['result']
+    else:
+        print('Request failed.')
+        print('Status code: ', response.status_code)
+        print('Response: ', response.text)
+    return None
 
 def get_scenes():
-    img_types = request.args.get('img_type', None)
     action_types = request.args.get('action_type', None)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 100, type=int)
+    meiyan =  request.args.get('meiyan', 0, type=int)
 
-    if img_types is None or action_types is None:
+    if action_types is None:
         return {"status": "error", "message": "Missing img_type or action_type parameters"}, 400
 
     result = []
 
-    for img_type in img_types.split(','):
-        for action_type in action_types.split(','):
-            select_query = "SELECT * FROM scenes WHERE img_type=%s AND action_type=%s"
-            scenes = utils.db_get(select_query, (img_type, action_type))
-            for scene in scenes:
-                if scene['img_url']:
-                    scene['signed_url'] = get_signed_url(scene['img_url'])
-                if scene['base_img_key']:
-                    scene['signed_url'] = get_signed_url(scene['base_img_key'])
-                result.append(scene)
+    total = models.Scene.query.filter(and_(models.Scene.setup_status=='finish', models.Scene.action_type=='sd')).count()
+    print(f'{total} scenes found')
+
+    scenes = models.Scene.query.filter(and_(models.Scene.setup_status=='finish', models.Scene.action_type=='sd')).paginate(page=page, per_page=per_page, error_out=False)
+
+
+    for scene in scenes:
+        bb = {}
+        if scene.base_img_key:
+            bb['img_url'] = get_signed_url(scene.base_img_key)
+
+        tasks = models.Task.query.filter_by(status='finish', scene_id = scene.scene_id).all()
+        bb['task_img_list'] = []
+        bb['meiyan_img_list'] = []
+        for task in tasks:
+            bb['task_img_list'].append(utils.get_signed_url(task.result_img_key))
+            if meiyan == 1:
+                bb['meiyan_img_list'].append(meiyan_face(utils.get_signed_url(task.result_img_key)))
+        bb['params'] = scene.params
+        bb['rate'] = scene.rate
+        bb['scene_id'] = scene.scene_id
+
+        result.append(bb)
 
     return jsonify(result)
 
