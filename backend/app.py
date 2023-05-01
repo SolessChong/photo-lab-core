@@ -72,13 +72,14 @@ def get_user():
                 print(face_coordinates)
                 cropped_face = aliyun_face_detector.crop_face_pil(image_data, face_coordinates)
 
-                person.head_img_key = f'head_img/{user_id}.jpg'
+                person.head_img_key = f'head_img/{person.name}.jpg'
                 utils.oss_put(person.head_img_key, cropped_face)
 
                 db.session.commit()
 
         head_img_url = utils.get_signed_url(person.head_img_key)
         result_persons.append({
+            "person_id": person.id,
             "person_name": person.name,
             "head_img_url": head_img_url,
             "lora_train_status": person.lora_train_status,
@@ -86,7 +87,9 @@ def get_user():
     
     response = {
         "data": {
-            "persons": result_persons
+            "persons": result_persons,
+            "min_img_num": 10,
+            "max_img_num": 20
         },
         "msg": "get user successfully",
         "code": 0
@@ -129,7 +132,6 @@ def upload_payment():
 
     return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
 
-
 @app.route('/api/get_example_images', methods=['GET'])
 def get_example_images():
     scenes = models.Scene.query.filter(models.Scene.action_type == 'example', models.Scene.base_img_key != None).all()
@@ -161,13 +163,17 @@ def upload_source():
     img_file = request.files['img_file']
     png_img = utils.convert_to_png_bytes(img_file)
     jpg_img = utils.convert_to_jpg_bytes(png_img)
-    if aliyun_face_detector.detect_face(jpg_img) != 1:
-        return {"msg": "上传失败，图片中没有人脸或有多个人脸", "code": 1, "data" : ''}, 200
 
     user_id = request.form['user_id']
     source_type = request.form.get('type', None)
     person_name = request.form['person_name']
 
+
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+    if face_count != 1:
+        logging.info(f'{user_id}上传失败，图片中有{face_count}人脸')
+        return {"msg": f"上传失败，图片中有{face_count}人脸", "code": 1, "data" : ''}, 200
+    
     # 查找 persons 表中是否存在相应的记录
     person = models.Person.query.filter_by(user_id=user_id, name=person_name).first()
     if not person:
@@ -207,14 +213,25 @@ def start_sd_generate():
 
     user_id = request.form['user_id']
     person_id_list = json.loads(request.form['person_id_list'])
+    if (len(person_id_list) == 0):
+        return {"status": "error", "message": "person_id_list is empty"}, 400
+    try:
+        person_id_list = [int(person_id) for person_id in person_id_list]
+    except Exception as e:
+        return {"status": "error", "message": "Invalid person_id_list"}, 400
     person_id_list.sort()
     category = request.form['category']
-    limit = request.form.get('limit', 30, type=int)
+    limit = request.form.get('limit', 50, type=int)
 
+    
     #TODO: use new method to choose which scene to render
     # 1. Get all scenes with the same category
-    scenes = models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type=='sd', models.Scene.hint_img_list != None).all()
-
+    scenes = models.Scene.query.filter(
+        models.Scene.img_type==category, 
+        models.Scene.action_type=='sd', 
+        models.Scene.setup_status == 'finish'
+    ).order_by(models.Scene.rate.desc()).all()
+    
     # 2. Check for existing tasks and calculate new combinations
     new_combinations = []
     for scene in scenes:
@@ -227,12 +244,14 @@ def start_sd_generate():
     # 3. start train lora 
     for person_id in person_id_list:
         person = models.Person.query.filter(models.Person.id == person_id).first()
+        if not person:
+            return {"status": "error", "message": f"person_id {person_id} not found"}, 400
         if person and person.lora_train_status is None:
             person.lora_train_status = 'wait' # 等待woker_manager启动训练任务
             db.session.commit()
             logger.info(f'{user_id} start to  train lora {person.id}')
 
-    pack = models.Pack(user_id=user_id, total_img_num=m, start_time= datetime.utcnow())
+    pack = models.Pack(user_id=user_id, total_img_num=m, start_time= datetime.utcnow(), description=f'合集{m}张')
     db.session.add(pack)
     db.session.commit()
     for scene_id, person_id_list in new_combinations:
@@ -245,7 +264,7 @@ def start_sd_generate():
         )
         db.session.add(task)
         db.session.commit()
-        
+
     # --------------------------- 以上是SD 生成任务 -------------------------------
 
     # --------------------------- 以下是启动mj的任务 ------------------------------
@@ -257,20 +276,24 @@ def start_sd_generate():
         'msg': f'启动{m}张照片的AI拍摄任务',
         'data': {
             "total_time_seconds":3600,
-            "img_num": m,
+            "total_img_num": m,
             "des": f"AI拍摄完成后，您将获得{m}张照片"
         }
     }
     return jsonify(response)
 
+# 为pack增加img图片，和单纯增加pack两种情况都会调用此函数
 def create_new_pack(pack_dict, pack_id, img_key):
-    img_url = utils.get_signed_url(img_key)
-
     if not pack_id in pack_dict:
         pack = models.Pack.query.filter_by(pack_id=pack_id).first()
-        if not pack.banner_img_key:
+        if img_key and (not pack.banner_img_key):
             image_data = utils.oss_get(img_key)
-            face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+            face_coordinates = None
+            try:
+                face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+            except Exception as e:
+                logging.error(f'get_face_coordinates error: {e}')
+                        
             banner_img = aliyun_face_detector.crop_16_9_pil(image_data, face_coordinates)
             pack.banner_img_key = f'banner_img/{pack_id}.jpg'
             utils.oss_put(pack.banner_img_key , banner_img)
@@ -282,18 +305,24 @@ def create_new_pack(pack_dict, pack_id, img_key):
             "total_img_num": pack.total_img_num,
             "is_unlock": pack.is_unlock,
             "imgs": [],
-            "finish_time_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+            "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
             'total_seconds': 60*60,
+            # 'banner_img_url': utils.get_signed_url('static/test1.png'),
+            'banner_img_url': None,
             'heights': [],
             'widths': [],
-            'banner_img_url': utils.get_signed_url(pack.banner_img_key),
             'price': pack.price,
         }
+        if pack.banner_img_key:
+            pack_dict[pack_id]['banner_img_url'] = utils.get_signed_url(pack.banner_img_key)
 
-    height, width = utils.get_image_size(img_url)
-    pack_dict[pack_id]["imgs"].append(img_url)
-    pack_dict[pack_id]["heights"].append(height)
-    pack_dict[pack_id]["widths"].append(width)
+    if img_key:
+        img_url = utils.get_signed_url(img_key, is_shuiyin= (not pack_dict[pack_id]['is_unlock']))
+        # after change to new height, width. 10x faster!
+        height, width = utils.get_oss_image_size(img_key)
+        pack_dict[pack_id]["imgs"].append(img_url)
+        pack_dict[pack_id]["heights"].append(height)
+        pack_dict[pack_id]["widths"].append(width)
 
 # 获取某个用户的所有已经生成的图片，返回结果一个packs数组，
 # python后端程序获取所有generated_images表中，符合user_id 的列。然后将获得的列，把相同的pack_id合并在一个pack项。pack项的值还包括
@@ -301,18 +330,25 @@ def create_new_pack(pack_dict, pack_id, img_key):
 # 其中pack_id,  description, total_img_num可以直接从数据库packs表中直接得到，finish_time_left计算公式为当前时间减去pack的start_time， imgs则为所有列对应img_url生成的oss可访问地址。
 @app.route('/api/get_generated_images', methods=['GET'])
 def get_generated_images():
-    user_id = request.args.get('user_id')
+    user_id = request.args.get('user_id', None)
     if user_id is None:
         return jsonify({"error": "user_id is required"}), 400
 
+    logging.info(f'get_generated_images user_id: {user_id}')
     pack_dict = {}
     images = models.GeneratedImage.query.filter(models.GeneratedImage.user_id == user_id, models.GeneratedImage.img_url != None).all()
     for image in images:
         create_new_pack(pack_dict, image.pack_id, image.img_url)
 
     tasks = models.Task.query.filter(models.Task.user_id == user_id, models.Task.result_img_key != None).all()
+    logging.info(f'adding tasks number: {len(tasks)}')
     for task in tasks:
         create_new_pack(pack_dict, task.pack_id, task.result_img_key)
+
+    packs = models.Pack.query.filter(models.Pack.user_id == user_id).all()
+    for pack in packs:
+        create_new_pack(pack_dict, pack.pack_id, None)
+    
 
     response = {
         'code': 0,
@@ -326,6 +362,14 @@ def get_generated_images():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/scene_editor')
+def scene_editor():
+    return render_template('scene_editor.html')
+
+@app.route('/meiyan_test')
+def meiyan_test():
+    return render_template('meiyan_test.html')
 
 # 获取场景列表
 @app.route('/get_scenes', methods=['GET'])
@@ -344,6 +388,22 @@ def upload_scene_route():
 @app.route('/update_scene', methods=['POST'])
 def update_scene_route():
     return web_function.update_scene()
+
+@app.route('/web/update_scene', methods=['POST'])
+def update_scene():
+    data = request.get_json()
+    scene_id = data.get('scene_id')
+    params = data.get('params')
+    rate = data.get('rate')
+    print(f'{scene_id}, {params}, {rate}')
+    scene = models.Scene.query.get(scene_id)
+    if scene:
+        # scene.params = params
+        scene.rate = rate
+        db.session.commit()
+        return jsonify({'status': 'success'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Scene not found'}), 404
     
 if __name__ == '__main__':
     # Add argument parser: -p: port

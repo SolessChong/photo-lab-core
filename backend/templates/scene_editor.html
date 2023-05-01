@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scene Editor</title>
+    <style>
+        .scene-row {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        .scene-image {
+            width: 700px;
+            height: auto;
+            object-fit: contain;
+            margin-right: 20px;
+        }
+        .task-images {
+            display: flex;
+            overflow-x: auto;
+            align-items: center;
+            gap: 20px;
+        }
+        .task-images img {
+            width: 700px;
+            height: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        .params-input, .rate-input, .scene-id {
+            width: 30%;
+        }
+        .update-section {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="scenes">
+    </div>
+    <div id="pagination">
+    </div>
+    <script>
+        async function fetchScenes(page) {
+            const response = await fetch("/get_scenes?action_type=sd&page=" + page);
+            const scenes = await response.json();
+            scenes.forEach(scene => {
+                var scenesDiv = document.getElementById('scenes');
+                var sceneRow = document.createElement('div');
+                sceneRow.classList.add('scene-row');
+
+                var sceneImg = document.createElement('img');
+                sceneImg.classList.add('scene-image');
+                sceneImg.src = scene.img_url;
+                sceneRow.appendChild(sceneImg);
+
+                var taskImagesDiv = document.createElement('div');
+                taskImagesDiv.classList.add('task-images');
+                if (scene.task_img_list) {
+                    scene.task_img_list.forEach(taskImgUrl => {
+                        var taskImg = document.createElement('img');
+                        taskImg.src = taskImgUrl;
+                        taskImagesDiv.appendChild(taskImg);
+                    });
+                }
+                sceneRow.appendChild(taskImagesDiv);
+
+                var updateSection = document.createElement('div');
+                updateSection.classList.add('update-section');
+
+                var sceneIdDiv = document.createElement('div');
+                sceneIdDiv.classList.add('scene-id');
+                sceneIdDiv.textContent = "Scene ID: " + scene.scene_id;
+                updateSection.appendChild(sceneIdDiv);
+
+                var paramsInput = document.createElement('input');
+                paramsInput.classList.add('params-input');
+                paramsInput.value = JSON.stringify(scene.params);  // Assuming `params` is a JSON object
+                updateSection.appendChild(paramsInput);
+
+                var rateInput = document.createElement('input');
+                rateInput.classList.add('rate-input');
+                rateInput.value = scene.rate;
+                updateSection.appendChild(rateInput);
+
+                var updateButton = document.createElement('button');
+                updateButton.textContent = '确认';
+                updateButton.onclick = function() {
+                    updateScene(scene.scene_id, paramsInput.value, rateInput.value);
+                };
+                updateSection.appendChild(updateButton);
+
+                sceneRow.appendChild(updateSection);
+                scenesDiv.appendChild(sceneRow);
+            });
+        }
+        
+        fetchScenes(1);  // Call the function to fetch and display scenes on page 1
+        
+        function updateScene(sceneId, params, rate) {
+            fetch('/web/update_scene', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scene_id: sceneId, params: params, rate: rate })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Scene updated successfully');
+                } else {
+                    alert('Error updating scene: ' + data.message);
+                }
+            });
+        }
+
+        // Pagination logic
+        var paginationDiv = document.getElementById('pagination');
+        for (let i = 1; i <= 30; i++) {  // Replace 10 with the actual number of pages
+            var pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.onclick = function() {
+                document.getElementById('scenes').innerHTML = '';  // Clear the current scenes
+                fetchScenes(i);
+            };
+            paginationDiv.appendChild(pageButton);
+        }
+    </script>
+</body>
+</html>
