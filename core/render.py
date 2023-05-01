@@ -52,6 +52,7 @@ def process_model(params: dict) -> int:
     else:
         options['sd_model_checkpoint'] = params.pop('model')
         api.set_options(options)
+        logging.info(f"  -- 🔄 Switching to model: {options['sd_model_checkpoint']}")
         return 1
 
 def generate_prompt_with_lora(prompt, lora):
@@ -84,8 +85,11 @@ def render_lora_on_prompt(task) -> Image:
     t2i_args = templates.LORA_T2I_PARAMS
     if scene.params:
         t2i_args.update(scene.params)
-    process_model(t2i_args)
+    
     prompt_with_lora = generate_prompt_with_lora(scene.prompt, lora_list[0])
+    logging.info(f"prompt_with_lora: {prompt_with_lora}, t2i_args: {t2i_args}")
+
+    process_model(t2i_args)
     rst = api.txt2img(
         prompt=prompt_with_lora,
         **t2i_args

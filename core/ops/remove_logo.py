@@ -19,7 +19,7 @@ import numpy as np
 import typing
 from backend import models
 from core.libs.openpose.util import draw_bodypose
-from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg
+from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg, write_PILimg
 
 
 # create API client with custom host, port
@@ -32,7 +32,7 @@ api.set_options(options)
 Remove logo on position
 1. left top; 2. right top; 3. left bottom; 4. right bottom; 5. middle top; 6. middle bottom
 """
-def remove_logo(img: Image, position: int, length: int=600, width: int=100) -> Image:
+def remove_logo_from_image(img: Image, position: int, length: int=600, width: int=100) -> Image:
     img_size = img.size
     # render_size = conf.LORA_ROI_RENDERING_SETTINGS['size']  # Replace with your desired render size
     render_size = (1800, 512)
@@ -95,11 +95,17 @@ def remove_logo(img: Image, position: int, length: int=600, width: int=100) -> I
 
     return img
 
+def remove_scene_logo(scene_id):
+    oss_url = ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, scene_id)
+    img = read_PILimg(oss_url)
+    img_rst = remove_logo_from_image(img, 3, length=200, width=350)
+    write_PILimg(img_rst, oss_url)
+
 
 if __name__ == "__main__":
     from backend.extensions import app, db
     app.app_context().push()
     scene = models.Scene.query.get(2885)
     img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, scene.scene_id))
-    img_rst = remove_logo(img, 3, length=200, width=350)
+    img_rst = remove_logo_from_image(img, 3, length=200, width=350)
     img_rst.save('test_remove_logo.png')

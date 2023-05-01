@@ -30,6 +30,7 @@ class TestRender(unittest.TestCase):
         self.task = models.Task(
             person_id_list=[8],
             scene_id=self.scene.scene_id,
+            status="wait",
         )
         db.session.add(self.task)
         db.session.commit()
