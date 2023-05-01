@@ -68,6 +68,10 @@
             <a class="nav-link" id="scene-edit-tab" data-bs-toggle="tab" href="#scene-edit" role="tab"
                 aria-controls="scene-edit" aria-selected="false">Scene Edit</a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="person-tab" data-bs-toggle="tab" href="#person" role="tab"
+                aria-controls="person" aria-selected="false">Person</a>
+        </li>
     </ul>
     <div class="tab-content" id="mainTabsContent">
         <div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
@@ -150,6 +154,13 @@
             </div>
             <button id="load-more-scenes" class="btn btn-primary" onclick="loadMoreScenes()">Load More</button>
         </div>
+        <div class="tab-pane fade" id="person" role="tabpanel" aria-labelledby="person-tab">
+            <!-- Person content -->
+            <div class="container" id="person-container">
+                <!-- Person cards will be populated here -->
+            </div>
+        </div>
+        
     </div>
 
     <script>
@@ -214,7 +225,7 @@
 
             const img = document.createElement('img');
             img.src = 'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/' + task.result_img_key;
-            img.classList.add('card-img-top', 'task-img');
+            img.classList.add('card-img-top');
 
             // Add the Fancybox functionality
             const lightboxLink = document.createElement('a');
@@ -476,6 +487,60 @@
                 body: JSON.stringify({ collection_name: collectionName, person_id: personId })
             });
         });
+
+        ////////////////////////////////////////////////
+        // Person Tab
+        function loadPersonData() {
+            // Fetch the persons
+            fetch('/list_persons')
+                .then(response => response.json())
+                .then(persons => {
+                    const container = document.querySelector('#person-container');
+                    container.innerHTML = '';
+
+                    persons.forEach(person => {
+                        // Create person card
+                        const personCard = document.createElement('div');
+                        personCard.className = 'card mb-3';
+                        container.appendChild(personCard);
+
+                        // Create person card body
+                        const cardBody = document.createElement('div');
+                        cardBody.className = 'card-body';
+                        personCard.appendChild(cardBody);
+
+                        // Add person name
+                        const personName = document.createElement('h5');
+                        personName.className = 'card-title';
+                        personName.textContent = person.name;
+                        cardBody.appendChild(personName);
+
+                        // Add person photos container
+                        const photosContainer = document.createElement('div');
+                        photosContainer.className = 'd-flex flex-row flex-wrap';
+                        cardBody.appendChild(photosContainer);
+
+                        // Fetch photos for this person
+                        fetch(`/list_sources?person_id=${person.id}`)
+                            .then(response => response.json())
+                            .then(sources => {
+                                sources.forEach(source => {
+                                    const photo = document.createElement('img');
+                                    photo.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${source.base_img_key}`;
+                                    photo.className = 'img-thumbnail me-2 mb-2';
+                                    photo.style.maxWidth = '150px';
+                                    photosContainer.appendChild(photo);
+                                });
+                            })
+                            .catch(error => console.error('Error fetching sources:', error));
+                    });
+                })
+                .catch(error => console.error('Error fetching persons:', error));
+        }
+
+        // Load person data when the Person tab is clicked
+        document.getElementById('person-tab').addEventListener('click', loadPersonData);
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"

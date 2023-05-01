@@ -250,6 +250,21 @@ def scene_stats():
         scene_counts[status] = Scene.query.filter(Scene.setup_status == status).count()
     return jsonify(scene_counts)
 
+####################
+### Person Tab
+@app.route('/list_persons', methods=['GET'])
+def list_persons():
+    persons = Person.query.all()
+    persons_data = [{'id': p.id, 'name': p.name} for p in persons]
+    return jsonify(persons_data)
+
+@app.route('/list_sources', methods=['GET'])
+def list_sources():
+    person_id = request.args.get('person_id', type=int)
+    sources = Source.query.filter(Source.person_id == person_id).all()
+    sources_data = [{'base_img_key': s.base_img_key} for s in sources]
+    return jsonify(sources_data)
+
 
 # Other endpoints remain the same...
 
