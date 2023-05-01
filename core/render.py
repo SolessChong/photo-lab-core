@@ -51,15 +51,15 @@ def interpret_params(params: dict) -> int:
         options['sd_model_checkpoint'] = params.pop('model')
         api.set_options(options)
         logging.info(f"  -- 🔄 Switching to model: {options['sd_model_checkpoint']}")
-    if 'char_attention' in params:
-        char_attention = params.pop('char_attention')
-        
-    return 1
+    return 0
 
-def generate_prompt_with_lora(prompt, lora):
+def generate_prompt_with_lora(prompt, lora, params=None):
     if not prompt:
         prompt = ''
-    prompt_with_lora = prompt + f",<lora:{lora}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
+    char_attention = 1
+    if params and 'char_attention' in params:
+        char_attention = params['char_attention']
+    prompt_with_lora = prompt + f",<lora:{lora}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:{char_attention})"
     logging.info(f"prompt_with_lora: {prompt_with_lora}")
     # replace person with subject name using regex
     pattern = r'\b(?:a woman|a man|a girl|a boy)\b'

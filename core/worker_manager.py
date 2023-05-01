@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 import sys
 import argparse
 import multiprocessing as mp
+from core.utils import rabbit_head_animation
 
 from core import worker
 
@@ -56,7 +57,8 @@ def render(Session):
     todo_task_id_list = []
     try:
         tasks = session.query(models.Task).filter(models.Task.status == 'wait').with_for_update().limit(20).all()
-        logger.info(f"======= Task: render task: waiting tasks number: {len(tasks)}, tasks: {tasks}")
+        if len(tasks) > 0:
+            logger.info(f"======= Task: render task: waiting tasks number: {len(tasks)}, tasks: {tasks}")
         for task in tasks:
             flag = True
             for person_id in task.person_id_list:
@@ -102,7 +104,8 @@ def setup_scene(Session):
     scene_id_list = []
     try:
         scenes = session.query(models.Scene).filter(models.Scene.setup_status == 'wait', models.Scene.action_type == "sd").with_for_update().limit(30).all()
-        logger.info(f"======= Task: setup scene: waiting scenes number: {len(scenes)}, scenes: {scenes}")
+        if len(scenes) > 0:
+            logger.info(f"======= Task: setup scene: waiting scenes number: {len(scenes)}, scenes: {scenes}")
         for scene in scenes:
             scene_id_list.append(scene.scene_id)
             scene.setup_status = 'processing'
@@ -129,24 +132,24 @@ def process(cmd):
         logger.info(f"======= Worker Manager: Start TRAINING workers ========")
         while True:
             train(Session)
-            time.sleep(10)
+            rabbit_head_animation(10)
     elif cmd == 'render':
         logger.info(f"======= Worker Manager: Start RENDERING workers ========")
         while True:
             render(Session)
-            time.sleep(10)
+            rabbit_head_animation(10)
     elif cmd == 'set_up':
         logger.info(f"======= Worker Manager: Start SCENE SETUP workers ========")
         while True:
             setup_scene(Session)
-            time.sleep(2)
+            rabbit_head_animation(10)
     elif cmd == 'all':
         logger.info(f"======= Worker Manager: Start ALL workers ========")
         while True:
             train(Session)
             render(Session)
             setup_scene(Session)
-            time.sleep(10)
+            rabbit_head_animation(10)
     else:
         print("Usage: python script_name.py <arg>")
         sys.exit(1)
