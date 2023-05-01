@@ -117,6 +117,7 @@ def render_lora_on_base_img(task) -> Image:
     i2i_args = templates.LORA_INPAINT_PARAMS
     if scene.params:
         i2i_args.update(scene.params)
+    process_model(i2i_args)
     scene_id = task.scene_id
 
     image = base_img.copy()
