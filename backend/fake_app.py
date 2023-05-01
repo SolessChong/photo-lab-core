@@ -1,3 +1,4 @@
+# Author: ChatGPT v4.0. Prompter: the humble Solesschong
 import os
 import oss2
 from flask import Flask, request, jsonify, render_template
@@ -56,12 +57,77 @@ def get_resource_oss_url(resource_type, id):
 def index():
     return render_template('fake_index.html')
 
+#####################
+## Scene Tab
 @app.route('/list_scenes', methods=['GET'])
 def list_scenes():
-    scenes = Scene.query.filter(Scene.action_type=='sd')
-    scene_list = [{'scene_id': scene.scene_id, 'base_img': f'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/{scene.base_img_key}', 'prompt': scene.prompt} for scene in scenes]
-    return jsonify(scene_list)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 100, type=int)
 
+    scenes_pagination = Scene.query.order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    scenes = scenes_pagination.items
+    total_pages = scenes_pagination.pages
+
+    scene_list = [
+        {
+            'scene_id': scene.scene_id,
+            'base_img_key': scene.base_img_key,
+            'hint_img_list': scene.hint_img_list
+        }
+        for scene in scenes
+    ]
+
+    return jsonify({'scenes': scene_list, 'total_pages': total_pages})
+
+
+@app.route('/api/scene/<int:scene_id>/update_params', methods=['POST'])
+def update_scene_params(scene_id):
+    updated_params = request.form.get('params')
+    scene = Scene.query.get(scene_id)
+
+    if scene is None:
+        return jsonify({"error": "Scene not found"}), 404
+
+    if updated_params == "":
+        scene.params = None
+    else:
+        try:
+            scene.params = json.loads(updated_params)
+        except json.JSONDecodeError:
+            return jsonify({"error": "Invalid JSON"}), 400
+
+    db.session.commit()
+    return jsonify({"success": True, "params": scene.params})
+
+@app.route('/update_scene_rate', methods=['POST'])
+def update_scene_rate():
+    scene_id = request.json.get('scene_id')
+    action = request.json.get('action')
+
+    scene = Scene.query.get(scene_id)
+
+    if not scene:
+        return jsonify({'error': 'Scene not found'}), 404
+
+    if action == 'add':
+        scene.rate += 1
+    elif action == 'minus':
+        scene.rate -= 1
+    else:
+        return jsonify({'error': 'Invalid action'}), 400
+
+    db.session.commit()
+    return jsonify({'success': True, 'rate': scene.rate})
+
+@app.route('/list_tasks/<int:scene_id>', methods=['GET'])
+def list_tasks_filtered(scene_id):
+    tasks = Task.query.filter_by(scene_id=scene_id).all()
+    task_list = [{'task_id': task.id, 'result_img_key': f'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/{task.result_img_key}'} for task in tasks]
+    return jsonify(task_list)
+
+
+#####################
+## Task Tab 
 @app.route('/list_tasks', methods=['GET'])
 def list_tasks():
     tasks = Task.query.all()
@@ -165,6 +231,40 @@ def create_person():
     db.session.commit()
 
     return jsonify({"success": "Person created successfully", "person_id": person.id}), 201
+
+####################
+### Stats tab
+@app.route('/get_task_stats', methods=['GET'])
+def task_stats():
+    stats = ['wait', 'finish', 'fail']
+    task_counts = {}
+    for stat in stats:
+        task_counts[stat] = Task.query.filter(Task.status == stat).count()
+    return jsonify(task_counts)
+
+@app.route('/get_scene_stats', methods=['GET'])
+def scene_stats():
+    setup_statuses = ['wait', 'finish', 'fail']
+    scene_counts = {}
+    for status in setup_statuses:
+        scene_counts[status] = Scene.query.filter(Scene.setup_status == status).count()
+    return jsonify(scene_counts)
+
+####################
+### Person Tab
+@app.route('/list_persons', methods=['GET'])
+def list_persons():
+    persons = Person.query.all()
+    persons_data = [{'id': p.id, 'name': p.name} for p in persons]
+    return jsonify(persons_data)
+
+@app.route('/list_sources', methods=['GET'])
+def list_sources():
+    person_id = request.args.get('person_id', type=int)
+    sources = Source.query.filter(Source.person_id == person_id).all()
+    sources_data = [{'base_img_key': s.base_img_key} for s in sources]
+    return jsonify(sources_data)
+
 
 # Other endpoints remain the same...
 

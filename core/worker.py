@@ -35,7 +35,7 @@
 #  - debug_img[1..10]
 #
 import os
-
+import time
 from core import conf
 from core import train_lora
 from core import set_up_scene
@@ -44,11 +44,12 @@ from core.resource_manager import ResourceMgr, ResourceType, bucket, str2oss, os
 from pathlib import Path
 from backend import models
 from core import templates
+import shutil
 import json
 import logging
 from backend.extensions import app, db
 
-
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # Train LORA model
 # test case, 
@@ -61,8 +62,9 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     img_train_path = dataset_path / "img_train"
     img_raw_path = dataset_path / "img_raw"
     for path in [img_train_path, img_raw_path]:
-        if not path.exists():
-            path.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            shutil.rmtree(path)
+        path.mkdir(parents=True, exist_ok=True)
     # enumerate train_img_list with index
     for i, img_url in enumerate(train_img_list):
         # download img using oss2
@@ -85,6 +87,8 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     person = models.Person.query.get(person_id)
     # model file local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
     model_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person_id)
+
+    db.session.close()
     if not os.path.exists(model_path):
         logging.error(f"  --- LORA model {person_id} not found")
         return -1
@@ -113,31 +117,45 @@ def task_render_scene(task_id):
     for person in person_list:
         # if not exists, download
         lora_file_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person.id)
-        if not os.path.exists(lora_file_path):
+        # check lora file exists
+        if os.path.exists(lora_file_path):
+            # Has lora file but no complete flag: some other process is downloading
+            # TODO: if the process is dead, or HTTP timeout, the worker process will hang forever causing task congestion.
+            if not os.path.exists(lora_file_path + '.0'):
+                time.sleep(10)
+        # No lora file, download
+        else:
             logging.info(f"  --- Downloading person lora {person.id}")
             bucket.get_object_to_file(person.model_file_key, lora_file_path)
+            Path(lora_file_path + '.0').touch()
     logging.info(f"  --- Local person lora finished")
-    lora_inpaint_params = templates.LORA_INPAINT_PARAMS
-    if scene.params:
-        lora_inpaint_params.update(scene.params)
-    task_dict = {
-        'task_id': task.id,
-        'scene_id': task.scene_id,
-        'lora_list': ['user_' + str(person.id) for person in person_list],
-        'prompt': '' if scene.prompt is None else scene.prompt,
-        'params': lora_inpaint_params
-    }
-    logging.info(f"    ----\n    task_dict: {task_dict}\n  ----")
-    rst_img = render.run_lora_on_base_img(task_dict)
-    # compose rst_img_key
-    rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
-    task.update_result_img_key(rst_img_key)
-    
-    write_PILimg(rst_img, task.result_img_key)
-    logging.info(f"  --- Render scene success.  save to oss: {task.result_img_key}")
+
+    try:
+        if scene.base_img_key is not None:
+            rst_img = render.render_lora_on_base_img(task)
+        elif scene.prompt is not None:
+            rst_img = render.render_lora_on_prompt(task)
+        else:
+            logging.error(f"  --- ❌ Render scene failed. Invalid task, No base_img or prompt. task_id={task_id}")
+            task.task_fail()
+            return -1
+        # compose rst_img_key
+        rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
+        task.update_result_img_key(rst_img_key)
+        write_PILimg(rst_img, task.result_img_key)
+        logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
+    except Exception as e:
+        logging.exception(f"  --- ❌ Render scene failed. {e}")
+        task.task_fail()
+
+    db.session.close()
     return 0
 
 def task_set_up_scene(scene_id):
+    logging.info(f"======= Task: set up scene: scene_id={scene_id}")
     set_up_scene.prepare_scene(scene_id)
     scene = models.Scene.query.get(scene_id)
     scene.update_setup_status('finish')
+    logging.info(f"--- Set up scene success. scene_id={scene_id}")
+    db.session.close()
+    return 0

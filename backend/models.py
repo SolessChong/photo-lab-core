@@ -97,6 +97,16 @@ class Scene(db.Model):
         self.setup_status = setup_status
         db.session.commit()
     
+    def to_dict(self):
+        return {
+            'scene_id': self.scene_id,
+            'base_img_key': self.base_img_key,
+            'hint_img_list': self.hint_img_list,
+            'collection_name': self.collection_name,
+            'prompt': self.prompt,
+            'params': self.params,
+            'rate': self.rate,
+        }
 
 class Task(db.Model):
     __tablename__ = 'tasks'
@@ -112,6 +122,10 @@ class Task(db.Model):
     def update_result_img_key(self, result_img_key):
         self.result_img_key = result_img_key
         self.status = 'finish'
+        db.session.commit()
+
+    def task_fail(self):
+        self.status = 'fail'
         db.session.commit()
 
     def get_person_id_list(self):

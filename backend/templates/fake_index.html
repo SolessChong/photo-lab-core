@@ -1,62 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Viewer</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <!-- baguetteBox.js CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
-
-
-    <style>
-  .task-img {
-    width: 100%;
-    height: auto;
-  }
-  .task-panel {
-    width: calc(50% - 4px);
-    display: inline-block;
-    margin: 2px;
-  }
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
         
+    <style>
+        .task-panel {
+            margin-bottom: 1rem;
+        }
+
+        .task-img {
+            max-width: 100%;
+            height: auto;
+        }
+        .scene-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .scene-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        .task-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-right: 5px;
+        }
     </style>
-
-    <!-- Add the following Bootstrap CSS and JavaScript links -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="styles_fake.css">
 </head>
-<body>
-<!-- baguetteBox.js JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
 
+<body>
     <!-- Tabs -->
     <ul class="nav nav-tabs" id="mainTabs" role="tablist">
         <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="createPerson-tab" data-bs-toggle="tab" data-bs-target="#createPerson" type="button" role="tab" aria-controls="createPerson" aria-selected="true">Create Person</button>
+            <a class="nav-link" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab"
+                aria-controls="dashboard" aria-selected="false">Dashboard</a>
         </li>
         <li class="nav-item" role="presentation">
-        <button class="nav-link" id="scenes-tab" data-bs-toggle="tab" data-bs-target="#scenes" type="button" role="tab" aria-controls="scenes" aria-selected="false">Scenes</button>
+            <a class="nav-link" id="scenes-tab" data-bs-toggle="tab" href="#scenes" role="tab"
+                aria-controls="scenes" aria-selected="false">Scenes</a>
         </li>
         <li class="nav-item" role="presentation">
-        <button class="nav-link" id="taskViewer-tab" data-bs-toggle="tab" data-bs-target="#taskViewer" type="button" role="tab" aria-controls="taskViewer" aria-selected="false">Task Viewer</button>
+            <a class="nav-link active" id="taskViewer-tab" data-bs-toggle="tab" href="#taskViewer" role="tab"
+                aria-controls="taskViewer" aria-selected="false">Task Viewer</a>
         </li>
-        <button class="nav-link" id="taskViewer-tab" data-bs-toggle="tab" data-bs-target="#createTask" type="button" role="tab" aria-controls="taskViewer" aria-selected="false">Create Task</button>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="createTask-tab" data-bs-toggle="tab" href="#createTask" role="tab"
+                aria-controls="createTask" aria-selected="false">Create Task</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="createPerson-tab" data-bs-toggle="tab" href="#createPerson" role="tab"
+                aria-controls="createPerson" aria-selected="true">Create Person</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="scene-edit-tab" data-bs-toggle="tab" href="#scene-edit" role="tab"
+                aria-controls="scene-edit" aria-selected="false">Scene Edit</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="person-tab" data-bs-toggle="tab" href="#person" role="tab"
+                aria-controls="person" aria-selected="false">Person</a>
         </li>
     </ul>
     <div class="tab-content" id="mainTabsContent">
-        <div class="tab-pane fade show active" id="createPerson" role="tabpanel" aria-labelledby="createPerson-tab">
-        <!-- Create Person content -->
+        <div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+            <!-- Dashboard content -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Task Stats
+                            </div>
+                            <div class="card-body" id="task-stats">
+                                <!-- Task stats will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Scene Stats
+                            </div>
+                            <div class="card-body" id="scene-stats">
+                                <!-- Scene stats will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="createPerson" role="tabpanel" aria-labelledby="createPerson-tab">
+            <!-- Create Person content -->
         </div>
         <div class="tab-pane fade" id="scenes" role="tabpanel" aria-labelledby="scenes-tab">
-        <!-- Scenes content -->
+            <!-- Scenes content -->
         </div>
-        <div class="tab-pane fade" id="taskViewer" role="tabpanel" aria-labelledby="taskViewer-tab">
+        <div class="tab-pane fade show active" id="taskViewer" role="tabpanel" aria-labelledby="taskViewer-tab">
             <!-- Task Viewer content -->
-            <div class="row" id="task-container">
-                <div id="task-viewer"></div>
+            <div class="row task-container" id="task-container">
+                <!-- Task viewer panels will be added here -->
             </div>
             <button id="load-more-btn" class="btn btn-primary">Load More</button>
         </div>
@@ -69,43 +123,147 @@
                 <select id="person-select">
                     <!-- Persons options will be populated here -->
                 </select>
-                
             </div>
             <button id="generate-tasks">Generate Tasks</button>
         </div>
+        <div class="tab-pane fade" id="scene-edit" role="tabpanel" aria-labelledby="scene-edit-tab">
+            <!-- Scene edit content -->
+            <div class="container">
+                <div id="scene-edit-data">
+                    <!-- Add the scene edit HTML structure here -->
+                </div>
+                <div id="scene-pagination" class="text-center mt-4">
+                    <nav aria-label="Scene pagination">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous" onclick="changeScenePage(-1)">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" id="scene-current-page">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next" onclick="changeScenePage(1)">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <button id="load-more-scenes" class="btn btn-primary" onclick="loadMoreScenes()">Load More</button>
+        </div>
+        <div class="tab-pane fade" id="person" role="tabpanel" aria-labelledby="person-tab">
+            <!-- Person content -->
+            <div class="container" id="person-container">
+                <!-- Person cards will be populated here -->
+            </div>
+        </div>
+        
     </div>
-    
+
     <script>
         let currentPage = 1;
         let totalPages = 1;
 
+        ////////////////////////////
+        // Stats Tab
+        function fetchStats() {
+            fetch('/get_task_stats')
+                .then(response => response.json())
+                .then(taskStats => {
+                    displayTaskStats(taskStats);
+                })
+                .catch(error => {
+                    console.error('Error fetching task stats:', error);
+                });
+
+            fetch('/get_scene_stats')
+                .then(response => response.json())
+                .then(sceneStats => {
+                    displaySceneStats(sceneStats);
+                })
+                .catch(error => {
+                    console.error('Error fetching scene stats:', error);
+                });
+        }
+
+        function displayTaskStats(taskStats) {
+            const taskStatsElem = document.getElementById('task-stats');
+            taskStatsElem.innerHTML = `
+                <p>Wait: ${taskStats.wait}</p>
+                <p>Finish: ${taskStats.finish}</p>
+                <p>Fail: ${taskStats.fail}</p>
+            `;
+        }
+
+        function displaySceneStats(sceneStats) {
+            const sceneStatsElem = document.getElementById('scene-stats');
+            sceneStatsElem.innerHTML = `
+                <p>Wait: ${sceneStats.wait}</p>
+                <p>Finish: ${sceneStats.finish}</p>
+                <p>Fail: ${sceneStats.fail}</p>
+            `;
+        }
+
+        // Fetch stats when the dashboard tab is shown
+        document.getElementById('dashboard-tab').addEventListener('shown.bs.tab', function (e) {
+            fetchStats();
+        });
+
+        ////////////////////////////////////////////////
+        // Add task tab
         function addTaskPanel(task) {
-            const taskViewer = document.getElementById('task-viewer');
+            const taskContainer = document.getElementById('task-container');
+
+            const column = document.createElement('div');
+            column.className = 'col-md-4';
+
             const panel = document.createElement('div');
             panel.className = 'card task-panel';
-            
+
             const img = document.createElement('img');
             img.src = 'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/' + task.result_img_key;
-            img.classList.add('card-img-top', 'task-img');
+            img.classList.add('card-img-top');
 
-            // Add the baguetteBox functionality
+            // Add the Fancybox functionality
             const lightboxLink = document.createElement('a');
             lightboxLink.href = img.src;
-            lightboxLink.className = 'task-lightbox';
+            lightboxLink.setAttribute('data-fancybox', 'gallery');
             lightboxLink.appendChild(img);
             panel.appendChild(lightboxLink);
 
             const info = document.createElement('div');
             info.className = 'card-body';
-            info.innerHTML = '<h5 class="card-title">Task ID: ' + task.id + 
-                '</h5><p class="card-text">Person IDs: ' + task.person_id_list.join(', ') + 
+            info.innerHTML = '<h5 class="card-title">Task ID: ' + task.id +
+                '</h5><p class="card-text">Person IDs: ' + task.person_id_list.join(', ') +
                 '</p>' + '<p class="card-text">Scene ID: ' + task.scene_id + '</p>';
             panel.appendChild(info);
 
-            taskViewer.appendChild(panel);
+            column.appendChild(panel);
+            taskContainer.appendChild(column);
         }
 
+        function fetchTasks(page) {
+            fetch(`/get_tasks?page=${page}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const tasks = data.tasks;
+                totalPages = data.total_pages;
 
+                tasks.forEach(addTaskPanel);
+
+                if (currentPage === totalPages) {
+                    const loadMoreBtn = document.getElementById('load-more-btn');
+                    loadMoreBtn.disabled = true;
+                    loadMoreBtn.textContent = 'No More Tasks';
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching tasks:', error);
+            });
+        }
 
         function loadTasks(page) {
             fetch(`/get_tasks?page=${page}`)
@@ -127,13 +285,11 @@
             });
         }
 
-        // Initialize the baguetteBox library
-        baguetteBox.run('.task-viewer', {
-            captions: function(element) {
-                return 'Task ID: ' + element.parentNode.parentNode.querySelector('.card-title').textContent.replace('Task ID: ', '');
-            }
-        });
+        // Initialize Task Viewer
+        // fetchTasks(currentPage);
 
+        ////////////////////////////////////////////////
+        // Create Task Tab
 
         document.addEventListener('DOMContentLoaded', () => {
             loadTasks(currentPage);
@@ -143,30 +299,20 @@
                 loadTasks(currentPage);
             });
         });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadTasks(currentPage);
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            loadMoreBtn.addEventListener('click', () => {
-                currentPage += 1;
-                loadTasks(currentPage);
-            });
-        });
-
 
         // Populate collection and person dropdowns
-    function loadCollectionsAndPersons() {
-        fetch('/get_collections')
-            .then(response => response.json())
-            .then(collections => {
-                const select = document.getElementById('collection-select');
-                collections.forEach(collection => {
-                    const option = document.createElement('option');
-                    option.value = collection;
-                    option.textContent = collection;
-                    select.appendChild(option);
+        function loadCollectionsAndPersons() {
+            fetch('/get_collections')
+                .then(response => response.json())
+                .then(collections => {
+                    const select = document.getElementById('collection-select');
+                    collections.forEach(collection => {
+                        const option = document.createElement('option');
+                        option.value = collection;
+                        option.textContent = collection;
+                        select.appendChild(option);
+                    });
                 });
-            });
 
         fetch('/get_persons')
             .then(response => response.json())
@@ -179,23 +325,228 @@
                     select.appendChild(option);
                 });
             });
-    }
+        }
 
-    document.addEventListener('DOMContentLoaded', loadCollectionsAndPersons);
+        ////////////////////////////////////////////////
+        // Scene tab
+        function updateSceneRate(sceneId, action) {
+            fetch('/update_scene_rate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    scene_id: sceneId,
+                    action: action
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update rate value in the DOM
+                    const rateElem = document.querySelector(`.scene-info[data-scene-id="${sceneId}"] .rate-value`);
+                    if (rateElem) {
+                        rateElem.textContent = data.rate;
+                    }
+                } else {
+                    console.error("Error updating rate:", data.error);
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+        }
 
-    // Generate tasks
-    document.getElementById('generate-tasks').addEventListener('click', function () {
-        const collectionName = document.getElementById('collection-select').value;
-        const personId = document.getElementById('person-select').value;
-        fetch('/generate_tasks', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ collection_name: collectionName, person_id: personId })
+        // Helper functions
+        function createImageElement(src, className) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.classList.add(className);
+            return img;
+        }
+
+        function updateSceneParams(sceneId, params) {
+            fetch(`/api/scene/${sceneId}/update_params`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({ params: JSON.stringify(params) }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        console.log("Params updated");
+                    } else {
+                        console.error("Error updating params:", data.error);
+                    }
+                })
+                .catch((error) => console.error("Error:", error));
+        }
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     // Load scene edit data when the "Scene Edit" tab is clicked
+        //     document.getElementById('scene-edit-tab').addEventListener('click', loadSceneEditData);
+        // });
+        document.getElementById('scene-edit-tab').addEventListener('shown.bs.tab', loadSceneEditData);
+
+        let currentScenePage = 1;
+
+        function loadSceneEditData() {
+            // Fetch the scenes
+            fetch('/list_scenes?page=${currentScenePage}')
+                .then(response => response.json())
+                .then(data => {
+                    const scenes = data.scenes;
+                    const total_pages = data.total_pages;
+                    const container = document.querySelector('#scene-edit-data');
+                    container.innerHTML = '';
+
+                    scenes.forEach(scene => {
+                        // Create scene row
+                        const sceneRow = document.createElement('div');
+                        sceneRow.className = 'row scene-row';
+                        container.appendChild(sceneRow);
+
+                        // Add base_img
+                        const baseImgCol = document.createElement('div');
+                        baseImgCol.className = 'col-2';
+                        const baseImg = document.createElement('img');
+                        baseImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.base_img_key}`;
+                        baseImg.className = 'img-thumbnail';
+                        baseImgCol.appendChild(baseImg);
+                        sceneRow.appendChild(baseImgCol);
+
+                        // Add hint_img if exists
+                        if (scene.hint_img_list && scene.hint_img_list.length > 0) {
+                            const hintImgCol = document.createElement('div');
+                            hintImgCol.className = 'col-2';
+                            const hintImg = document.createElement('img');
+                            hintImg.src = scene.hint_img_list[0];
+                            hintImg.className = 'img-thumbnail';
+                            hintImgCol.appendChild(hintImg);
+                            sceneRow.appendChild(hintImgCol);
+                        }
+
+                        // Fetch tasks for this scene
+                        fetch(`/list_tasks/${scene.scene_id}`)
+                            .then(response => response.json())
+                            .then(tasks => {
+                                const tasksCol = document.createElement('div');
+                                tasksCol.className = 'col';
+                                sceneRow.appendChild(tasksCol);
+
+                                tasks.forEach(task => {
+                                    const taskImg = document.createElement('img');
+                                    taskImg.src = task.result_img_key;
+                                    taskImg.className = 'img-thumbnail task-img';
+                                    tasksCol.appendChild(taskImg);
+                                });
+                            });
+
+                        // Add additional scene info and editable fields
+                        const sceneInfo = document.createElement('div');
+                        sceneInfo.innerHTML = `
+                            <p><strong>Scene ID:</strong> ${scene.scene_id}</p>
+                            <p><strong>Collection Name:</strong> ${scene.collection_name}</p>
+                            <p><strong>Prompt:</strong> ${scene.prompt}</p>
+                            <p><strong>Params:</strong></p>
+                            <pre>${JSON.stringify(scene.params, null, 2)}</pre>
+                            <button onclick="updateSceneParams(${scene.scene_id}, {});">Save Params</button>
+                            <p><strong>Rate:</strong> ${scene.rate}</p>
+                            <button onclick="updateSceneRate(${scene.scene_id}, 'add');">Add</button>
+                            <button onclick="updateSceneRate(${scene.scene_id}, 'minus');">Minus</button>
+                        `;
+                        sceneRow.appendChild(sceneInfo);
+                    });
+                    // If there are no more scenes to load, hide the "Load More" button
+                    if (currentScenePage >= total_pages) {
+                        document.getElementById('load-more-scenes').style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error fetching scenes:', error));
+        }
+
+        function loadMoreScenes() {
+            currentScenePage += 1;
+            loadSceneEditData();
+        }
+
+
+        ////////////////////////////////////////////////
+        // Create Task Tab
+        document.addEventListener('DOMContentLoaded', loadCollectionsAndPersons);
+
+        // Generate tasks
+        document.getElementById('generate-tasks').addEventListener('click', function () {
+            const collectionName = document.getElementById('collection-select').value;
+            const personId = document.getElementById('person-select').value;
+            fetch('/generate_tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ collection_name: collectionName, person_id: personId })
+            });
         });
-    });
-</script>
+
+        ////////////////////////////////////////////////
+        // Person Tab
+        function loadPersonData() {
+            // Fetch the persons
+            fetch('/list_persons')
+                .then(response => response.json())
+                .then(persons => {
+                    const container = document.querySelector('#person-container');
+                    container.innerHTML = '';
+
+                    persons.forEach(person => {
+                        // Create person card
+                        const personCard = document.createElement('div');
+                        personCard.className = 'card mb-3';
+                        container.appendChild(personCard);
+
+                        // Create person card body
+                        const cardBody = document.createElement('div');
+                        cardBody.className = 'card-body';
+                        personCard.appendChild(cardBody);
+
+                        // Add person name
+                        const personName = document.createElement('h5');
+                        personName.className = 'card-title';
+                        personName.textContent = person.name;
+                        cardBody.appendChild(personName);
+
+                        // Add person photos container
+                        const photosContainer = document.createElement('div');
+                        photosContainer.className = 'd-flex flex-row flex-wrap';
+                        cardBody.appendChild(photosContainer);
+
+                        // Fetch photos for this person
+                        fetch(`/list_sources?person_id=${person.id}`)
+                            .then(response => response.json())
+                            .then(sources => {
+                                sources.forEach(source => {
+                                    const photo = document.createElement('img');
+                                    photo.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${source.base_img_key}`;
+                                    photo.className = 'img-thumbnail me-2 mb-2';
+                                    photo.style.maxWidth = '150px';
+                                    photosContainer.appendChild(photo);
+                                });
+                            })
+                            .catch(error => console.error('Error fetching sources:', error));
+                    });
+                })
+                .catch(error => console.error('Error fetching persons:', error));
+        }
+
+        // Load person data when the Person tab is clicked
+        document.getElementById('person-tab').addEventListener('click', loadPersonData);
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+        crossorigin="anonymous"></script>
 </body>
 </html>
-
+    

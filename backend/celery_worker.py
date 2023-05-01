@@ -20,7 +20,7 @@ import json
 # from core.resource_manager import ResourceMgr, ResourceType, bucket
 # from core import templates
 # 设置日志格式
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # 使用 __name__ 作为 logger 名称
 logger = logging.getLogger(__name__)

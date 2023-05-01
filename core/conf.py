@@ -9,8 +9,12 @@ DEBUG = True
 FILE_STORAGE = 'OSS'   # ['OSS', 'LOCAL']
 
 # Image rendering settings
-RENDERING_SETTINGS = {
+LORA_ROI_RENDERING_SETTINGS = {
     "size": (512, 512),
+}
+
+DIRECT_RENDERING_SETTINGS = {
+    "size": (512, 768),
 }
 
 PATH_CONF = {
