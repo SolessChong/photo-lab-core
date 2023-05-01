@@ -131,7 +131,14 @@ def task_render_scene(task_id):
     logging.info(f"  --- Local person lora finished")
 
     try:
-        rst_img = render.render_lora_on_base_img(task)
+        if scene.base_img_key is not None:
+            rst_img = render.render_lora_on_base_img(task)
+        elif scene.prompt is not None:
+            rst_img = render.render_lora_on_prompt(task)
+        else:
+            logging.error(f"  --- ❌ Render scene failed. Invalid task, No base_img or prompt. task_id={task_id}")
+            task.task_fail()
+            return -1
         # compose rst_img_key
         rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
         task.update_result_img_key(rst_img_key)

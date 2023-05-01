@@ -35,6 +35,14 @@ Show all tasks. Task info is shown in data panel. All task shown in two column f
     1. `scene.rate`, a int. Add 'add', 'minus' button for this field, click will add or minus 1, update the db.
 
 
+## Person View
+1. Show person info in a complete row. Card layout.
+1. In each row, list all the photos for this person, in a horizontal flow layout. `Source.person_id == person.id` is the filter. Photo is stored at Source.base_img_key.
+1. Also show the addtitional info of Person:
+    1. `name`
+
+
+
 ## Utils
 Image url: https://photolab-test.oss-cn-shenzhen.aliyuncs.com/ + image's some `key` field in db.
 
