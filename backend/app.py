@@ -161,10 +161,16 @@ def upload_source():
     if 'img_file' not in request.files or 'user_id' not in request.form or 'person_name' not in request.form:
         return {"status": "error", "message": "Missing img_file, user_id or person_name"}, 400
     img_file = request.files['img_file']
+    user_id = request.form['user_id']
+    try: 
+        png_img = utils.convert_to_png_bytes(img_file)
+    except Exception as e:
+        logging.info(f'{user_id} upload source fail {e}')
+        return {"msg": f"上传失败，图片格式错误或中断导致无法打开", "code": 1, "data" : ''}, 200 
+
     png_img = utils.convert_to_png_bytes(img_file)
     jpg_img = utils.convert_to_jpg_bytes(png_img)
 
-    user_id = request.form['user_id']
     source_type = request.form.get('type', None)
     person_name = request.form['person_name']
 

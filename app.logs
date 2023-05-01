@@ -1,33 +1,7 @@
  * Serving Flask app 'backend.extensions'
  * Debug mode: off
-INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2023-05-01 18:57:13,907 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:80
  * Running on http://172.18.61.1:80
-INFO:werkzeug:[33mPress CTRL+C to quit[0m
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 17:57:20] "GET /api/get_user?user_id=H9bxWfA4zB HTTP/1.1" 200 -
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 17:57:20] "GET /api/get_example_images?user_id=H9bxWfA4zB HTTP/1.1" 200 -
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 17:57:20] "GET /api/get_example_images?user_id=H9bxWfA4zB HTTP/1.1" 200 -
-INFO:__main__:H9bxWfA4zB has new_combinations: [(769, [52]), (3585, [52]), (2865, [52]), (2884, [52]), (2885, [52]), (2886, [52]), (3398, [52]), (2889, [52]), (2892, [52]), (2894, [52]), (2895, [52]), (2897, [52]), (3429, [52]), (3441, [52]), (926, [52]), (3496, [52]), (3517, [52]), (3522, [52]), (3526, [52]), (3531, [52]), (3543, [52]), (3567, [52]), (3572, [52]), (3574, [52]), (3580, [52]), (3582, [52]), (3583, [52]), (2816, [52]), (1538, [52]), (3586, [52]), (1027, [52]), (3587, [52]), (772, [52]), (774, [52]), (1030, [52]), (1542, [52]), (3590, [52]), (775, [52]), (1543, [52]), (3591, [52]), (2056, [52]), (3592, [52]), (2825, [52]), (1034, [52]), (2059, [52]), (3596, [52]), (784, [52]), (2064, [52]), (1041, [52]), (1298, [52])]
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 17:58:34] "POST /api/start_sd_generate HTTP/1.1" 200 -
-INFO:root:get_generated_images user_id: H9bxWfA4zB
-INFO:root:adding tasks number: 0
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 18:01:28] "GET /api/get_generated_images?user_id=H9bxWfA4zB HTTP/1.1" 200 -
-INFO:root:get_generated_images user_id: H9bxWfA4zB
-INFO:root:adding tasks number: 0
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 18:02:20] "GET /api/get_generated_images?user_id=H9bxWfA4zB HTTP/1.1" 200 -
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 18:02:23] "GET /api/get_example_images?user_id=H9bxWfA4zB HTTP/1.1" 200 -
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 18:02:24] "GET /api/get_example_images?user_id=H9bxWfA4zB HTTP/1.1" 200 -
-INFO:werkzeug:120.8.151.216 - - [01/May/2023 18:02:24] "GET /api/get_example_images?user_id=H9bxWfA4zB HTTP/1.1" 200 -
-INFO:root:get_generated_images user_id: NRWLRHOyqY
-INFO:root:adding tasks number: 0
-INFO:werkzeug:61.149.220.116 - - [01/May/2023 18:04:01] "GET /api/get_generated_images?user_id=NRWLRHOyqY HTTP/1.1" 200 -
-INFO:root:get_generated_images user_id: NRWLRHOyqY
-INFO:root:adding tasks number: 0
-INFO:werkzeug:61.149.220.116 - - [01/May/2023 18:04:04] "GET /api/get_generated_images?user_id=NRWLRHOyqY HTTP/1.1" 200 -
-INFO:root:get_generated_images user_id: NRWLRHOyqY
-INFO:root:adding tasks number: 0
-INFO:werkzeug:61.149.220.116 - - [01/May/2023 18:04:09] "GET /api/get_generated_images?user_id=NRWLRHOyqY HTTP/1.1" 200 -
-INFO:root:get_generated_images user_id: NRWLRHOyqY
-INFO:root:adding tasks number: 0
-INFO:werkzeug:61.149.220.116 - - [01/May/2023 18:05:01] "GET /api/get_generated_images?user_id=NRWLRHOyqY HTTP/1.1" 200 -
+2023-05-01 18:57:13,908 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
