@@ -46,14 +46,15 @@ def prepare_task(task):
 Process model info in params, and set model for API.
 Delete model field from params to make it work for API args.
 """
-def process_model(params: dict) -> int:
-    if not 'model' in params:
-        return 0
-    else:
+def interpret_params(params: dict) -> int:
+    if 'model' in params:
         options['sd_model_checkpoint'] = params.pop('model')
         api.set_options(options)
         logging.info(f"  -- 🔄 Switching to model: {options['sd_model_checkpoint']}")
-        return 1
+    if 'char_attention' in params:
+        char_attention = params.pop('char_attention')
+        
+    return 1
 
 def generate_prompt_with_lora(prompt, lora):
     if not prompt:
@@ -89,7 +90,7 @@ def render_lora_on_prompt(task) -> Image:
     prompt_with_lora = generate_prompt_with_lora(scene.prompt, lora_list[0])
     logging.info(f"prompt_with_lora: {prompt_with_lora}, t2i_args: {t2i_args}")
 
-    process_model(t2i_args)
+    interpret_params(t2i_args)
     rst = api.txt2img(
         prompt=prompt_with_lora,
         **t2i_args
@@ -121,7 +122,7 @@ def render_lora_on_base_img(task) -> Image:
     i2i_args = templates.LORA_INPAINT_PARAMS
     if scene.params:
         i2i_args.update(scene.params)
-    process_model(i2i_args)
+    interpret_params(i2i_args)
     scene_id = task.scene_id
 
     image = base_img.copy()

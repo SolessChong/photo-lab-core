@@ -1,3 +1,8 @@
+## Scene
+- Params
+    - 'model': model name
+    - 'char_attentions': char attentions (a girl_userxx: X)
+
 ## Workflow: 
 
 1. Train lora:
