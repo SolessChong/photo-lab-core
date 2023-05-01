@@ -11,7 +11,11 @@ import multiprocessing as mp
 
 from core import worker
 
+# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# Create a logger
+logger = logging.getLogger(__name__)
 
 # train status:             null -> wait -> processing -> finish ( -> fail )
 # task render status:       null -> wait -> processing -> finish ( -> fail )
@@ -40,7 +44,7 @@ def train(Session):
         session.close()
 
     if person_id:
-        logging.info(f"======= Task: training LORA model: person_id={person_id}")
+        logger.info(f"======= Task: training LORA model: person_id={person_id}")
         sources = models.Source.query.filter(models.Source.person_id == person_id, models.Source.base_img_key != None).all()
         worker.task_train_lora(person_id, [source.base_img_key for source in sources], epoch=10)
 
@@ -52,21 +56,21 @@ def render(Session):
     todo_task_id_list = []
     try:
         tasks = session.query(models.Task).filter(models.Task.status == 'wait').with_for_update().limit(20).all()
-        logging.info(f"======= Task: render task: waiting tasks number: {len(tasks)}, tasks: {tasks}")
+        logger.info(f"======= Task: render task: waiting tasks number: {len(tasks)}, tasks: {tasks}")
         for task in tasks:
             flag = True
             for person_id in task.person_id_list:
                 person = session.query(models.Person).filter(models.Person.id == person_id).first()
-                logging.info(f"    ---- Task: render task: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
+                logger.info(f"    ---- Task: render task: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
                 if person.lora_train_status != 'finish':
                     flag = False
-                    logging.info(f"    ---- 🙅‍♀️ Task: Not Ready: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
+                    logger.info(f"    ---- 🙅‍♀️ Task: Not Ready: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
                     task.status = 'fail'
                     break
             scene = models.Scene.query.get(task.scene_id)
             if scene and scene.setup_status != 'finish':
                 flag = False
-                logging.info(f"    ---- 🙅‍♀️ Task: Not Ready: scene_id={task.scene_id}, scene={scene}, scene.setup_status={scene.setup_status}")
+                logger.info(f"    ---- 🙅‍♀️ Task: Not Ready: scene_id={task.scene_id}, scene={scene}, scene.setup_status={scene.setup_status}")
                 task.status = 'fail'
             # Ready to render
             if flag:
@@ -79,7 +83,7 @@ def render(Session):
         session.close()
 
     for id in todo_task_id_list:
-        logging.info(f"     ------ Task: render task: task_id={id}")
+        logger.info(f"     ------ Task: render task: task_id={id}")
         try:
             worker.task_render_scene(id)
         except Exception as e:
@@ -98,7 +102,7 @@ def setup_scene(Session):
     scene_id_list = []
     try:
         scenes = session.query(models.Scene).filter(models.Scene.setup_status == 'wait', models.Scene.action_type == "sd").with_for_update().limit(30).all()
-        logging.info(f"======= Task: setup scene: waiting scenes number: {len(scenes)}, scenes: {scenes}")
+        logger.info(f"======= Task: setup scene: waiting scenes number: {len(scenes)}, scenes: {scenes}")
         for scene in scenes:
             scene_id_list.append(scene.scene_id)
             scene.setup_status = 'processing'
@@ -122,22 +126,22 @@ def process(cmd):
     Session = sessionmaker(bind=extensions.engine)
 
     if cmd == 'train':
-        logging.info(f"======= Worker Manager: Start TRAINING workers ========")
+        logger.info(f"======= Worker Manager: Start TRAINING workers ========")
         while True:
             train(Session)
             time.sleep(10)
     elif cmd == 'render':
-        logging.info(f"======= Worker Manager: Start RENDERING workers ========")
+        logger.info(f"======= Worker Manager: Start RENDERING workers ========")
         while True:
             render(Session)
             time.sleep(10)
     elif cmd == 'set_up':
-        logging.info(f"======= Worker Manager: Start SCENE SETUP workers ========")
+        logger.info(f"======= Worker Manager: Start SCENE SETUP workers ========")
         while True:
             setup_scene(Session)
             time.sleep(2)
     elif cmd == 'all':
-        logging.info(f"======= Worker Manager: Start ALL workers ========")
+        logger.info(f"======= Worker Manager: Start ALL workers ========")
         while True:
             train(Session)
             render(Session)
