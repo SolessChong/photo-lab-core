@@ -110,7 +110,7 @@ def render_lora_on_base_img(task) -> Image:
     prompt = scene.prompt
     # Extract config
     # - Extract lora_upscaler. If not specified, use default.
-    lora_upscaler = scene.params.get("lora_upscaler_params", templates.UPSCALER_DEFAULT)
+    lora_upscaler_params = scene.params.get("lora_upscaler_params", templates.UPSCALER_DEFAULT)
     
     i2i_params = templates.LORA_INPAINT_PARAMS
     if scene.params and scene.params.get("i2i_params"):
@@ -206,7 +206,7 @@ def render_lora_on_base_img(task) -> Image:
                 resize_mode=1,
                 upscaling_resize_w=bb[2],
                 upscaling_resize_h=bb[3],
-                **lora_upscaler,
+                **lora_upscaler_params,
             ).images[0]
         image.paste(char_lora_img_enlarge, (bb[0], bb[1]))
         
