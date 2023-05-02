@@ -42,17 +42,6 @@ def prepare_task(task):
 
     return base_img, pose_map
 
-"""
-Process model info in params, and set model for API.
-Delete model field from params to make it work for API args.
-"""
-def interpret_params(params: dict) -> int:
-    if 'model' in params:
-        options['sd_model_checkpoint'] = params.pop('model')
-        api.set_options(options)
-        logging.info(f"    ---- 🔄 Switching to model: {options['sd_model_checkpoint']}")
-    return 0
-
 def generate_prompt_with_lora(prompt, lora, params=None):
     if not prompt:
         prompt = ''
@@ -120,12 +109,17 @@ def render_lora_on_base_img(task) -> Image:
     lora_list = [ResourceMgr.get_lora_name_by_person_id(person_id) for person_id in task.person_id_list]
     prompt = scene.prompt
     # Extract config
-    lora_upscaler = scene.params.pop("lora_upscaler", "ESRGAN_4x")
+    # - Extract lora_upscaler. If not specified, use default.
+    lora_upscaler = scene.params.get("lora_upscaler_params", templates.UPSCALER_DEFAULT)
     
-    i2i_args = templates.LORA_INPAINT_PARAMS
-    if scene.params:
-        i2i_args.update(scene.params)
-    interpret_params(i2i_args)
+    i2i_params = templates.LORA_INPAINT_PARAMS
+    if scene.params and scene.params.get("i2i_params"):
+        i2i_params.update(scene.params.get("i2i_params"))
+
+    options['sd_model_checkpoint'] = scene.params.get('model')
+    api.set_options(options)
+    logging.info(f"    ---- 🔄 Switching to model: {options['sd_model_checkpoint']}")
+
     scene_id = task.scene_id
 
     image = base_img.copy()
@@ -191,7 +185,7 @@ def render_lora_on_base_img(task) -> Image:
 
         char_controlnet_units = [webuiapi.ControlNetUnit(input_image=char_pose_img, model="control_sd15_openpose [fef5e48e]", resize_mode="Inner Fit (Scale to Fit)", guidance=0.9, guidance_end=0.7)]
         # log params
-        logging.info(f"prompt_with_lora: {prompt_with_lora}, i2i_args: {i2i_args}")
+        logging.info(f"prompt_with_lora: {prompt_with_lora}, i2i_args: {i2i_params}")
 
         char_lora_img = api.img2img(
             prompt=prompt_with_lora, 
@@ -199,7 +193,7 @@ def render_lora_on_base_img(task) -> Image:
             controlnet_units=char_controlnet_units,
             mask_image=char_mask_img,
             mask_blur=10,
-            **i2i_args
+            **i2i_params
             ).images[0]
 
         # resize to original size and paste to final image
@@ -212,7 +206,7 @@ def render_lora_on_base_img(task) -> Image:
                 resize_mode=1,
                 upscaling_resize_w=bb[2],
                 upscaling_resize_h=bb[3],
-                upscaler_1=lora_upscaler,
+                **lora_upscaler,
             ).images[0]
         image.paste(char_lora_img_enlarge, (bb[0], bb[1]))
         
