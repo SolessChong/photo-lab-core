@@ -2,6 +2,7 @@
 - Params
     - 'model': model name
     - 'char_attentions': char attentions (a girl_userxx: X)
+    - 'lora_upscaler': lora upscaler
 
 ## Workflow: 
 

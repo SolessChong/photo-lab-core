@@ -50,7 +50,7 @@ def interpret_params(params: dict) -> int:
     if 'model' in params:
         options['sd_model_checkpoint'] = params.pop('model')
         api.set_options(options)
-        logging.info(f"  -- 🔄 Switching to model: {options['sd_model_checkpoint']}")
+        logging.info(f"    ---- 🔄 Switching to model: {options['sd_model_checkpoint']}")
     return 0
 
 def generate_prompt_with_lora(prompt, lora, params=None):
@@ -119,6 +119,9 @@ def render_lora_on_base_img(task) -> Image:
     # e.g. lora_list[0] = 'user_1', --> <lora:user_1:1> in prompt.
     lora_list = [ResourceMgr.get_lora_name_by_person_id(person_id) for person_id in task.person_id_list]
     prompt = scene.prompt
+    # Extract config
+    lora_upscaler = scene.params.pop("lora_upscaler", "ESRGAN_4x")
+    
     i2i_args = templates.LORA_INPAINT_PARAMS
     if scene.params:
         i2i_args.update(scene.params)
@@ -201,9 +204,23 @@ def render_lora_on_base_img(task) -> Image:
 
         # resize to original size and paste to final image
         char_lora_img = char_lora_img.convert("RGBA")
-        char_lora_img = char_lora_img.resize((bb[2], bb[3]))        
-        image.paste(char_lora_img, (bb[0], bb[1]))
+        if bb[2] < char_lora_img.width:
+            char_lora_img_enlarge = char_lora_img.resize((bb[2], bb[3]))      
+        else:
+            char_lora_img_enlarge = api.extra_single_image(
+                char_lora_img,
+                resize_mode=1,
+                upscaling_resize_w=bb[2],
+                upscaling_resize_h=bb[3],
+                upscaler_1=lora_upscaler,
+            ).images[0]
+        image.paste(char_lora_img_enlarge, (bb[0], bb[1]))
         
+        # char_lora_img = char_lora_img.convert("RGBA")
+        # char_lora_img = char_lora_img.resize((bb[2], bb[3]))        
+        # image.paste(char_lora_img, (bb[0], bb[1]))
+        
+
         ### Save tmp image for debug
         if conf.DEBUG:
             if not os.path.exists(output_dir):

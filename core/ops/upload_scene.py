@@ -7,13 +7,14 @@ from core.resource_manager import *
 
 app.app_context().push()
 
-file_path = '/home/chong/downloads/2d-scenes/watercolor-head'
+file_path = '/home/chong/downloads/2d-scenes/watercolor-full'
 
-collection_name = 'DS_watercolor_head_0501'
-prompt = '(watercolor:1.2), a girl, extremely luminous bright design, glowing, sparkling, lens flare,'
+collection_name = 'DS_watercolor_full_0501'
+prompt = '(watercolor:1.3), a girl, extremely luminous bright design, glowing, sparkling, lens flare,'
 params = {
     "model": "dreamshaper_4BakedVaeFp16", 
-    "sampler_name": "Euler a"
+    "sampler_name": "Euler a",
+    "lora_upscaler": "R-ESRGAN 4x+ Anime6B"
 }
 negative_prompt = '(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck'
 
