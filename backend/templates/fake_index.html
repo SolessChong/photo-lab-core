@@ -368,8 +368,8 @@
         }
 
         function updateSceneParams(scene_id) {
-            const editor = JSONEditor.get(`jsoneditor-${scene.scene_id}`);
-            const updated_params = editor.get();
+            const paramsTextarea = document.getElementById(`params-${scene_id}`);
+            const updated_params = paramsTextarea.value;
 
             fetch(`/api/scene/${scene_id}/update_params`, {
                 method: 'POST',
@@ -387,6 +387,25 @@
                     }
                 })
                 .catch(error => console.error("Error updating params:", error));
+        }
+
+        function updateScenePrompt(scene_id) {
+            const prompt = document.getElementById(`prompt-${scene_id}`).value;
+            fetch(`/api/scene/${scene_id}/update_prompt`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `prompt=${encodeURIComponent(prompt)}`
+            })
+            .then(response => response.json())
+            .then(json => {
+                if (json.success) {
+                    alert('Prompt updated successfully.');
+                } else {
+                    alert('Failed to update prompt: ' + json.error);
+                }
+            });
         }
 
 
@@ -459,22 +478,17 @@
                         sceneInfo.innerHTML = `
                             <p><strong>Scene ID:</strong> ${scene.scene_id}</p>
                             <p><strong>Collection Name:</strong> ${scene.collection_name}</p>
-                            <p><strong>Prompt:</strong> ${scene.prompt}</p>
+                            <p><strong>Prompt:</strong></p>
+                            <textarea id="prompt-${scene.scene_id}" rows="4" style="width: 100%;">${scene.prompt}</textarea>
+                            <button onclick="updateScenePrompt(${scene.scene_id});">Save Prompt</button>
                             <p><strong>Params:</strong></p>
-                            <div id="jsoneditor-${scene.scene_id}" style="width: 100%; height: 400px;"></div>
+                            <textarea id="params-${scene.scene_id}" rows="4" style="width: 100%;">${JSON.stringify(scene.params, null, 2)}</textarea>
                             <button onclick="updateSceneParams(${scene.scene_id});">Save Params</button>
                             <p><strong>Rate:</strong> ${scene.rate}</p>
                             <button onclick="updateSceneRate(${scene.scene_id}, 'add');">Add</button>
                             <button onclick="updateSceneRate(${scene.scene_id}, 'minus');">Minus</button>
                         `;
                         sceneRow.appendChild(sceneInfo);
-
-                        // Initialize the JSON Editor for each scene
-                        const editorContainer = document.getElementById(`jsoneditor-${scene.scene_id}`);
-                        const options = { mode: 'tree' };
-                        const editor = new JSONEditor(editorContainer, options, scene.params);
-                        editor.setName(`jsoneditor-${scene.scene_id}`);
-
                     });
                     // If there are no more scenes to load, hide the "Load More" button
                     if (currentScenePage >= total_pages) {

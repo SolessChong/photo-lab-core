@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from backend.extensions import  app, db
 from flask_cors import CORS
+import json
 from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task
 from celery import Celery, chain, chord, group, signature
 from backend.config import CELERY_CONFIG
@@ -75,7 +76,8 @@ def list_scenes():
 
 @app.route('/api/scene/<int:scene_id>/update_params', methods=['POST'])
 def update_scene_params(scene_id):
-    updated_params = request.form.get('params')
+    data = request.get_json()  # Get JSON data from request
+    updated_params = data.get('params')  # Get params from JSON data
     scene = Scene.query.get(scene_id)
 
     if scene is None:
@@ -111,6 +113,18 @@ def update_scene_rate():
 
     db.session.commit()
     return jsonify({'success': True, 'rate': scene.rate})
+
+@app.route('/api/scene/<int:scene_id>/update_prompt', methods=['POST'])
+def update_scene_prompt(scene_id):
+    updated_prompt = request.form.get('prompt')
+    scene = Scene.query.get(scene_id)
+
+    if scene is None:
+        return jsonify({"error": "Scene not found"}), 404
+
+    scene.prompt = updated_prompt
+    db.session.commit()
+    return jsonify({"success": True, "prompt": scene.prompt})
 
 @app.route('/list_tasks/<int:scene_id>', methods=['GET'])
 def list_tasks_filtered(scene_id):
