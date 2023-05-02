@@ -62,20 +62,13 @@ def index():
 @app.route('/list_scenes', methods=['GET'])
 def list_scenes():
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 100, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
 
     scenes_pagination = Scene.query.order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
     scenes = scenes_pagination.items
     total_pages = scenes_pagination.pages
 
-    scene_list = [
-        {
-            'scene_id': scene.scene_id,
-            'base_img_key': scene.base_img_key,
-            'hint_img_list': scene.hint_img_list
-        }
-        for scene in scenes
-    ]
+    scene_list = [scene.to_dict() for scene in scenes]
 
     return jsonify({'scenes': scene_list, 'total_pages': total_pages})
 
