@@ -104,6 +104,8 @@ def update_scene_rate():
     if not scene:
         return jsonify({'error': 'Scene not found'}), 404
 
+    if scene.rate is None:
+        scene.rate = 0
     if action == 'add':
         scene.rate += 1
     elif action == 'minus':
