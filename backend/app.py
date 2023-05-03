@@ -44,7 +44,9 @@ def create_user():
         "code": 0,
         "msg": "create user successfully",
         "data": {
-            "user_id": user_id
+            "user_id": user_id,
+            "min_img_num": 10,
+            "max_img_num": 20
         }
     }
 
@@ -228,7 +230,7 @@ def start_sd_generate():
     person_id_list.sort()
     category = request.form['category']
     limit = request.form.get('limit', 50, type=int)
-
+    wati_status = 'wait'
     
     #TODO: use new method to choose which scene to render
     # 1. Get all scenes with the same category
@@ -236,13 +238,15 @@ def start_sd_generate():
         models.Scene.img_type==category, 
         models.Scene.action_type=='sd', 
         models.Scene.setup_status == 'finish'
-    ).order_by(models.Scene.rate.desc()).all()
+    ).order_by(models.Scene.rate.desc()).limit(500).all()
     
     # 2. Check for existing tasks and calculate new combinations
     new_combinations = []
     for scene in scenes:
         if not models.Task.query.filter_by(scene_id=scene.scene_id, person_id_list=person_id_list, user_id=user_id).first():
             new_combinations.append((scene.scene_id, person_id_list))
+        if (len(new_combinations) >= limit):
+            break
     new_combinations = new_combinations[:limit]
     m = len(new_combinations)
     logger.info(f'{user_id} has new_combinations: {new_combinations}')
@@ -253,7 +257,7 @@ def start_sd_generate():
         if not person:
             return {"status": "error", "message": f"person_id {person_id} not found"}, 400
         if person and person.lora_train_status is None:
-            person.lora_train_status = 'wait' # 等待woker_manager启动训练任务
+            person.lora_train_status = wati_status # 等待woker_manager启动训练任务
             db.session.commit()
             logger.info(f'{user_id} start to  train lora {person.id}')
 
@@ -265,7 +269,7 @@ def start_sd_generate():
             user_id=user_id,
             scene_id=scene_id,
             person_id_list=person_id_list,
-            status='wait',
+            status=wati_status,
             pack_id=pack.pack_id
         )
         db.session.add(task)
@@ -346,7 +350,7 @@ def get_generated_images():
     for image in images:
         create_new_pack(pack_dict, image.pack_id, image.img_url)
 
-    tasks = models.Task.query.filter(models.Task.user_id == user_id, models.Task.result_img_key != None).all()
+    tasks = models.Task.query.filter(models.Task.user_id == user_id, models.Task.result_img_key != None).limit(300).all()
     logging.info(f'adding tasks number: {len(tasks)}')
     for task in tasks:
         create_new_pack(pack_dict, task.pack_id, task.result_img_key)
