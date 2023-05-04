@@ -263,7 +263,7 @@ def scene_stats():
 ### Person Tab
 @app.route('/list_persons', methods=['GET'])
 def list_persons():
-    persons = Person.query.all()
+    persons = Person.query.order_by(Person.id.desc()).limit(20)
     persons_data = [{'id': p.id, 'name': p.name} for p in persons]
     return jsonify(persons_data)
 
