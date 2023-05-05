@@ -4,10 +4,23 @@ import json
 from datetime import datetime
 from .extensions import db
 
+class BdClick(db.Model):
+    __tablename__ = 'bd_clicks'
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(255), nullable=True)
+    ua = db.Column(db.String(255), nullable=True)
+    callback = db.Column(db.String(255), nullable=True)
+    idfa = db.Column(db.String(255), nullable=True)
+    create_time = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(db.String(255), nullable=True)
+    con_status = db.Column(db.Integer, default=0)
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(255), nullable=False)
+    ip = db.Column(db.String(255), nullable=True)
+    ua = db.Column(db.String(255), nullable=True)
 
 class Source(db.Model):
     __tablename__ = 'source'

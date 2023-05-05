@@ -32,8 +32,15 @@ def create_user():
     # Generate a random user_id with 10 characters
     user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
 
+    if 'X-Forwarded-For' in request.headers:
+        user_ip = request.headers.getlist("X-Forwarded-For")[0].rpartition(' ')[-1]
+    else:
+        user_ip = request.remote_addr
+    user_agent = request.headers.get('User-Agent')
+    logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
+
     # Create a new user with the generated user_id
-    new_user = models.User(user_id=user_id)
+    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent)
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
@@ -159,11 +166,14 @@ def get_example_images():
     return jsonify(response)
 
 @app.route('/api/upload_source', methods=['POST'])
-def upload_source():
+def upload_source():        
     if 'img_file' not in request.files or 'user_id' not in request.form or 'person_name' not in request.form:
         return {"status": "error", "message": "Missing img_file, user_id or person_name"}, 400
     img_file = request.files['img_file']
     user_id = request.form['user_id']
+
+    logging.info(f'upload source request {user_id}')
+
     try: 
         png_img = utils.convert_to_png_bytes(img_file)
     except Exception as e:
@@ -212,6 +222,8 @@ def upload_source():
             "source_num": count
         }
     }
+    
+    logging.info(f'upload source success {user_id} {person_id} {person_name}')
     return jsonify(response)
 
 @app.route('/api/start_sd_generate', methods=['POST'])
@@ -422,3 +434,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     app.run(host='0.0.0.0', port=args.port)
+else:
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    logging.root.handlers = gunicorn_logger.handlers
+    logging.root.setLevel(gunicorn_logger.level)
+    logging.debug('logger setup.')
+
