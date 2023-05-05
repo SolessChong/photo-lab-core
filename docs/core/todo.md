@@ -18,3 +18,6 @@
     1. Manage config overwrite using Mgr.
 1. Use WEBUI's batch rendering feature to accelerate.
 1. Cache more models for performance.
+
+# Art
+1. Lighht and shadow

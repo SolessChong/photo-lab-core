@@ -5,8 +5,6 @@ import random
 def rabbit_head_animation(duration, icon_1="🐶", icon_2="🐱"):
     start_time = time.time()
     bar_length = 80
-    icon_1 = "🐶"
-    icon_2 = "🐱"
     bar_char = "▬"
 
     # Initialize the positions of the dog and cat heads

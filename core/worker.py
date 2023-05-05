@@ -88,16 +88,17 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     # model file local path: ResourceMgr.get_resource_path(ResourceType.LORA_MODEL, person_id)
     model_path = ResourceMgr.get_resource_local_path(ResourceType.LORA_MODEL, person_id)
 
-    db.session.close()
     if not os.path.exists(model_path):
         logging.error(f"  --- LORA model {person_id} not found")
+        db.session.close()
         return -1
     else:
         url = ResourceMgr.get_resource_oss_url(ResourceType.LORA_MODEL, person_id)
         bucket.put_object_from_file(url, model_path)
-        person.lora_train_status = "success"
+        bucket.put_object_from_file(url + '.log', dataset_path / 'train.log')
         person.update_model_file(url)
         logging.info(f"  --- LORA model {person_id} Success")
+        db.session.close()
         return 0
 
 # test case,
