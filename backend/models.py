@@ -81,7 +81,7 @@ class Scene(db.Model):
     prompt = db.Column(db.Text, nullable=True)
     action_type = db.Column(db.String(255), nullable=False, comment='type包括mj,reface, sd等。\r\n如果是mj，直接调用prompt生成图片\r\n如果是reface，直接与上传的头像图片进行换脸\r\n')
     img_type = db.Column(db.String(255), nullable=False, comment='图片类型，包括男生、女生、多人、猫、狗')
-    rate = db.Column(db.Float, nullable=True, comment='推荐评分，从0-10分，可以有小数点\r\n')
+    rate = db.Column(db.Float, nullable=True, default=0, comment='推荐评分，从0-10分，可以有小数点\r\n')
     
     name = db.Column(db.String(255), nullable=True)
     base_img_key = db.Column(db.String(2550), nullable=True)
@@ -117,8 +117,9 @@ class Scene(db.Model):
             'hint_img_list': self.hint_img_list,
             'collection_name': self.collection_name,
             'prompt': self.prompt,
+            'negative_prompt': self.negative_prompt,
             'params': self.params,
-            'rate': self.rate,
+            'rate': 0 if self.rate is None else self.rate,
         }
 
 class Task(db.Model):

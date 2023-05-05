@@ -1,3 +1,30 @@
+## Scene
+- Params
+    - 'model': model name
+    - 'char_attentions': char attentions (a girl_userxx: X)
+    - 'i2i_params': i2i params dict
+    - 'lora_upscaler_params': lora upscaler params dict
+
+e.g.
+    Scene.params = {
+        "model": "dreamshaper_4BakedVaeFp16",
+        "i2i_params":{
+            "sampler_name": "Euler a"
+        },
+        "lora_upscaler_params":{
+            "upscaler_1": "ESRGAN_4x",
+            "upscaler_2": "R-ESRGAN 4x+ Anime6B",
+            "extras_upscaler_2_visibility": 0.6,
+        }
+    }
+
+    Scene.params = {
+        "model": "chilloutmix_NiPrunedFp16Fix", 
+        "i2i_params":{
+            "sampler_name": "DPM++ SDE Karras"
+        },
+    }
+
 ## Workflow: 
 
 1. Train lora:

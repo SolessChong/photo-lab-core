@@ -4,6 +4,7 @@
 1. Semantic segmentation masking
 1. Color correction, fix neck connection
 1. Eye redraw
+1. Pose controlnet regenerate for crop img
 
 # Training Lora
 1. Rotation augmentation

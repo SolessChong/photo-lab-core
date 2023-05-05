@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from backend.extensions import  app, db
 from flask_cors import CORS
+import json
 from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task
 from celery import Celery, chain, chord, group, signature
 from backend.config import CELERY_CONFIG
@@ -62,27 +63,21 @@ def index():
 @app.route('/list_scenes', methods=['GET'])
 def list_scenes():
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 100, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
 
     scenes_pagination = Scene.query.order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
     scenes = scenes_pagination.items
     total_pages = scenes_pagination.pages
 
-    scene_list = [
-        {
-            'scene_id': scene.scene_id,
-            'base_img_key': scene.base_img_key,
-            'hint_img_list': scene.hint_img_list
-        }
-        for scene in scenes
-    ]
+    scene_list = [scene.to_dict() for scene in scenes]
 
     return jsonify({'scenes': scene_list, 'total_pages': total_pages})
 
 
 @app.route('/api/scene/<int:scene_id>/update_params', methods=['POST'])
 def update_scene_params(scene_id):
-    updated_params = request.form.get('params')
+    data = request.get_json()  # Get JSON data from request
+    updated_params = data.get('params')  # Get params from JSON data
     scene = Scene.query.get(scene_id)
 
     if scene is None:
@@ -109,6 +104,8 @@ def update_scene_rate():
     if not scene:
         return jsonify({'error': 'Scene not found'}), 404
 
+    if scene.rate is None:
+        scene.rate = 0
     if action == 'add':
         scene.rate += 1
     elif action == 'minus':
@@ -118,6 +115,18 @@ def update_scene_rate():
 
     db.session.commit()
     return jsonify({'success': True, 'rate': scene.rate})
+
+@app.route('/api/scene/<int:scene_id>/update_prompt', methods=['POST'])
+def update_scene_prompt(scene_id):
+    updated_prompt = request.form.get('prompt')
+    scene = Scene.query.get(scene_id)
+
+    if scene is None:
+        return jsonify({"error": "Scene not found"}), 404
+
+    scene.prompt = updated_prompt
+    db.session.commit()
+    return jsonify({"success": True, "prompt": scene.prompt})
 
 @app.route('/list_tasks/<int:scene_id>', methods=['GET'])
 def list_tasks_filtered(scene_id):

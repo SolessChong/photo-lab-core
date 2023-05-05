@@ -331,6 +331,18 @@ SD_MODEL_LIST = [
 
 PROMPT_PHOTO = ",(8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1.37),professional lighting, photon mapping, radiosity, physically-based rendering,"
 
+UPSCALER_DEFAULT = {
+    "upscaler_1": "ESRGAN_4x",
+    "upscaler_2": "R-ESRGAN 4x+",
+    "extras_upscaler_2_visibility": 0.2
+}
+
+UPSCALER_ANIME = {
+    "upscaler_1": "ESRGAN_4x",
+    "upscaler_2": "R-ESRGAN 4x+ Anime6B",
+    "extras_upscaler_2_visibility": 0.5
+}
+
 def make_params(template, lut, **kwargs):
     for k, v in kwargs.items():
         if k in lut:

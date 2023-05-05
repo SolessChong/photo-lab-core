@@ -86,6 +86,33 @@ def LEGACY():
             db.session.commit()
             celery_worker.task_render_scene.delay(task.id)
 
+    from backend import models
+    from backend.extensions import db, app
+    app.app_context().push()
+    scene = models.Scene(
+        prompt="masterpiece,best quality,1girl, solo, armor,full body,holding sword,mini\(ttp\),city, miniature, landscape, isometric,",
+        negative_prompt="3d, cartoon, anime, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, bad anatomy, girl, loli, young, large breasts, red eyes, muscular, (cross-eye:1.3), (strange eyes:1.3), easynegative, (more than 5 fingers),",
+        action_type="sd",
+        img_type="girl",
+        model_name="cartoon",
+        setup_status="finish",
+        params={
+            'model': 'cartoonish_v1 [07f029f6d1]',
+            'sampler_name': 'Euler a',
+        },
+        collection_name='test_marvel_1',
+    )
+    db.session.add(scene)
+    db.session.commit()
+    task = models.Task(
+        person_id_list = [2],
+        scene_id = scene.scene_id,
+        status = "wait",
+        user_id = 0
+    )
+    db.session.add(task)
+    db.session.commit()
+
 def render_person_on_scenes(person_id, scene_list):
     task_list = []
     for scene in scene_list:
@@ -108,10 +135,11 @@ if __name__ == "__main__":
     # when cmd is ['collection_prefix', 'collection_name'], arg 'name' is required.
     import argparse
     parser = argparse.ArgumentParser(description='Add task to Celery srender queue.')
-    parser.add_argument('cmd', type=str, choices=['render_all_wait', 'collection_prefix', 'collection_name', 'rate'], help='Command to execute.')
+    parser.add_argument('cmd', type=str, choices=['render_all_wait', 'collection_prefix', 'collection_name', 'rate', 'scene'], help='Command to execute.')
     parser.add_argument('-n', '--name', type=str, help='Name of collection or prefix of collection name.')
     parser.add_argument('-p', '--person_list', type=int, nargs='+', required=True, help='Person id list.')
     parser.add_argument('--rate', type=int, default=1)
+    parser.add_argument('--scene', type=int, nargs='+', help='Scene id list.')
 
     args = parser.parse_args()
     logging.info(f'args: {args}')
@@ -145,6 +173,11 @@ if __name__ == "__main__":
             render_person_on_scenes(person, scene_list)
     elif cmd == 'rate':
         scene_list = Scene.query.filter(Scene.rate >= args.rate).filter(Scene.scene_id > 500).all()
+        logging.info(f'Found {len(scene_list)} scenes.')
+        for person in args.person_list:
+            render_person_on_scenes(person, scene_list)
+    elif cmd == 'scene':
+        scene_list = Scene.query.filter(Scene.scene_id.in_(args.scene)).all()
         logging.info(f'Found {len(scene_list)} scenes.')
         for person in args.person_list:
             render_person_on_scenes(person, scene_list)
@@ -224,3 +257,4 @@ if __name__ == "__main__":
     #         db.session.add(task)
     #     db.session.commit()
 
+        

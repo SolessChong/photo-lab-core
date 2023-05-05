@@ -42,22 +42,13 @@ def prepare_task(task):
 
     return base_img, pose_map
 
-"""
-Process model info in params, and set model for API.
-Delete model field from params to make it work for API args.
-"""
-def process_model(params: dict) -> int:
-    if not 'model' in params:
-        return 0
-    else:
-        options['sd_model_checkpoint'] = params.pop('model')
-        api.set_options(options)
-        return 1
-
-def generate_prompt_with_lora(prompt, lora):
+def generate_prompt_with_lora(prompt, lora, params=None):
     if not prompt:
         prompt = ''
-    prompt_with_lora = prompt + f",<lora:{lora}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:1)"
+    char_attention = 1
+    if params and 'char_attention' in params:
+        char_attention = params['char_attention']
+    prompt_with_lora = prompt + f",<lora:{lora}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:{char_attention})"
     logging.info(f"prompt_with_lora: {prompt_with_lora}")
     # replace person with subject name using regex
     pattern = r'\b(?:a woman|a man|a girl|a boy)\b'
@@ -84,8 +75,11 @@ def render_lora_on_prompt(task) -> Image:
     t2i_args = templates.LORA_T2I_PARAMS
     if scene.params:
         t2i_args.update(scene.params)
-    process_model(t2i_args)
+    
     prompt_with_lora = generate_prompt_with_lora(scene.prompt, lora_list[0])
+    logging.info(f"prompt_with_lora: {prompt_with_lora}, t2i_args: {t2i_args}")
+
+    interpret_params(t2i_args)
     rst = api.txt2img(
         prompt=prompt_with_lora,
         **t2i_args
@@ -114,10 +108,18 @@ def render_lora_on_base_img(task) -> Image:
     # e.g. lora_list[0] = 'user_1', --> <lora:user_1:1> in prompt.
     lora_list = [ResourceMgr.get_lora_name_by_person_id(person_id) for person_id in task.person_id_list]
     prompt = scene.prompt
-    i2i_args = templates.LORA_INPAINT_PARAMS
-    if scene.params:
-        i2i_args.update(scene.params)
-    process_model(i2i_args)
+    # Extract config
+    # - Extract lora_upscaler. If not specified, use default.
+    lora_upscaler_params = scene.params.get("lora_upscaler_params", templates.UPSCALER_DEFAULT)
+    
+    i2i_params = templates.LORA_INPAINT_PARAMS
+    if scene.params and scene.params.get("i2i_params"):
+        i2i_params.update(scene.params.get("i2i_params"))
+
+    options['sd_model_checkpoint'] = scene.params.get('model')
+    api.set_options(options)
+    logging.info(f"    ---- 🔄 Switching to model: {options['sd_model_checkpoint']}")
+
     scene_id = task.scene_id
 
     image = base_img.copy()
@@ -183,7 +185,7 @@ def render_lora_on_base_img(task) -> Image:
 
         char_controlnet_units = [webuiapi.ControlNetUnit(input_image=char_pose_img, model="control_sd15_openpose [fef5e48e]", resize_mode="Inner Fit (Scale to Fit)", guidance=0.9, guidance_end=0.7)]
         # log params
-        logging.info(f"prompt_with_lora: {prompt_with_lora}, i2i_args: {i2i_args}")
+        logging.info(f"prompt_with_lora: {prompt_with_lora}, i2i_args: {i2i_params}")
 
         char_lora_img = api.img2img(
             prompt=prompt_with_lora, 
@@ -191,14 +193,28 @@ def render_lora_on_base_img(task) -> Image:
             controlnet_units=char_controlnet_units,
             mask_image=char_mask_img,
             mask_blur=10,
-            **i2i_args
+            **i2i_params
             ).images[0]
 
         # resize to original size and paste to final image
         char_lora_img = char_lora_img.convert("RGBA")
-        char_lora_img = char_lora_img.resize((bb[2], bb[3]))        
-        image.paste(char_lora_img, (bb[0], bb[1]))
+        if bb[2] < char_lora_img.width:
+            char_lora_img_enlarge = char_lora_img.resize((bb[2], bb[3]))      
+        else:
+            char_lora_img_enlarge = api.extra_single_image(
+                char_lora_img,
+                resize_mode=1,
+                upscaling_resize_w=bb[2],
+                upscaling_resize_h=bb[3],
+                **lora_upscaler_params,
+            ).images[0]
+        image.paste(char_lora_img_enlarge, (bb[0], bb[1]))
         
+        # char_lora_img = char_lora_img.convert("RGBA")
+        # char_lora_img = char_lora_img.resize((bb[2], bb[3]))        
+        # image.paste(char_lora_img, (bb[0], bb[1]))
+        
+
         ### Save tmp image for debug
         if conf.DEBUG:
             if not os.path.exists(output_dir):
