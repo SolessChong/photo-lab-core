@@ -4320,3 +4320,1521 @@ Traceback (most recent call last):
 AttributeError: 'NoneType' object has no attribute 'body'
 [2023-05-05 19:00:19 +0800] [1004045] [INFO] upload source success VM40dsVhRe 165 VM40dsVhRe_1683284329879
 [2023-05-05 19:14:21 +0800] [1116165] [INFO] create new user ip is 114.136.192.151, ua is PicMagic/1.0.1 (iPhone; iOS 15.6; Scale/3.00)
+[2023-05-05 20:29:06 +0800] [1115255] [INFO] create new user ip is 49.158.134.71, ua is PicMagic/1.0.1 (iPhone; iOS 16.4.1; Scale/3.00)
+[2023-05-05 20:29:53 +0800] [1115255] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:29:55 +0800] [1115255] [INFO] upload source success OGQ9IZCRUv 167 OGQ9IZCRUv_1683289758254
+[2023-05-05 20:29:55 +0800] [1116165] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:29:57 +0800] [1116165] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 190, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 20:29:57 +0800] [1004030] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:29:58 +0800] [1004030] [INFO] upload source success OGQ9IZCRUv 167 OGQ9IZCRUv_1683289758254
+[2023-05-05 20:29:59 +0800] [1004030] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:30:00 +0800] [1004030] [INFO] upload source success OGQ9IZCRUv 167 OGQ9IZCRUv_1683289758254
+[2023-05-05 20:30:01 +0800] [1004030] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:30:03 +0800] [1004030] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 190, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 20:30:04 +0800] [1004030] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:30:06 +0800] [1004030] [INFO] upload source success OGQ9IZCRUv 167 OGQ9IZCRUv_1683289758254
+[2023-05-05 20:30:07 +0800] [1115127] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:30:08 +0800] [1115127] [INFO] upload source success OGQ9IZCRUv 167 OGQ9IZCRUv_1683289758254
+[2023-05-05 20:30:09 +0800] [1115328] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:30:11 +0800] [1115328] [INFO] upload source success OGQ9IZCRUv 167 OGQ9IZCRUv_1683289758254
+[2023-05-05 20:30:12 +0800] [1116165] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:30:13 +0800] [1116165] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 190, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 20:30:14 +0800] [1004045] [INFO] upload source request OGQ9IZCRUv
+[2023-05-05 20:30:15 +0800] [1004045] [INFO] upload source success OGQ9IZCRUv 167 OGQ9IZCRUv_1683289758254
+[2023-05-05 20:30:28 +0800] [1115127] [INFO] get_generated_images user_id: OGQ9IZCRUv
+[2023-05-05 20:30:28 +0800] [1115127] [INFO] adding tasks number: 0
+[2023-05-05 20:30:40 +0800] [1115130] [INFO] OGQ9IZCRUv has new_combinations: [(769, [167]), (3585, [167]), (4617, [167]), (4619, [167]), (2865, [167]), (2884, [167]), (2885, [167]), (2886, [167]), (3398, [167]), (2889, [167]), (2892, [167]), (2894, [167]), (2895, [167]), (2897, [167]), (3429, [167]), (3441, [167]), (926, [167]), (3496, [167]), (3517, [167]), (3522, [167]), (3526, [167]), (3531, [167]), (3543, [167]), (3567, [167]), (3572, [167]), (3574, [167]), (3580, [167]), (3582, [167]), (3583, [167]), (2816, [167]), (1538, [167]), (3586, [167]), (1027, [167]), (3587, [167]), (772, [167]), (774, [167]), (1030, [167]), (1542, [167]), (3590, [167]), (775, [167]), (1543, [167]), (3591, [167]), (2056, [167]), (3592, [167]), (2825, [167]), (1034, [167]), (4618, [167]), (2059, [167]), (3596, [167]), (4620, [167])]
+[2023-05-05 20:30:40 +0800] [1115130] [INFO] OGQ9IZCRUv start to  train lora 167
+[2023-05-05 20:30:47 +0800] [1115124] [INFO] get_generated_images user_id: OGQ9IZCRUv
+[2023-05-05 20:30:47 +0800] [1115124] [INFO] adding tasks number: 0
+[2023-05-05 20:32:02 +0800] [1115330] [INFO] OGQ9IZCRUv has new_combinations: [(769, [167]), (3585, [167]), (4617, [167]), (4619, [167]), (2865, [167]), (2884, [167]), (2885, [167]), (2886, [167]), (3398, [167]), (2889, [167]), (2892, [167]), (2894, [167]), (2895, [167]), (2897, [167]), (3429, [167]), (3441, [167]), (926, [167]), (3496, [167]), (3517, [167]), (3522, [167]), (3526, [167]), (3531, [167]), (3543, [167]), (3567, [167]), (3572, [167]), (3574, [167]), (3580, [167]), (3582, [167]), (3583, [167]), (2816, [167]), (1538, [167]), (3586, [167]), (1027, [167]), (3587, [167]), (772, [167]), (774, [167]), (1030, [167]), (1542, [167]), (3590, [167]), (775, [167]), (1543, [167]), (3591, [167]), (2056, [167]), (3592, [167]), (2825, [167]), (1034, [167]), (4618, [167]), (2059, [167]), (3596, [167]), (4620, [167])]
+[2023-05-05 20:35:19 +0800] [1115330] [INFO] get_generated_images user_id: OGQ9IZCRUv
+[2023-05-05 20:35:19 +0800] [1115330] [INFO] adding tasks number: 0
+[2023-05-05 20:39:52 +0800] [1115329] [INFO] create new user ip is 118.200.215.111, ua is PicMagic/1.0.1 (iPhone; iOS 16.1.1; Scale/3.00)
+[2023-05-05 20:40:39 +0800] [1116165] [INFO] get_generated_images user_id: 6d75ko6Mt0
+[2023-05-05 20:40:39 +0800] [1116165] [INFO] adding tasks number: 0
+[2023-05-05 20:41:40 +0800] [1001387] [INFO] get_generated_images user_id: 6d75ko6Mt0
+[2023-05-05 20:41:40 +0800] [1001387] [INFO] adding tasks number: 0
+[2023-05-05 21:00:13 +0800] [1115255] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:00:14 +0800] [1115255] [INFO] adding tasks number: 56
+[2023-05-05 21:00:19 +0800] [1115255] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 372, in get_generated_images
+    create_new_pack(pack_dict, task.pack_id, task.result_img_key)
+  File "/root/photo-lab-core/backend/app.py", line 330, in create_new_pack
+    "description": pack.description,
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:01:09 +0800] [1001379] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:09 +0800] [1004030] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:09 +0800] [1004045] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:09 +0800] [1115329] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:09 +0800] [1001394] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:11 +0800] [1001387] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:28 +0800] [1001379] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:29 +0800] [1115329] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:29 +0800] [1004030] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:30 +0800] [1004045] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:30 +0800] [1116165] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:30 +0800] [1001394] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:31 +0800] [1004045] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:31 +0800] [1001394] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:31 +0800] [1115127] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:32 +0800] [1001387] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:32 +0800] [1115328] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:33 +0800] [1115151] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:49 +0800] [1116165] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:49 +0800] [1004045] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:49 +0800] [1001394] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:50 +0800] [1115255] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:50 +0800] [1001394] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:50 +0800] [1004045] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:51 +0800] [1115127] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:51 +0800] [1115328] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:53 +0800] [1115328] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:54 +0800] [1115127] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:01:54 +0800] [1115151] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:01:55 +0800] [1114841] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:02:09 +0800] [1001394] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:02:10 +0800] [1115255] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:02:10 +0800] [1004045] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:02:12 +0800] [1115127] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:02:13 +0800] [1115328] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:02:13 +0800] [1114841] [INFO] upload source success 87YLj0apS8 168 87YLj0apS8_1683291645232
+[2023-05-05 21:02:14 +0800] [1115124] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:02:24 +0800] [1116165] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:02:37 +0800] [1115265] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:02:40 +0800] [1001375] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:06:37 +0800] [1115328] [INFO] create new user ip is 1.47.147.98, ua is PicMagic/1.0.1 (iPhone; iOS 16.3.1; Scale/3.00)
+[2023-05-05 21:11:18 +0800] [1115330] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:11:19 +0800] [1115330] [INFO] adding tasks number: 56
+[2023-05-05 21:11:21 +0800] [1115153] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:11:22 +0800] [1115330] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 372, in get_generated_images
+    if pack.banner_img_key:
+  File "/root/photo-lab-core/backend/app.py", line 330, in create_new_pack
+    response = {
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:11:25 +0800] [1115328] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:11:42 +0800] [1001380] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:42 +0800] [1001370] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:42 +0800] [1001375] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:43 +0800] [1004045] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:43 +0800] [1001379] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:44 +0800] [1114841] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:57 +0800] [1001370] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:11:57 +0800] [1001380] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:11:57 +0800] [1001375] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:11:58 +0800] [1001375] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:58 +0800] [1004045] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:11:58 +0800] [1001379] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:11:59 +0800] [1001380] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:59 +0800] [1115255] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:11:59 +0800] [1115329] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:12:00 +0800] [1115130] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:12:00 +0800] [1114841] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:12:00 +0800] [1115124] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:12:10 +0800] [1001375] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:12:10 +0800] [1001394] [INFO] upload source request 87YLj0apS8
+[2023-05-05 21:12:13 +0800] [1001380] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:12:14 +0800] [1115255] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:12:14 +0800] [1115329] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:12:15 +0800] [1115130] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:12:15 +0800] [1115124] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:12:18 +0800] [1001394] [INFO] upload source success 87YLj0apS8 169 87YLj0apS8_1683292286854
+[2023-05-05 21:12:29 +0800] [1001380] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:12:29 +0800] [1001380] [INFO] adding tasks number: 56
+[2023-05-05 21:12:32 +0800] [1001380] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 372, in get_generated_images
+    if pack.banner_img_key:
+  File "/root/photo-lab-core/backend/app.py", line 330, in create_new_pack
+    response = {
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:12:42 +0800] [1114841] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:16:00 +0800] [1001365] [INFO] Handling signal: term
+[2023-05-05 21:16:00 +0800] [1001370] [INFO] Worker exiting (pid: 1001370)
+[2023-05-05 21:16:00 +0800] [1001375] [INFO] Worker exiting (pid: 1001375)
+[2023-05-05 21:16:00 +0800] [1001380] [INFO] Worker exiting (pid: 1001380)
+[2023-05-05 21:16:00 +0800] [1001379] [INFO] Worker exiting (pid: 1001379)
+[2023-05-05 21:16:00 +0800] [1001387] [INFO] Worker exiting (pid: 1001387)
+[2023-05-05 21:16:00 +0800] [1001394] [INFO] Worker exiting (pid: 1001394)
+[2023-05-05 21:16:00 +0800] [1004030] [INFO] Worker exiting (pid: 1004030)
+[2023-05-05 21:16:00 +0800] [1114841] [INFO] Worker exiting (pid: 1114841)
+[2023-05-05 21:16:00 +0800] [1115127] [INFO] Worker exiting (pid: 1115127)
+[2023-05-05 21:16:00 +0800] [1004045] [INFO] Worker exiting (pid: 1004045)
+[2023-05-05 21:16:00 +0800] [1115151] [INFO] Worker exiting (pid: 1115151)
+[2023-05-05 21:16:00 +0800] [1115265] [INFO] Worker exiting (pid: 1115265)
+[2023-05-05 21:16:00 +0800] [1116165] [INFO] Worker exiting (pid: 1116165)
+[2023-05-05 21:16:00 +0800] [1115153] [INFO] Worker exiting (pid: 1115153)
+[2023-05-05 21:16:00 +0800] [1115130] [INFO] Worker exiting (pid: 1115130)
+[2023-05-05 21:16:00 +0800] [1115255] [INFO] Worker exiting (pid: 1115255)
+[2023-05-05 21:16:00 +0800] [1115124] [INFO] Worker exiting (pid: 1115124)
+[2023-05-05 21:16:00 +0800] [1115328] [INFO] Worker exiting (pid: 1115328)
+[2023-05-05 21:16:00 +0800] [1115330] [INFO] Worker exiting (pid: 1115330)
+[2023-05-05 21:16:00 +0800] [1115329] [INFO] Worker exiting (pid: 1115329)
+[2023-05-05 21:16:03 +0800] [1001365] [INFO] Shutting down: Master
+[2023-05-05 21:16:11 +0800] [1117674] [INFO] Starting gunicorn 20.1.0
+[2023-05-05 21:16:11 +0800] [1117674] [INFO] Listening at: http://127.0.0.1:8000 (1117674)
+[2023-05-05 21:16:11 +0800] [1117674] [INFO] Using worker: sync
+[2023-05-05 21:16:11 +0800] [1117676] [INFO] Booting worker with pid: 1117676
+[2023-05-05 21:16:11 +0800] [1117677] [INFO] Booting worker with pid: 1117677
+[2023-05-05 21:16:11 +0800] [1117678] [INFO] Booting worker with pid: 1117678
+[2023-05-05 21:16:11 +0800] [1117679] [INFO] Booting worker with pid: 1117679
+[2023-05-05 21:16:11 +0800] [1117680] [INFO] Booting worker with pid: 1117680
+[2023-05-05 21:16:11 +0800] [1117681] [INFO] Booting worker with pid: 1117681
+[2023-05-05 21:16:11 +0800] [1117682] [INFO] Booting worker with pid: 1117682
+[2023-05-05 21:16:12 +0800] [1117683] [INFO] Booting worker with pid: 1117683
+[2023-05-05 21:16:12 +0800] [1117684] [INFO] Booting worker with pid: 1117684
+[2023-05-05 21:16:12 +0800] [1117685] [INFO] Booting worker with pid: 1117685
+[2023-05-05 21:16:12 +0800] [1117686] [INFO] Booting worker with pid: 1117686
+[2023-05-05 21:16:12 +0800] [1117687] [INFO] Booting worker with pid: 1117687
+[2023-05-05 21:16:12 +0800] [1117688] [INFO] Booting worker with pid: 1117688
+[2023-05-05 21:16:12 +0800] [1117689] [INFO] Booting worker with pid: 1117689
+[2023-05-05 21:16:12 +0800] [1117690] [INFO] Booting worker with pid: 1117690
+[2023-05-05 21:16:12 +0800] [1117693] [INFO] Booting worker with pid: 1117693
+[2023-05-05 21:16:12 +0800] [1117696] [INFO] Booting worker with pid: 1117696
+[2023-05-05 21:16:12 +0800] [1117700] [INFO] Booting worker with pid: 1117700
+[2023-05-05 21:16:12 +0800] [1117703] [INFO] Booting worker with pid: 1117703
+[2023-05-05 21:16:12 +0800] [1117704] [INFO] Booting worker with pid: 1117704
+[2023-05-05 21:19:16 +0800] [1117693] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:19:17 +0800] [1117693] [INFO] adding tasks number: 56
+[2023-05-05 21:19:19 +0800] [1117693] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    create_new_pack(pack_dict, pack.pack_id, None)
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:19:39 +0800] [1117693] [INFO] create new user ip is 183.39.23.164, ua is PicMagic/1.0.1 (iPhone; iOS 15.2.1; Scale/2.00)
+[2023-05-05 21:20:17 +0800] [1117681] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:20:17 +0800] [1117681] [INFO] adding tasks number: 56
+[2023-05-05 21:20:20 +0800] [1117681] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    create_new_pack(pack_dict, pack.pack_id, None)
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:20:39 +0800] [1117686] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:20:56 +0800] [1117686] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:20:57 +0800] [1117686] [INFO] BwoClQQQxy上传失败，图片中有2人脸
+[2023-05-05 21:20:58 +0800] [1117681] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:20:59 +0800] [1117681] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:00 +0800] [1117681] [INFO] BwoClQQQxy上传失败，图片中有2人脸
+[2023-05-05 21:21:03 +0800] [1117678] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:05 +0800] [1117678] [INFO] upload source success BwoClQQQxy 170 BwoClQQQxy_1683292798141
+[2023-05-05 21:21:08 +0800] [1117678] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:21:08 +0800] [1117678] [INFO] adding tasks number: 56
+[2023-05-05 21:21:09 +0800] [1117703] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:10 +0800] [1117678] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    create_new_pack(pack_dict, task.pack_id, task.result_img_key)
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    "description": pack.description,
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:21:12 +0800] [1117703] [INFO] upload source success BwoClQQQxy 170 BwoClQQQxy_1683292798141
+[2023-05-05 21:21:13 +0800] [1117700] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:21:14 +0800] [1117686] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:16 +0800] [1117686] [INFO] upload source success BwoClQQQxy 170 BwoClQQQxy_1683292798141
+[2023-05-05 21:21:18 +0800] [1117689] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:20 +0800] [1117689] [INFO] upload source success BwoClQQQxy 170 BwoClQQQxy_1683292798141
+[2023-05-05 21:21:22 +0800] [1117689] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:23 +0800] [1117689] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 224, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:21:23 +0800] [1117687] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:25 +0800] [1117687] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 224, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:21:34 +0800] [1117677] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:35 +0800] [1117677] [INFO] upload source success BwoClQQQxy 170 BwoClQQQxy_1683292798141
+[2023-05-05 21:21:37 +0800] [1117690] [INFO] upload source request BwoClQQQxy
+[2023-05-05 21:21:39 +0800] [1117690] [INFO] upload source success BwoClQQQxy 170 BwoClQQQxy_1683292798141
+[2023-05-05 21:21:50 +0800] [1117685] [INFO] get_generated_images user_id: BwoClQQQxy
+[2023-05-05 21:21:50 +0800] [1117685] [INFO] adding tasks number: 0
+[2023-05-05 21:21:51 +0800] [1117682] [INFO] get_generated_images user_id: BwoClQQQxy
+[2023-05-05 21:21:51 +0800] [1117682] [INFO] adding tasks number: 0
+[2023-05-05 21:21:54 +0800] [1117689] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:26:57 +0800] [1117689] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:26:57 +0800] [1117689] [INFO] adding tasks number: 56
+[2023-05-05 21:27:00 +0800] [1117689] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    return jsonify({"error": "user_id is required"}), 400
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:28:12 +0800] [1117690] [INFO] create new user ip is 36.112.187.99, ua is PicMagic/1.0.1 (iPhone; iOS 16.2; Scale/3.00)
+[2023-05-05 21:28:51 +0800] [1117700] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:28:52 +0800] [1117683] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:28:52 +0800] [1117682] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:28:52 +0800] [1117700] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:28:53 +0800] [1117681] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:28:53 +0800] [1117683] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:28:54 +0800] [1117700] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:28:54 +0800] [1117682] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:28:55 +0800] [1117677] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:28:55 +0800] [1117681] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:28:56 +0800] [1117700] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:28:56 +0800] [1117677] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:28:57 +0800] [1117677] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:28:57 +0800] [1117685] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:28:59 +0800] [1117677] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:00 +0800] [1117685] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:05 +0800] [1117693] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:07 +0800] [1117680] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:10 +0800] [1117679] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:16 +0800] [1117693] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:16 +0800] [1117693] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:16 +0800] [1117685] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:17 +0800] [1117680] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:23 +0800] [1117686] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:24 +0800] [1117679] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:32 +0800] [1117685] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:33 +0800] [1117693] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:37 +0800] [1117686] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:39 +0800] [1117682] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:39 +0800] [1117683] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:48 +0800] [1117696] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:49 +0800] [1117683] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:49 +0800] [1117683] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:50 +0800] [1117682] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:29:50 +0800] [1117677] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:52 +0800] [1117704] [INFO] upload source request B6evYqDqRT
+[2023-05-05 21:29:59 +0800] [1117683] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:30:04 +0800] [1117696] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:30:05 +0800] [1117677] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 224, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:30:06 +0800] [1117704] [INFO] upload source success B6evYqDqRT 171 B6evYqDqRT_1683293307299
+[2023-05-05 21:30:07 +0800] [1117676] [INFO] B6evYqDqRT has new_combinations: [(769, [171]), (3585, [171]), (4617, [171]), (4619, [171]), (2865, [171]), (2884, [171]), (2885, [171]), (2886, [171]), (3398, [171]), (2889, [171]), (2892, [171]), (2894, [171]), (2895, [171]), (2897, [171]), (3429, [171]), (3441, [171]), (926, [171]), (3496, [171]), (3517, [171]), (3522, [171]), (3526, [171]), (3531, [171]), (3543, [171]), (3567, [171]), (3572, [171]), (3574, [171]), (3580, [171]), (3582, [171]), (3583, [171]), (2816, [171]), (1538, [171]), (3586, [171]), (1027, [171]), (3587, [171]), (772, [171]), (774, [171]), (1030, [171]), (1542, [171]), (3590, [171]), (775, [171]), (1543, [171]), (3591, [171]), (2056, [171]), (3592, [171]), (2825, [171]), (1034, [171]), (4618, [171]), (2059, [171]), (3596, [171]), (4620, [171])]
+[2023-05-05 21:30:07 +0800] [1117676] [INFO] B6evYqDqRT start to  train lora 171
+[2023-05-05 21:30:11 +0800] [1117700] [INFO] get_generated_images user_id: Vy4VbkVkOJ
+[2023-05-05 21:30:11 +0800] [1117700] [INFO] adding tasks number: 135
+[2023-05-05 21:30:21 +0800] [1117696] [INFO] get_generated_images user_id: Vy4VbkVkOJ
+[2023-05-05 21:30:21 +0800] [1117696] [INFO] adding tasks number: 135
+[2023-05-05 21:31:15 +0800] [1117703] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:31:15 +0800] [1117703] [INFO] adding tasks number: 56
+[2023-05-05 21:31:18 +0800] [1117703] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:31:28 +0800] [1117681] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:31:29 +0800] [1117681] [INFO] adding tasks number: 56
+[2023-05-05 21:31:30 +0800] [1117681] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:31:41 +0800] [1117677] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:31:42 +0800] [1117677] [INFO] adding tasks number: 56
+[2023-05-05 21:31:43 +0800] [1117677] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:33:11 +0800] [1117704] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:33:12 +0800] [1117704] [INFO] adding tasks number: 56
+[2023-05-05 21:33:13 +0800] [1117704] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:33:31 +0800] [1117678] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:33:32 +0800] [1117678] [INFO] adding tasks number: 56
+[2023-05-05 21:33:33 +0800] [1117678] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:33:45 +0800] [1117704] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:33:51 +0800] [1117693] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:33:51 +0800] [1117693] [INFO] adding tasks number: 56
+[2023-05-05 21:33:53 +0800] [1117693] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:33:57 +0800] [1117679] [INFO] get_generated_images user_id: Vy4VbkVkOJ
+[2023-05-05 21:33:57 +0800] [1117679] [INFO] adding tasks number: 135
+[2023-05-05 21:34:57 +0800] [1117693] [INFO] get_generated_images user_id: 87YLj0apS8
+[2023-05-05 21:34:58 +0800] [1117693] [INFO] adding tasks number: 0
+[2023-05-05 21:35:56 +0800] [1117678] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:36:18 +0800] [1117684] [INFO] create new user ip is 120.244.202.189, ua is PicMagic/1.0.1 (iPhone; iOS 16.1; Scale/3.00)
+[2023-05-05 21:36:46 +0800] [1117704] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:36:46 +0800] [1117700] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:36:46 +0800] [1117684] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:36:47 +0800] [1117685] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:36:47 +0800] [1117681] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:36:48 +0800] [1117680] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:37:00 +0800] [1117700] [INFO] upload source success 9DHoipNWU8 172 9DHoipNWU8_1683293784965
+[2023-05-05 21:37:00 +0800] [1117684] [INFO] upload source success 9DHoipNWU8 172 9DHoipNWU8_1683293784965
+[2023-05-05 21:37:01 +0800] [1117685] [INFO] upload source success 9DHoipNWU8 172 9DHoipNWU8_1683293784965
+[2023-05-05 21:37:01 +0800] [1117681] [INFO] upload source success 9DHoipNWU8 172 9DHoipNWU8_1683293784965
+[2023-05-05 21:37:01 +0800] [1117680] [INFO] upload source success 9DHoipNWU8 172 9DHoipNWU8_1683293784965
+[2023-05-05 21:37:04 +0800] [1117704] [INFO] upload source success 9DHoipNWU8 172 9DHoipNWU8_1683293784965
+[2023-05-05 21:37:56 +0800] [1117703] [INFO] create new user ip is 36.112.187.99, ua is PicMagic/1.0.1 (iPhone; iOS 16.2; Scale/3.00)
+[2023-05-05 21:38:24 +0800] [1117680] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:24 +0800] [1117681] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:25 +0800] [1117685] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:25 +0800] [1117680] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:38:25 +0800] [1117681] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:38:26 +0800] [1117685] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:38:34 +0800] [1117689] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:35 +0800] [1117684] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:37 +0800] [1117689] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:38:37 +0800] [1117684] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:38:39 +0800] [1117700] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:42 +0800] [1117700] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:38:51 +0800] [1117683] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 21:38:51 +0800] [1117683] [INFO] adding tasks number: 0
+[2023-05-05 21:38:54 +0800] [1117689] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:38:54 +0800] [1117683] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:54 +0800] [1117689] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:56 +0800] [1117685] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:38:59 +0800] [1117690] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:39:06 +0800] [1117676] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:39:07 +0800] [1117683] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:39:08 +0800] [1117689] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:39:09 +0800] [1117685] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:39:10 +0800] [1117680] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:39:12 +0800] [1117690] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:39:16 +0800] [1117677] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:39:17 +0800] [1117676] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:39:21 +0800] [1117680] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:39:23 +0800] [1117677] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:39:32 +0800] [1117696] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 21:39:32 +0800] [1117696] [INFO] adding tasks number: 0
+[2023-05-05 21:39:36 +0800] [1117680] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:39:44 +0800] [1117688] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:39:46 +0800] [1117680] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:39:46 +0800] [1117688] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:39:48 +0800] [1117676] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:39:50 +0800] [1117693] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:39:50 +0800] [1117696] [INFO] upload source request WPddgSqHYY
+[2023-05-05 21:40:01 +0800] [1117688] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:40:06 +0800] [1117676] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:40:08 +0800] [1117693] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:40:08 +0800] [1117696] [INFO] upload source success WPddgSqHYY 173 WPddgSqHYY_1683293879340
+[2023-05-05 21:40:09 +0800] [1117684] [INFO] WPddgSqHYY has new_combinations: [(769, [173]), (3585, [173]), (4617, [173]), (4619, [173]), (2865, [173]), (2884, [173]), (2885, [173]), (2886, [173]), (3398, [173]), (2889, [173]), (2892, [173]), (2894, [173]), (2895, [173]), (2897, [173]), (3429, [173]), (3441, [173]), (926, [173]), (3496, [173]), (3517, [173]), (3522, [173]), (3526, [173]), (3531, [173]), (3543, [173]), (3567, [173]), (3572, [173]), (3574, [173]), (3580, [173]), (3582, [173]), (3583, [173]), (2816, [173]), (1538, [173]), (3586, [173]), (1027, [173]), (3587, [173]), (772, [173]), (774, [173]), (1030, [173]), (1542, [173]), (3590, [173]), (775, [173]), (1543, [173]), (3591, [173]), (2056, [173]), (3592, [173]), (2825, [173]), (1034, [173]), (4618, [173]), (2059, [173]), (3596, [173]), (4620, [173])]
+[2023-05-05 21:40:09 +0800] [1117684] [INFO] WPddgSqHYY start to  train lora 173
+[2023-05-05 21:40:13 +0800] [1117686] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:40:13 +0800] [1117686] [INFO] adding tasks number: 56
+[2023-05-05 21:40:15 +0800] [1117686] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:40:17 +0800] [1117680] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:40:17 +0800] [1117680] [INFO] adding tasks number: 56
+[2023-05-05 21:40:19 +0800] [1117680] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:40:21 +0800] [1117678] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:40:21 +0800] [1117678] [INFO] adding tasks number: 56
+[2023-05-05 21:40:23 +0800] [1117678] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:40:25 +0800] [1117684] [INFO] get_generated_images user_id: yi
+[2023-05-05 21:40:26 +0800] [1117684] [INFO] adding tasks number: 56
+[2023-05-05 21:40:27 +0800] [1117684] [ERROR] Exception on /api/get_generated_images [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 406, in get_generated_images
+    "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
+  File "/root/photo-lab-core/backend/app.py", line 364, in create_new_pack
+    db.session.commit()
+TypeError: unsupported operand type(s) for -: 'datetime.datetime' and 'NoneType'
+[2023-05-05 21:48:16 +0800] [1117703] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 21:48:16 +0800] [1117703] [INFO] adding tasks number: 0
+[2023-05-05 21:48:20 +0800] [1117688] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:53:02 +0800] [1117684] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 21:53:02 +0800] [1117684] [INFO] adding tasks number: 0
+[2023-05-05 21:53:16 +0800] [1117690] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:55:20 +0800] [1117686] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 21:55:20 +0800] [1117686] [INFO] adding tasks number: 0
+[2023-05-05 21:55:23 +0800] [1117688] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:56:09 +0800] [1117677] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 21:56:09 +0800] [1117677] [INFO] adding tasks number: 0
+[2023-05-05 21:56:15 +0800] [1117679] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 80, in get_user
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:56:40 +0800] [1117696] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:41 +0800] [1117677] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:41 +0800] [1117689] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:42 +0800] [1117681] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:43 +0800] [1117685] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:47 +0800] [1117683] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:52 +0800] [1117696] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:56:52 +0800] [1117676] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:54 +0800] [1117677] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:56:54 +0800] [1117689] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:56:55 +0800] [1117687] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:55 +0800] [1117686] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:56 +0800] [1117681] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:56:56 +0800] [1117680] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:56:57 +0800] [1117685] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:56:58 +0800] [1117684] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 21:57:01 +0800] [1117683] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:57:06 +0800] [1117676] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:57:08 +0800] [1117686] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:57:08 +0800] [1117687] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:57:09 +0800] [1117680] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:57:09 +0800] [1117684] [INFO] upload source success 9DHoipNWU8 175 9DHoipNWU8_1683294975669
+[2023-05-05 21:57:48 +0800] [1117674] [INFO] Handling signal: term
+[2023-05-05 21:57:48 +0800] [1117677] [INFO] Worker exiting (pid: 1117677)
+[2023-05-05 21:57:48 +0800] [1117678] [INFO] Worker exiting (pid: 1117678)
+[2023-05-05 21:57:48 +0800] [1117681] [INFO] Worker exiting (pid: 1117681)
+[2023-05-05 21:57:48 +0800] [1117676] [INFO] Worker exiting (pid: 1117676)
+[2023-05-05 21:57:48 +0800] [1117683] [INFO] Worker exiting (pid: 1117683)
+[2023-05-05 21:57:48 +0800] [1117684] [INFO] Worker exiting (pid: 1117684)
+[2023-05-05 21:57:48 +0800] [1117685] [INFO] Worker exiting (pid: 1117685)
+[2023-05-05 21:57:48 +0800] [1117687] [INFO] Worker exiting (pid: 1117687)
+[2023-05-05 21:57:48 +0800] [1117689] [INFO] Worker exiting (pid: 1117689)
+[2023-05-05 21:57:48 +0800] [1117690] [INFO] Worker exiting (pid: 1117690)
+[2023-05-05 21:57:48 +0800] [1117696] [INFO] Worker exiting (pid: 1117696)
+[2023-05-05 21:57:48 +0800] [1117693] [INFO] Worker exiting (pid: 1117693)
+[2023-05-05 21:57:48 +0800] [1117704] [INFO] Worker exiting (pid: 1117704)
+[2023-05-05 21:57:48 +0800] [1117680] [INFO] Worker exiting (pid: 1117680)
+[2023-05-05 21:57:48 +0800] [1117682] [INFO] Worker exiting (pid: 1117682)
+[2023-05-05 21:57:48 +0800] [1117703] [INFO] Worker exiting (pid: 1117703)
+[2023-05-05 21:57:48 +0800] [1117679] [INFO] Worker exiting (pid: 1117679)
+[2023-05-05 21:57:48 +0800] [1117700] [INFO] Worker exiting (pid: 1117700)
+[2023-05-05 21:57:48 +0800] [1117686] [INFO] Worker exiting (pid: 1117686)
+[2023-05-05 21:57:48 +0800] [1117688] [INFO] Worker exiting (pid: 1117688)
+[2023-05-05 21:57:52 +0800] [1117674] [INFO] Shutting down: Master
+[2023-05-05 21:57:55 +0800] [1139675] [INFO] Starting gunicorn 20.1.0
+[2023-05-05 21:57:55 +0800] [1139675] [INFO] Listening at: http://127.0.0.1:8000 (1139675)
+[2023-05-05 21:57:55 +0800] [1139675] [INFO] Using worker: sync
+[2023-05-05 21:57:55 +0800] [1139677] [INFO] Booting worker with pid: 1139677
+[2023-05-05 21:57:55 +0800] [1139678] [INFO] Booting worker with pid: 1139678
+[2023-05-05 21:57:55 +0800] [1139679] [INFO] Booting worker with pid: 1139679
+[2023-05-05 21:57:55 +0800] [1139680] [INFO] Booting worker with pid: 1139680
+[2023-05-05 21:57:55 +0800] [1139681] [INFO] Booting worker with pid: 1139681
+[2023-05-05 21:57:55 +0800] [1139691] [INFO] Booting worker with pid: 1139691
+[2023-05-05 21:57:55 +0800] [1139696] [INFO] Booting worker with pid: 1139696
+[2023-05-05 21:57:55 +0800] [1139699] [INFO] Booting worker with pid: 1139699
+[2023-05-05 21:57:55 +0800] [1139701] [INFO] Booting worker with pid: 1139701
+[2023-05-05 21:57:55 +0800] [1139702] [INFO] Booting worker with pid: 1139702
+[2023-05-05 21:57:55 +0800] [1139703] [INFO] Booting worker with pid: 1139703
+[2023-05-05 21:57:55 +0800] [1139704] [INFO] Booting worker with pid: 1139704
+[2023-05-05 21:57:55 +0800] [1139705] [INFO] Booting worker with pid: 1139705
+[2023-05-05 21:57:55 +0800] [1139706] [INFO] Booting worker with pid: 1139706
+[2023-05-05 21:57:55 +0800] [1139707] [INFO] Booting worker with pid: 1139707
+[2023-05-05 21:57:55 +0800] [1139708] [INFO] Booting worker with pid: 1139708
+[2023-05-05 21:57:55 +0800] [1139709] [INFO] Booting worker with pid: 1139709
+[2023-05-05 21:57:55 +0800] [1139710] [INFO] Booting worker with pid: 1139710
+[2023-05-05 21:57:55 +0800] [1139711] [INFO] Booting worker with pid: 1139711
+[2023-05-05 21:57:55 +0800] [1139713] [INFO] Booting worker with pid: 1139713
+[2023-05-05 21:59:31 +0800] [1139677] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 21:59:31 +0800] [1139677] [INFO] adding tasks number: 0
+[2023-05-05 21:59:43 +0800] [1139708] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 21:59:57 +0800] [1139704] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:00:02 +0800] [1139704] [INFO] upload source success 9DHoipNWU8 176 9DHoipNWU8_1683295183362
+[2023-05-05 22:05:25 +0800] [1139709] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:05:25 +0800] [1139709] [INFO] adding tasks number: 0
+[2023-05-05 22:05:31 +0800] [1139708] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:05:31 +0800] [1139708] [INFO] adding tasks number: 0
+[2023-05-05 22:05:37 +0800] [1139696] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:05:46 +0800] [1139707] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:05:51 +0800] [1139707] [INFO] upload source success 9DHoipNWU8 177 9DHoipNWU8_1683295537643
+[2023-05-05 22:06:29 +0800] [1139711] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:06:29 +0800] [1139711] [INFO] adding tasks number: 0
+[2023-05-05 22:06:33 +0800] [1139708] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:06:58 +0800] [1139709] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:01 +0800] [1139705] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:02 +0800] [1139678] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:03 +0800] [1139680] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:03 +0800] [1139709] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:09 +0800] [1139705] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:10 +0800] [1139678] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:10 +0800] [1139696] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:10 +0800] [1139679] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:10 +0800] [1139680] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:15 +0800] [1139696] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:16 +0800] [1139679] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:20 +0800] [1139702] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:20 +0800] [1139709] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:20 +0800] [1139691] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:21 +0800] [1139701] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:23 +0800] [1139699] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:24 +0800] [1139681] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:25 +0800] [1139703] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:25 +0800] [1139677] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:25 +0800] [1139710] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:27 +0800] [1139679] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:29 +0800] [1139696] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:30 +0800] [1139711] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:30 +0800] [1139713] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:34 +0800] [1139708] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:07:39 +0800] [1139709] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:41 +0800] [1139702] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:42 +0800] [1139691] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:46 +0800] [1139701] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:51 +0800] [1139699] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:52 +0800] [1139681] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:53 +0800] [1139677] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:53 +0800] [1139710] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:53 +0800] [1139703] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:54 +0800] [1139679] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:55 +0800] [1139696] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:55 +0800] [1139713] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:55 +0800] [1139711] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:56 +0800] [1139708] [INFO] upload source success 9DHoipNWU8 178 9DHoipNWU8_1683295593365
+[2023-05-05 22:07:56 +0800] [1139711] [INFO] 9DHoipNWU8 has new_combinations: [(769, [178]), (3585, [178]), (4617, [178]), (4619, [178]), (2865, [178]), (2884, [178]), (2885, [178]), (2886, [178]), (3398, [178]), (2889, [178]), (2892, [178]), (2894, [178]), (2895, [178]), (2897, [178]), (3429, [178]), (3441, [178]), (926, [178]), (3496, [178]), (3517, [178]), (3522, [178]), (3526, [178]), (3531, [178]), (3543, [178]), (3567, [178]), (3572, [178]), (3574, [178]), (3580, [178]), (3582, [178]), (3583, [178]), (2816, [178]), (1538, [178]), (3586, [178]), (1027, [178]), (3587, [178]), (772, [178]), (774, [178]), (1030, [178]), (1542, [178]), (3590, [178]), (775, [178]), (1543, [178]), (3591, [178]), (2056, [178]), (3592, [178]), (2825, [178]), (1034, [178]), (4618, [178]), (2059, [178]), (3596, [178]), (4620, [178])]
+[2023-05-05 22:07:56 +0800] [1139711] [INFO] 9DHoipNWU8 start to  train lora 178
+[2023-05-05 22:19:23 +0800] [1139699] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:19:23 +0800] [1139699] [INFO] adding tasks number: 0
+[2023-05-05 22:19:27 +0800] [1139703] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:19:43 +0800] [1139711] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:19:49 +0800] [1139711] [INFO] upload source success 9DHoipNWU8 179 9DHoipNWU8_1683296369419
+[2023-05-05 22:20:30 +0800] [1139677] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:20:30 +0800] [1139677] [INFO] adding tasks number: 0
+[2023-05-05 22:20:34 +0800] [1139706] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:20:55 +0800] [1139705] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:21:01 +0800] [1139705] [INFO] upload source success 9DHoipNWU8 180 9DHoipNWU8_1683296434710
+[2023-05-05 22:21:18 +0800] [1139701] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:21:18 +0800] [1139701] [INFO] adding tasks number: 0
+[2023-05-05 22:21:33 +0800] [1139680] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:23:01 +0800] [1139713] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:01 +0800] [1139699] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:02 +0800] [1139702] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:02 +0800] [1139691] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:04 +0800] [1139701] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:06 +0800] [1139706] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:14 +0800] [1139713] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:14 +0800] [1139699] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:15 +0800] [1139702] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:15 +0800] [1139691] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:16 +0800] [1139701] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:17 +0800] [1139706] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:19 +0800] [1139679] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:19 +0800] [1139706] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:21 +0800] [1139705] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:21 +0800] [1139680] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:23 +0800] [1139691] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:27 +0800] [1139679] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:28 +0800] [1139706] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:29 +0800] [1139703] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:31 +0800] [1139679] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:31 +0800] [1139705] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:31 +0800] [1139680] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:32 +0800] [1139691] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:35 +0800] [1139703] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:36 +0800] [1139677] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:37 +0800] [1139702] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:37 +0800] [1139679] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:37 +0800] [1139679] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:39 +0800] [1139681] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:40 +0800] [1139709] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:44 +0800] [1139713] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:45 +0800] [1139677] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:47 +0800] [1139680] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:23:47 +0800] [1139702] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:48 +0800] [1139679] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:51 +0800] [1139681] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:51 +0800] [1139709] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:53 +0800] [1139713] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:54 +0800] [1139680] [INFO] upload source success 9DHoipNWU8 181 9DHoipNWU8_1683296563732
+[2023-05-05 22:23:54 +0800] [1139680] [INFO] 9DHoipNWU8 has new_combinations: [(769, [181]), (3585, [181]), (4617, [181]), (4619, [181]), (2865, [181]), (2884, [181]), (2885, [181]), (2886, [181]), (3398, [181]), (2889, [181]), (2892, [181]), (2894, [181]), (2895, [181]), (2897, [181]), (3429, [181]), (3441, [181]), (926, [181]), (3496, [181]), (3517, [181]), (3522, [181]), (3526, [181]), (3531, [181]), (3543, [181]), (3567, [181]), (3572, [181]), (3574, [181]), (3580, [181]), (3582, [181]), (3583, [181]), (2816, [181]), (1538, [181]), (3586, [181]), (1027, [181]), (3587, [181]), (772, [181]), (774, [181]), (1030, [181]), (1542, [181]), (3590, [181]), (775, [181]), (1543, [181]), (3591, [181]), (2056, [181]), (3592, [181]), (2825, [181]), (1034, [181]), (4618, [181]), (2059, [181]), (3596, [181]), (4620, [181])]
+[2023-05-05 22:23:54 +0800] [1139680] [INFO] 9DHoipNWU8 start to  train lora 181
+[2023-05-05 22:23:59 +0800] [1139699] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:23:59 +0800] [1139699] [INFO] adding tasks number: 0
+[2023-05-05 22:28:17 +0800] [1139706] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:28:34 +0800] [1139691] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:34 +0800] [1139702] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:35 +0800] [1139708] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:35 +0800] [1139711] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:35 +0800] [1139699] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:35 +0800] [1139691] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:35 +0800] [1139696] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:36 +0800] [1139702] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:37 +0800] [1139678] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:38 +0800] [1139708] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:38 +0800] [1139713] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:38 +0800] [1139708] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:38 +0800] [1139699] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:38 +0800] [1139696] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:39 +0800] [1139711] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:39 +0800] [1139708] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:39 +0800] [1139696] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:40 +0800] [1139696] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:40 +0800] [1139678] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:40 +0800] [1139713] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:41 +0800] [1139707] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:42 +0800] [1139707] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:42 +0800] [1139704] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:44 +0800] [1139678] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:44 +0800] [1139710] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:44 +0800] [1139704] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:45 +0800] [1139704] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:45 +0800] [1139699] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:45 +0800] [1139678] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:46 +0800] [1139704] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:46 +0800] [1139710] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:46 +0800] [1139699] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:46 +0800] [1139704] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:48 +0800] [1139704] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:48 +0800] [1139706] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:49 +0800] [1139710] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:49 +0800] [1139705] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:28:50 +0800] [1139706] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:51 +0800] [1139705] [INFO] 9DHoipNWU8上传失败，图片中有4人脸
+[2023-05-05 22:28:51 +0800] [1139710] [INFO] upload source success 9DHoipNWU8 182 9DHoipNWU8_1683296897238
+[2023-05-05 22:28:54 +0800] [1139708] [INFO] 9DHoipNWU8 has new_combinations: [(769, [182]), (3585, [182]), (4617, [182]), (4619, [182]), (2865, [182]), (2884, [182]), (2885, [182]), (2886, [182]), (3398, [182]), (2889, [182]), (2892, [182]), (2894, [182]), (2895, [182]), (2897, [182]), (3429, [182]), (3441, [182]), (926, [182]), (3496, [182]), (3517, [182]), (3522, [182]), (3526, [182]), (3531, [182]), (3543, [182]), (3567, [182]), (3572, [182]), (3574, [182]), (3580, [182]), (3582, [182]), (3583, [182]), (2816, [182]), (1538, [182]), (3586, [182]), (1027, [182]), (3587, [182]), (772, [182]), (774, [182]), (1030, [182]), (1542, [182]), (3590, [182]), (775, [182]), (1543, [182]), (3591, [182]), (2056, [182]), (3592, [182]), (2825, [182]), (1034, [182]), (4618, [182]), (2059, [182]), (3596, [182]), (4620, [182])]
+[2023-05-05 22:28:54 +0800] [1139708] [INFO] 9DHoipNWU8 start to  train lora 182
+[2023-05-05 22:28:57 +0800] [1139680] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:28:57 +0800] [1139680] [INFO] adding tasks number: 0
+[2023-05-05 22:34:54 +0800] [1139681] [INFO] create new user ip is 101.28.212.165, ua is Dalvik/2.1.0 (Linux; U; Android 13; 2210132C Build/TKQ1.220905.001)
+[2023-05-05 22:38:00 +0800] [1139680] [INFO] create new user ip is 101.28.212.165, ua is Dalvik/2.1.0 (Linux; U; Android 13; 2210132C Build/TKQ1.220905.001)
+[2023-05-05 22:46:21 +0800] [1139681] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:46:21 +0800] [1139681] [INFO] adding tasks number: 0
+[2023-05-05 22:46:31 +0800] [1139707] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:50:18 +0800] [1139707] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:50:18 +0800] [1139707] [INFO] adding tasks number: 0
+[2023-05-05 22:50:21 +0800] [1139696] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:55:41 +0800] [1139679] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:55:41 +0800] [1139679] [INFO] adding tasks number: 0
+[2023-05-05 22:55:59 +0800] [1139679] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:56:59 +0800] [1139706] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:56:59 +0800] [1139706] [INFO] adding tasks number: 0
+[2023-05-05 22:57:02 +0800] [1139706] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:58:27 +0800] [1139705] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 22:58:27 +0800] [1139705] [INFO] adding tasks number: 0
+[2023-05-05 22:58:31 +0800] [1139681] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 22:58:49 +0800] [1139708] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:58:49 +0800] [1139701] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:58:49 +0800] [1139707] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:58:51 +0800] [1139677] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:58:57 +0800] [1139678] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:58:57 +0800] [1139705] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:58:59 +0800] [1139708] [INFO] upload source success 9DHoipNWU8 184 9DHoipNWU8_1683298713156
+[2023-05-05 22:58:59 +0800] [1139701] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:58:59 +0800] [1139707] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:00 +0800] [1139677] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:03 +0800] [1139681] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:04 +0800] [1139705] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:04 +0800] [1139678] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:04 +0800] [1139705] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:05 +0800] [1139704] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:06 +0800] [1139702] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:10 +0800] [1139711] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:10 +0800] [1139709] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:12 +0800] [1139681] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:14 +0800] [1139705] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:16 +0800] [1139704] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:16 +0800] [1139702] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:16 +0800] [1139702] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:19 +0800] [1139709] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:19 +0800] [1139711] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:22 +0800] [1139702] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:25 +0800] [1139696] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:25 +0800] [1139691] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:25 +0800] [1139710] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:27 +0800] [1139713] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:34 +0800] [1139704] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:34 +0800] [1139696] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:35 +0800] [1139710] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:35 +0800] [1139691] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:36 +0800] [1139713] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:39 +0800] [1139704] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 22:59:43 +0800] [1139680] [INFO] upload source request 9DHoipNWU8
+[2023-05-05 22:59:49 +0800] [1139680] [INFO] upload source success 9DHoipNWU8 183 9DHoipNWU8_1683298713156
+[2023-05-05 23:00:17 +0800] [1139701] [INFO] 9DHoipNWU8 has new_combinations: [(769, [183]), (3585, [183]), (4617, [183]), (4619, [183]), (2865, [183]), (2884, [183]), (2885, [183]), (2886, [183]), (3398, [183]), (2889, [183]), (2892, [183]), (2894, [183]), (2895, [183]), (2897, [183]), (3429, [183]), (3441, [183]), (926, [183]), (3496, [183]), (3517, [183]), (3522, [183]), (3526, [183]), (3531, [183]), (3543, [183]), (3567, [183]), (3572, [183]), (3574, [183]), (3580, [183]), (3582, [183]), (3583, [183]), (2816, [183]), (1538, [183]), (3586, [183]), (1027, [183]), (3587, [183]), (772, [183]), (774, [183]), (1030, [183]), (1542, [183]), (3590, [183]), (775, [183]), (1543, [183]), (3591, [183]), (2056, [183]), (3592, [183]), (2825, [183]), (1034, [183]), (4618, [183]), (2059, [183]), (3596, [183]), (4620, [183])]
+[2023-05-05 23:00:17 +0800] [1139701] [INFO] 9DHoipNWU8 start to  train lora 183
+[2023-05-05 23:12:19 +0800] [1139701] [INFO] get_generated_images user_id: 9DHoipNWU8
+[2023-05-05 23:12:19 +0800] [1139701] [INFO] adding tasks number: 0
+[2023-05-05 23:12:24 +0800] [1139710] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-05 23:18:37 +0800] [1139678] [INFO] create new user ip is 101.28.212.165, ua is Dalvik/2.1.0 (Linux; U; Android 13; 2210132C Build/TKQ1.220905.001)

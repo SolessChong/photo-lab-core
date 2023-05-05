@@ -4,6 +4,14 @@ import json
 from datetime import datetime
 from .extensions import db
 
+
+class Example(db.Model):
+    __tablename__ = 'example_table'
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.Integer, nullable=True)
+    img_key = db.Column(db.String(255), nullable=True)
+    style = db.Column(db.String(255), nullable=True)
+
 class BdClick(db.Model):
     __tablename__ = 'bd_clicks'
     id = db.Column(db.Integer, primary_key=True)

@@ -93,6 +93,10 @@ def oss_get(key):
     bucket = get_bucket()
     return bucket.get_object(key).read()
 
+def oss_source_get(key):
+    bucket = oss2.Bucket(create_oss_client(), OSS_ENDPOINT, 'photolab-sources')
+    return bucket.get_object(key).read()
+
 # 数据库存储操作
 def db_execute(query, values):
     # 将图片信息存入数据库

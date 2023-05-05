@@ -7,6 +7,7 @@ import string
 from celery import group, Celery, chain, chord
 import logging
 import argparse
+import ast
 
 from backend.extensions import  app, db
 from . import aliyun_face_detector
@@ -141,6 +142,40 @@ def upload_payment():
 
     return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
 
+@app.route('/api/get_example_2', methods=['GET'])
+def get_example_2():
+    examples = models.Example.query.all()
+
+    result = {
+        'before': [],
+        'after': [],
+        'bad': []
+    }
+
+    for example in examples:
+        img_height, img_width = utils.get_oss_image_size(example.img_key)
+
+        rs = {
+            'img_url': utils.get_signed_url(example.img_key),
+            'img_height': img_height,
+            'img_width': img_width,
+            'style': example.style,
+            'id': example.id
+        }
+        if example.type == 0:
+            result['before'].append(rs)
+        elif example.type == 1:
+            result['after'].append(rs)
+        elif example.type == 2:
+            result['bad'].append(rs)
+
+    response = {
+        'data': result,
+        'msg': '成功获取示例图片',
+        'code': 200
+    }
+    return jsonify(response)
+
 @app.route('/api/get_example_images', methods=['GET'])
 def get_example_images():
     scenes = models.Scene.query.filter(models.Scene.action_type == 'example', models.Scene.base_img_key != None).all()
@@ -220,6 +255,51 @@ def upload_source():
             "person_id": person_id,
             "person_name": person_name,
             "source_num": count
+        }
+    }
+    
+    logging.info(f'upload source success {user_id} {person_id} {person_name}')
+    return jsonify(response)
+
+@app.route('/api/upload_multiple_sources', methods = ['POST'])
+def upload_multiple_sources():
+    if 'img_oss_keys' not in request.form or 'user_id' not in request.form or 'person_name' not in request.form:
+        return {"status": "error", "message": "Missing img_oss_keys, user_id or person_name"}, 400
+    img_oss_keys = request.form.get('img_oss_keys', None)
+    user_id = request.form['user_id']
+    person_name = request.form['person_name']
+    source_type = request.form.get('type', None)
+    
+    logging.info(f'upload_multiple_sources request {user_id}')
+
+    # 查找 persons 表中是否存在相应的记录
+    person = models.Person.query.filter_by(user_id=user_id, name=person_name).first()
+    if not person:
+        # 如果不存在，创建一个新的 Person 对象并将其保存到数据库中
+        new_person = models.Person(name=person_name, user_id=user_id)
+        db.session.add(new_person)
+        db.session.commit()
+        person_id = new_person.id
+    else:
+        person_id = person.id
+
+    print(img_oss_keys, type(img_oss_keys))
+
+    for key in ast.literal_eval(img_oss_keys):
+        print(key)
+        data = utils.oss_source_get(key)
+        utils.oss_put(key, data)
+        source = models.Source(base_img_key=key, user_id=user_id, type=source_type, person_id=person_id)
+        db.session.add(source)
+    db.session.commit()
+
+    response = {
+        "msg": "上传人像图片成功", 
+        "code": 0, 
+        "data": {
+            "person_id": person_id,
+            "person_name": person_name,
+            "source_num": len(img_oss_keys)
         }
     }
     
