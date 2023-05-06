@@ -67,16 +67,22 @@ def render(Session):
     current_task_id = 0
     step = 20
     while current_task_id < max_task_id:
-        current_task_id += step
 
         session = Session()
         session.begin()
         
         # TODO: page size 
+
         todo_task_id_list = []
         try:
-            tasks = session.query(models.Task).filter(models.Task.status == 'wait' and models.Task.id >= current_task_id and models.Task.id < current_task_id+step).with_for_update().all()
-           
+            print(f"======= Task: render scene: current_task_id={current_task_id}")
+            tasks = session.query(models.Task).filter(models.Task.status == 'wait', models.Task.id >= current_task_id).order_by(models.Task.id).limit(step).with_for_update().all()
+            if len(tasks) > 0:
+                current_task_id = tasks[-1].id + 1
+                # logger.info(f"======= Task: render scene: waiting tasks number: {len(tasks)}, tasks: {tasks}, current_task_id={current_task_id}")
+            else:
+                break
+            
             for task in tasks:
                 flag = True
                 for person_id in task.person_id_list:
