@@ -132,7 +132,7 @@ def process(cmd):
         logger.info(f"======= Worker Manager: Start TRAINING workers ========")
         while True:
             train(Session)
-            rabbit_head_animation(10)
+            rabbit_head_animation(10, icon_1="👨", icon_2="🐶")
     elif cmd == 'render':
         logger.info(f"======= Worker Manager: Start RENDERING workers ========")
         while True:
@@ -142,7 +142,7 @@ def process(cmd):
         logger.info(f"======= Worker Manager: Start SCENE SETUP workers ========")
         while True:
             setup_scene(Session)
-            rabbit_head_animation(10)
+            rabbit_head_animation(10, icon_1="🐶", icon_2="💩")
     elif cmd == 'all':
         logger.info(f"======= Worker Manager: Start ALL workers ========")
         while True:

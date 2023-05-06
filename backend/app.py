@@ -213,6 +213,9 @@ def upload_source():
         png_img = utils.convert_to_png_bytes(img_file)
     except Exception as e:
         logging.info(f'{user_id} upload source fail {e}')
+        # random generate 10 char as name
+        random_id = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+        utils.oss_put(f'error/user_{user_id}-{random_id}.dat', img_file)
         return {"msg": f"上传失败，图片格式错误或中断导致无法打开", "code": 1, "data" : ''}, 200 
 
     png_img = utils.convert_to_png_bytes(img_file)

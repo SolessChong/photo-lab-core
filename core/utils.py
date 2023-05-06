@@ -2,11 +2,9 @@ import time
 import sys
 import random
 
-def rabbit_head_animation(duration):
+def rabbit_head_animation(duration, icon_1="🐶", icon_2="🐱"):
     start_time = time.time()
     bar_length = 80
-    dog_head = "🐶"
-    cat_head = "🐱"
     bar_char = "▬"
 
     # Initialize the positions of the dog and cat heads
@@ -16,8 +14,8 @@ def rabbit_head_animation(duration):
     while time.time() - start_time < duration:
         # Create the rolling bar with the dog and cat heads at their respective positions
         bar = "".join([
-            dog_head if i == dog_pos 
-            else cat_head if i == cat_pos
+            icon_1 if i == dog_pos 
+            else icon_2 if i == cat_pos
             else ' ' if i > dog_pos and i < cat_pos 
             else bar_char 
             for i in range(bar_length)
