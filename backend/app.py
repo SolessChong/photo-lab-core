@@ -86,8 +86,10 @@ def get_user():
                 utils.oss_put(person.head_img_key, cropped_face)
 
                 db.session.commit()
-
-        head_img_url = utils.get_signed_url(person.head_img_key)
+        if person.head_img_key:
+            head_img_url = utils.get_signed_url(person.head_img_key)
+        else:
+            head_img_url = None
         result_persons.append({
             "person_id": person.id,
             "person_name": person.name,
@@ -288,12 +290,17 @@ def upload_multiple_sources():
 
     print(img_oss_keys, type(img_oss_keys))
 
-    for key in ast.literal_eval(img_oss_keys):
+    success_count = 0
+    keys = json.loads(img_oss_keys)
+    print(keys, type(keys))
+    for key in keys:
         print(key)
         data = utils.oss_source_get(key)
-        utils.oss_put(key, data)
-        source = models.Source(base_img_key=key, user_id=user_id, type=source_type, person_id=person_id)
-        db.session.add(source)
+        if aliyun_face_detector.one_face(data):
+            utils.oss_put(key, data)
+            source = models.Source(base_img_key=key, user_id=user_id, type=source_type, person_id=person_id)
+            db.session.add(source)
+            success_count += 1
     db.session.commit()
 
     response = {
@@ -302,7 +309,7 @@ def upload_multiple_sources():
         "data": {
             "person_id": person_id,
             "person_name": person_name,
-            "source_num": len(img_oss_keys)
+            "success_count": success_count
         }
     }
     

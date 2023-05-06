@@ -9888,3 +9888,1541 @@ AttributeError: 'NoneType' object has no attribute 'body'
 [2023-05-06 18:12:17 +0800] [1139704] [INFO] create new user ip is 120.133.133.87, ua is Dalvik/2.1.0 (Linux; U; Android 6.0.1; vivo X9 Build/MMB29M)
 [2023-05-06 18:12:33 +0800] [1139705] [INFO] get_generated_images user_id: Bgvw8XqmLj
 [2023-05-06 18:12:33 +0800] [1139705] [INFO] adding tasks number: 0
+[2023-05-06 18:13:04 +0800] [1139704] [INFO] create new user ip is 106.117.248.56, ua is Dalvik/2.1.0 (Linux; U; Android 8.1.0; OS105 Build/OPM8.190605.005)
+[2023-05-06 18:13:05 +0800] [1139677] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:13:09 +0800] [1139677] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:13:10 +0800] [1139677] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:13:11 +0800] [1139677] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:13:13 +0800] [1139696] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:13:15 +0800] [1139696] [INFO] Bgvw8XqmLj上传失败，图片中有2人脸
+[2023-05-06 18:13:23 +0800] [1139705] [INFO] create new user ip is 120.133.133.87, ua is Dalvik/2.1.0 (Linux; U; Android 13; V2231A Build/TP1A.220624.014)
+[2023-05-06 18:13:29 +0800] [1139681] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:13:35 +0800] [1139681] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:13:40 +0800] [1139678] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:13:42 +0800] [1139678] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:14:00 +0800] [1139678] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:14:06 +0800] [1139678] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:14:08 +0800] [1139701] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:14:10 +0800] [1139701] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:14:15 +0800] [1139699] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:14:19 +0800] [1139699] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:14:31 +0800] [1139696] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:14:38 +0800] [1139696] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:15:02 +0800] [1139711] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:15:09 +0800] [1139711] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:15:15 +0800] [1139680] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:15:16 +0800] [1139708] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 18:15:16 +0800] [1139708] [INFO] adding tasks number: 0
+[2023-05-06 18:15:18 +0800] [1139696] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 18:15:18 +0800] [1139696] [INFO] adding tasks number: 0
+[2023-05-06 18:15:20 +0800] [1139681] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 18:15:20 +0800] [1139681] [INFO] adding tasks number: 0
+[2023-05-06 18:15:21 +0800] [1139680] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:15:29 +0800] [1139677] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:15:36 +0800] [1139677] [INFO] upload source success Bgvw8XqmLj 223 Bgvw8XqmLj_1683367956330
+[2023-05-06 18:15:36 +0800] [1139678] [INFO] Bgvw8XqmLj has new_combinations: [(769, [223]), (3585, [223]), (4617, [223]), (4619, [223]), (2865, [223]), (2884, [223]), (2885, [223]), (2886, [223]), (3398, [223]), (2889, [223]), (2892, [223]), (2894, [223]), (2895, [223]), (2897, [223]), (3429, [223]), (3441, [223]), (926, [223]), (3496, [223]), (3517, [223]), (3522, [223]), (3526, [223]), (3531, [223]), (3543, [223]), (3567, [223]), (3572, [223]), (3574, [223]), (3580, [223]), (3582, [223]), (3583, [223]), (2816, [223]), (1538, [223]), (3586, [223]), (1027, [223]), (3587, [223]), (772, [223]), (774, [223]), (1030, [223]), (1542, [223]), (3590, [223]), (775, [223]), (1543, [223]), (3591, [223]), (2056, [223]), (3592, [223]), (2825, [223]), (1034, [223]), (4618, [223]), (2059, [223]), (3596, [223]), (4620, [223])]
+[2023-05-06 18:15:36 +0800] [1139678] [INFO] Bgvw8XqmLj start to  train lora 223
+[2023-05-06 18:15:46 +0800] [1139701] [INFO] get_generated_images user_id: Bgvw8XqmLj
+[2023-05-06 18:15:46 +0800] [1139701] [INFO] adding tasks number: 0
+[2023-05-06 18:15:53 +0800] [1139681] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 18:16:17 +0800] [1139701] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:16:21 +0800] [1139701] [INFO] upload source success Bgvw8XqmLj 224 Bgvw8XqmLj_1683368153527
+[2023-05-06 18:16:22 +0800] [1139677] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:16:23 +0800] [1139677] [INFO] upload source success Bgvw8XqmLj 224 Bgvw8XqmLj_1683368153527
+[2023-05-06 18:16:24 +0800] [1139707] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:16:25 +0800] [1139707] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 225, in upload_source
+    person_name = request.form['person_name']
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 18:16:27 +0800] [1139705] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:16:29 +0800] [1139705] [INFO] Bgvw8XqmLj上传失败，图片中有2人脸
+[2023-05-06 18:16:34 +0800] [1139710] [INFO] get_generated_images user_id: Bgvw8XqmLj
+[2023-05-06 18:16:34 +0800] [1139710] [INFO] adding tasks number: 0
+[2023-05-06 18:16:39 +0800] [1139678] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 81, in get_user
+    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 47, in get_face_coordinates
+    return aliyun_face_detect(img).body.data.face_rectangles[:4]
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 18:16:43 +0800] [1139707] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 18:16:43 +0800] [1139707] [INFO] adding tasks number: 0
+[2023-05-06 18:16:44 +0800] [1139677] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 18:16:44 +0800] [1139677] [INFO] adding tasks number: 0
+[2023-05-06 18:17:16 +0800] [1139707] [INFO] upload source request Bgvw8XqmLj
+[2023-05-06 18:17:23 +0800] [1139707] [INFO] upload source success Bgvw8XqmLj 225 Bgvw8XqmLj_1683368201427
+[2023-05-06 18:17:45 +0800] [1139677] [INFO] create new user ip is 36.152.145.181, ua is Dalvik/2.1.0 (Linux; U; Android 10; V2020A Build/QP1A.190711.020)
+[2023-05-06 18:20:31 +0800] [1139706] [INFO] create new user ip is 120.133.133.87, ua is Dalvik/2.1.0 (Linux; U; Android 6.0.1; vivo Y66 Build/MMB29M)
+[2023-05-06 18:21:37 +0800] [1139702] [INFO] create new user ip is 182.254.115.233, ua is Dalvik/2.1.0 (Linux; U; Android 11; Mi 10 Pro Build/RKQ1.200826.002)
+[2023-05-06 18:24:07 +0800] [1139691] [INFO] create new user ip is 183.9.98.45, ua is PicMagic/1.0.1 (iPhone; iOS 16.1.1; Scale/3.00)
+[2023-05-06 18:26:42 +0800] [1139681] [INFO] create new user ip is 106.38.226.222, ua is Dalvik/2.1.0 (Linux; U; Android 10; MI Build/PKQ1.190118.001)
+[2023-05-06 18:26:43 +0800] [1139707] [INFO] get_generated_images user_id: p6kV0GRONX
+[2023-05-06 18:26:43 +0800] [1139707] [INFO] adding tasks number: 0
+[2023-05-06 18:28:44 +0800] [1139691] [INFO] create new user ip is 106.38.226.140, ua is Dalvik/2.1.0 (Linux; U; Android 10; MI Build/PKQ1.190118.001)
+[2023-05-06 18:28:44 +0800] [1139708] [INFO] get_generated_images user_id: u1bGnvJQAV
+[2023-05-06 18:28:44 +0800] [1139708] [INFO] adding tasks number: 0
+[2023-05-06 18:34:43 +0800] [1139702] [INFO] create new user ip is 174.204.129.10, ua is PicMagic/1.0.1 (iPhone; iOS 16.1.1; Scale/3.00)
+[2023-05-06 18:36:48 +0800] [1139713] [INFO] get_generated_images user_id: pUqcZaJD3j
+[2023-05-06 18:36:48 +0800] [1139713] [INFO] adding tasks number: 0
+[2023-05-06 18:38:57 +0800] [1139709] [INFO] create new user ip is 106.38.226.32, ua is Dalvik/2.1.0 (Linux; U; Android 10; MI Build/PKQ1.190118.001)
+[2023-05-06 18:38:57 +0800] [1139711] [INFO] get_generated_images user_id: xTIqjaJFjk
+[2023-05-06 18:38:57 +0800] [1139711] [INFO] adding tasks number: 0
+[2023-05-06 18:40:17 +0800] [1139703] [INFO] create new user ip is 218.17.100.78, ua is PicMagic/1.0.1 (iPhone; iOS 16.3.1; Scale/3.00)
+[2023-05-06 18:40:31 +0800] [1139691] [INFO] get_generated_images user_id: hAL3kCJFQ4
+[2023-05-06 18:40:31 +0800] [1139691] [INFO] adding tasks number: 0
+[2023-05-06 18:42:02 +0800] [1139707] [INFO] get_generated_images user_id: fon4mrldTi
+[2023-05-06 18:42:02 +0800] [1139707] [INFO] adding tasks number: 0
+[2023-05-06 18:42:04 +0800] [1139691] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:42:05 +0800] [1139691] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:42:06 +0800] [1139699] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:42:09 +0800] [1139699] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:42:09 +0800] [1139677] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:42:11 +0800] [1139677] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:42:12 +0800] [1139681] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:42:14 +0800] [1139696] [INFO] create new user ip is 120.133.133.87, ua is Dalvik/2.1.0 (Linux; U; Android 7.1.1; vivo X20A Build/NMF26X)
+[2023-05-06 18:42:26 +0800] [1139681] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 225, in upload_source
+    person_name = request.form['person_name']
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 18:42:26 +0800] [1139681] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:42:38 +0800] [1139681] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:42:39 +0800] [1139703] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:42:51 +0800] [1139703] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:42:51 +0800] [1139703] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:43:02 +0800] [1139705] [INFO] get_generated_images user_id: PvtzHPRJvU
+[2023-05-06 18:43:02 +0800] [1139705] [INFO] adding tasks number: 0
+[2023-05-06 18:43:02 +0800] [1139703] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:43:03 +0800] [1139679] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:43:10 +0800] [1139679] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:43:11 +0800] [1139679] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:43:22 +0800] [1139679] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:43:22 +0800] [1139706] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:43:33 +0800] [1139706] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:43:34 +0800] [1139707] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:43:52 +0800] [1139707] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 225, in upload_source
+    person_name = request.form['person_name']
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 18:43:52 +0800] [1139691] [INFO] upload source request hAL3kCJFQ4
+[2023-05-06 18:44:03 +0800] [1139691] [INFO] upload source success hAL3kCJFQ4 226 hAL3kCJFQ4_1683369653866
+[2023-05-06 18:44:03 +0800] [1139704] [INFO] hAL3kCJFQ4 has new_combinations: [(769, [226]), (3585, [226]), (4617, [226]), (4619, [226]), (2865, [226]), (2884, [226]), (2885, [226]), (2886, [226]), (3398, [226]), (2889, [226]), (2892, [226]), (2894, [226]), (2895, [226]), (2897, [226]), (3429, [226]), (3441, [226]), (926, [226]), (3496, [226]), (3517, [226]), (3522, [226]), (3526, [226]), (3531, [226]), (3543, [226]), (3567, [226]), (3572, [226]), (3574, [226]), (3580, [226]), (3582, [226]), (3583, [226]), (2816, [226]), (1538, [226]), (3586, [226]), (1027, [226]), (3587, [226]), (772, [226]), (774, [226]), (1030, [226]), (1542, [226]), (3590, [226]), (775, [226]), (1543, [226]), (3591, [226]), (2056, [226]), (3592, [226]), (2825, [226]), (1034, [226]), (4618, [226]), (2059, [226]), (3596, [226]), (4620, [226])]
+[2023-05-06 18:44:03 +0800] [1139704] [INFO] hAL3kCJFQ4 start to  train lora 226
+[2023-05-06 18:44:25 +0800] [1139707] [INFO] get_generated_images user_id: hAL3kCJFQ4
+[2023-05-06 18:44:25 +0800] [1139707] [INFO] adding tasks number: 0
+[2023-05-06 18:45:11 +0800] [1139704] [INFO] get_generated_images user_id: fon4mrldTi
+[2023-05-06 18:45:11 +0800] [1139704] [INFO] adding tasks number: 0
+[2023-05-06 18:47:29 +0800] [1139681] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:47:37 +0800] [1139681] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:47:37 +0800] [1139711] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:47:40 +0800] [1139711] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:47:42 +0800] [1139681] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:47:45 +0800] [1139681] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:47:49 +0800] [1139703] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:47:58 +0800] [1139703] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:49:57 +0800] [1139706] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:50:05 +0800] [1139706] [INFO] fon4mrldTi上传失败，图片中有2人脸
+[2023-05-06 18:50:07 +0800] [1139713] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:50:15 +0800] [1139713] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:50:18 +0800] [1139696] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:50:26 +0800] [1139696] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:50:29 +0800] [1139703] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:50:37 +0800] [1139703] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:50:41 +0800] [1139706] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:50:49 +0800] [1139706] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:55:49 +0800] [1139708] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:55:58 +0800] [1139708] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:56:00 +0800] [1139708] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:56:07 +0800] [1139708] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:56:09 +0800] [1139703] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:56:17 +0800] [1139703] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:56:18 +0800] [1139705] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:56:20 +0800] [1139705] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:56:22 +0800] [1139708] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:56:31 +0800] [1139708] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:56:33 +0800] [1139703] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:56:40 +0800] [1139703] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:56:43 +0800] [1139701] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:56:45 +0800] [1139701] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:56:55 +0800] [1139706] [INFO] upload source request fon4mrldTi
+[2023-05-06 18:57:03 +0800] [1139706] [INFO] upload source success fon4mrldTi 227 fon4mrldTi_1683369915985
+[2023-05-06 18:57:03 +0800] [1139708] [INFO] fon4mrldTi has new_combinations: []
+[2023-05-06 18:57:03 +0800] [1139708] [INFO] fon4mrldTi start to  train lora 227
+[2023-05-06 19:27:53 +0800] [1139681] [INFO] upload_multiple_sources request 
+[2023-05-06 19:27:53 +0800] [1139681] [INFO] Exception: {'status': 404, 'x-oss-request-id': '645639B954280A3037A824A1', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '645639B954280A3037A824A1', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'bucket/s1.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 19:27:53 +0800] [1139681] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 290, in upload_multiple_sources
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '645639B954280A3037A824A1', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '645639B954280A3037A824A1', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'bucket/s1.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 19:30:10 +0800] [1139706] [INFO] upload_multiple_sources request 
+[2023-05-06 19:30:10 +0800] [1139706] [INFO] Exception: {'status': 404, 'x-oss-request-id': '64563A422C2A8030339A2A95', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64563A422C2A8030339A2A95', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'bucket/s1.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 19:30:10 +0800] [1139706] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 290, in upload_multiple_sources
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '64563A422C2A8030339A2A95', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64563A422C2A8030339A2A95', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'bucket/s1.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 19:34:45 +0800] [1139708] [INFO] create new user ip is 101.136.78.140, ua is PicMagic/1.0.1 (iPhone; iOS 16.3.1; Scale/2.00)
+[2023-05-06 19:34:58 +0800] [1139709] [INFO] upload_multiple_sources request yi
+[2023-05-06 19:34:58 +0800] [1139709] [INFO] upload source success yi 229 ym
+[2023-05-06 19:35:15 +0800] [1139675] [INFO] Handling signal: term
+[2023-05-06 19:35:15 +0800] [1139703] [INFO] Worker exiting (pid: 1139703)
+[2023-05-06 19:35:15 +0800] [1139677] [INFO] Worker exiting (pid: 1139677)
+[2023-05-06 19:35:15 +0800] [1139704] [INFO] Worker exiting (pid: 1139704)
+[2023-05-06 19:35:15 +0800] [1139678] [INFO] Worker exiting (pid: 1139678)
+[2023-05-06 19:35:15 +0800] [1139707] [INFO] Worker exiting (pid: 1139707)
+[2023-05-06 19:35:15 +0800] [1139708] [INFO] Worker exiting (pid: 1139708)
+[2023-05-06 19:35:15 +0800] [1139679] [INFO] Worker exiting (pid: 1139679)
+[2023-05-06 19:35:15 +0800] [1139680] [INFO] Worker exiting (pid: 1139680)
+[2023-05-06 19:35:15 +0800] [1139681] [INFO] Worker exiting (pid: 1139681)
+[2023-05-06 19:35:15 +0800] [1139691] [INFO] Worker exiting (pid: 1139691)
+[2023-05-06 19:35:15 +0800] [1139696] [INFO] Worker exiting (pid: 1139696)
+[2023-05-06 19:35:15 +0800] [1139699] [INFO] Worker exiting (pid: 1139699)
+[2023-05-06 19:35:15 +0800] [1139702] [INFO] Worker exiting (pid: 1139702)
+[2023-05-06 19:35:15 +0800] [1139705] [INFO] Worker exiting (pid: 1139705)
+[2023-05-06 19:35:15 +0800] [1139706] [INFO] Worker exiting (pid: 1139706)
+[2023-05-06 19:35:15 +0800] [1139710] [INFO] Worker exiting (pid: 1139710)
+[2023-05-06 19:35:15 +0800] [1139711] [INFO] Worker exiting (pid: 1139711)
+[2023-05-06 19:35:15 +0800] [1139713] [INFO] Worker exiting (pid: 1139713)
+[2023-05-06 19:35:15 +0800] [1139701] [INFO] Worker exiting (pid: 1139701)
+[2023-05-06 19:35:15 +0800] [1139709] [INFO] Worker exiting (pid: 1139709)
+[2023-05-06 19:35:19 +0800] [1139675] [INFO] Shutting down: Master
+[2023-05-06 19:35:19 +0800] [1451969] [INFO] Starting gunicorn 20.1.0
+[2023-05-06 19:35:19 +0800] [1451969] [INFO] Listening at: http://127.0.0.1:8000 (1451969)
+[2023-05-06 19:35:19 +0800] [1451969] [INFO] Using worker: sync
+[2023-05-06 19:35:19 +0800] [1451971] [INFO] Booting worker with pid: 1451971
+[2023-05-06 19:35:19 +0800] [1451972] [INFO] Booting worker with pid: 1451972
+[2023-05-06 19:35:19 +0800] [1451973] [INFO] Booting worker with pid: 1451973
+[2023-05-06 19:35:19 +0800] [1451974] [INFO] Booting worker with pid: 1451974
+[2023-05-06 19:35:19 +0800] [1451975] [INFO] Booting worker with pid: 1451975
+[2023-05-06 19:35:19 +0800] [1451976] [INFO] Booting worker with pid: 1451976
+[2023-05-06 19:35:19 +0800] [1451977] [INFO] Booting worker with pid: 1451977
+[2023-05-06 19:35:19 +0800] [1451978] [INFO] Booting worker with pid: 1451978
+[2023-05-06 19:35:19 +0800] [1451979] [INFO] Booting worker with pid: 1451979
+[2023-05-06 19:35:19 +0800] [1451980] [INFO] Booting worker with pid: 1451980
+[2023-05-06 19:35:19 +0800] [1451981] [INFO] Booting worker with pid: 1451981
+[2023-05-06 19:35:20 +0800] [1451982] [INFO] Booting worker with pid: 1451982
+[2023-05-06 19:35:20 +0800] [1451983] [INFO] Booting worker with pid: 1451983
+[2023-05-06 19:35:20 +0800] [1451984] [INFO] Booting worker with pid: 1451984
+[2023-05-06 19:35:20 +0800] [1451985] [INFO] Booting worker with pid: 1451985
+[2023-05-06 19:35:20 +0800] [1451986] [INFO] Booting worker with pid: 1451986
+[2023-05-06 19:35:20 +0800] [1451987] [INFO] Booting worker with pid: 1451987
+[2023-05-06 19:35:20 +0800] [1451992] [INFO] Booting worker with pid: 1451992
+[2023-05-06 19:35:20 +0800] [1452003] [INFO] Booting worker with pid: 1452003
+[2023-05-06 19:35:20 +0800] [1452004] [INFO] Booting worker with pid: 1452004
+[2023-05-06 19:35:26 +0800] [1451971] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 19:35:26 +0800] [1451971] [INFO] adding tasks number: 0
+[2023-05-06 19:35:26 +0800] [1451971] [INFO] upload_multiple_sources request yi
+[2023-05-06 19:35:27 +0800] [1451971] [INFO] upload source success yi 229 ym
+[2023-05-06 19:35:44 +0800] [1451979] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 19:35:44 +0800] [1451979] [INFO] adding tasks number: 0
+[2023-05-06 19:36:20 +0800] [1451986] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 19:36:20 +0800] [1451986] [INFO] adding tasks number: 0
+[2023-05-06 19:36:54 +0800] [1451979] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 19:36:54 +0800] [1451979] [INFO] adding tasks number: 0
+[2023-05-06 19:36:56 +0800] [1451979] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 19:36:56 +0800] [1451979] [INFO] adding tasks number: 0
+[2023-05-06 19:38:13 +0800] [1451974] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:38:26 +0800] [1452003] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:38:26 +0800] [1451974] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:38:28 +0800] [1452003] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:38:28 +0800] [1451984] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:38:30 +0800] [1451984] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:38:34 +0800] [1451984] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:38:35 +0800] [1451984] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:38:38 +0800] [1451980] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:38:39 +0800] [1451980] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:38:45 +0800] [1451985] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:38:46 +0800] [1451985] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:38:51 +0800] [1451985] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:38:53 +0800] [1451985] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:38:57 +0800] [1451977] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:38:59 +0800] [1451977] [INFO] 2KdxZWZeSG上传失败，图片中有2人脸
+[2023-05-06 19:39:03 +0800] [1451977] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:39:05 +0800] [1451977] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:39:52 +0800] [1451984] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:39:56 +0800] [1451969] [INFO] Handling signal: term
+[2023-05-06 19:39:56 +0800] [1451971] [INFO] Worker exiting (pid: 1451971)
+[2023-05-06 19:39:56 +0800] [1451978] [INFO] Worker exiting (pid: 1451978)
+[2023-05-06 19:39:56 +0800] [1451979] [INFO] Worker exiting (pid: 1451979)
+[2023-05-06 19:39:56 +0800] [1451987] [INFO] Worker exiting (pid: 1451987)
+[2023-05-06 19:39:56 +0800] [1451972] [INFO] Worker exiting (pid: 1451972)
+[2023-05-06 19:39:56 +0800] [1451976] [INFO] Worker exiting (pid: 1451976)
+[2023-05-06 19:39:56 +0800] [1452004] [INFO] Worker exiting (pid: 1452004)
+[2023-05-06 19:39:56 +0800] [1451974] [INFO] Worker exiting (pid: 1451974)
+[2023-05-06 19:39:56 +0800] [1451977] [INFO] Worker exiting (pid: 1451977)
+[2023-05-06 19:39:56 +0800] [1451980] [INFO] Worker exiting (pid: 1451980)
+[2023-05-06 19:39:56 +0800] [1451981] [INFO] Worker exiting (pid: 1451981)
+[2023-05-06 19:39:56 +0800] [1451982] [INFO] Worker exiting (pid: 1451982)
+[2023-05-06 19:39:56 +0800] [1451983] [INFO] Worker exiting (pid: 1451983)
+[2023-05-06 19:39:56 +0800] [1451985] [INFO] Worker exiting (pid: 1451985)
+[2023-05-06 19:39:56 +0800] [1451986] [INFO] Worker exiting (pid: 1451986)
+[2023-05-06 19:39:56 +0800] [1451992] [INFO] Worker exiting (pid: 1451992)
+[2023-05-06 19:39:56 +0800] [1452003] [INFO] Worker exiting (pid: 1452003)
+[2023-05-06 19:39:56 +0800] [1451975] [INFO] Worker exiting (pid: 1451975)
+[2023-05-06 19:39:56 +0800] [1451973] [INFO] Worker exiting (pid: 1451973)
+[2023-05-06 19:39:59 +0800] [1456342] [INFO] Starting gunicorn 20.1.0
+[2023-05-06 19:40:04 +0800] [1451984] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:40:04 +0800] [1451984] [INFO] Worker exiting (pid: 1451984)
+[2023-05-06 19:40:04 +0800] [1451969] [INFO] Shutting down: Master
+[2023-05-06 19:43:44 +0800] [1459798] [INFO] Starting gunicorn 20.1.0
+[2023-05-06 19:43:44 +0800] [1459798] [INFO] Listening at: http://127.0.0.1:8000 (1459798)
+[2023-05-06 19:43:44 +0800] [1459798] [INFO] Using worker: sync
+[2023-05-06 19:43:44 +0800] [1459800] [INFO] Booting worker with pid: 1459800
+[2023-05-06 19:43:44 +0800] [1459801] [INFO] Booting worker with pid: 1459801
+[2023-05-06 19:43:44 +0800] [1459802] [INFO] Booting worker with pid: 1459802
+[2023-05-06 19:43:44 +0800] [1459803] [INFO] Booting worker with pid: 1459803
+[2023-05-06 19:43:44 +0800] [1459804] [INFO] Booting worker with pid: 1459804
+[2023-05-06 19:43:44 +0800] [1459805] [INFO] Booting worker with pid: 1459805
+[2023-05-06 19:43:44 +0800] [1459806] [INFO] Booting worker with pid: 1459806
+[2023-05-06 19:43:44 +0800] [1459807] [INFO] Booting worker with pid: 1459807
+[2023-05-06 19:43:44 +0800] [1459808] [INFO] Booting worker with pid: 1459808
+[2023-05-06 19:43:44 +0800] [1459809] [INFO] Booting worker with pid: 1459809
+[2023-05-06 19:43:44 +0800] [1459812] [INFO] Booting worker with pid: 1459812
+[2023-05-06 19:43:44 +0800] [1459820] [INFO] Booting worker with pid: 1459820
+[2023-05-06 19:43:44 +0800] [1459823] [INFO] Booting worker with pid: 1459823
+[2023-05-06 19:43:45 +0800] [1459825] [INFO] Booting worker with pid: 1459825
+[2023-05-06 19:43:45 +0800] [1459829] [INFO] Booting worker with pid: 1459829
+[2023-05-06 19:43:45 +0800] [1459835] [INFO] Booting worker with pid: 1459835
+[2023-05-06 19:43:45 +0800] [1459838] [INFO] Booting worker with pid: 1459838
+[2023-05-06 19:43:45 +0800] [1459846] [INFO] Booting worker with pid: 1459846
+[2023-05-06 19:43:45 +0800] [1459847] [INFO] Booting worker with pid: 1459847
+[2023-05-06 19:43:45 +0800] [1459849] [INFO] Booting worker with pid: 1459849
+[2023-05-06 19:43:55 +0800] [1459849] [INFO] upload_multiple_sources request yi
+[2023-05-06 19:43:58 +0800] [1459849] [INFO] upload source success yi 229 ym
+[2023-05-06 19:44:10 +0800] [1459847] [INFO] create new user ip is 120.133.133.87, ua is Dalvik/2.1.0 (Linux; U; Android 11; V2025A Build/RP1A.200720.012)
+[2023-05-06 19:44:15 +0800] [1459849] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:44:22 +0800] [1459849] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:44:29 +0800] [1459838] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:44:30 +0800] [1459838] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:44:36 +0800] [1459800] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:44:37 +0800] [1459800] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:45:55 +0800] [1459846] [INFO] create new user ip is 112.31.71.210, ua is Dalvik/2.1.0 (Linux; U; Android 10; COL-AL10 Build/HUAWEICOL-AL10)
+[2023-05-06 19:45:55 +0800] [1459825] [INFO] get_generated_images user_id: 27F4Fe87Fn
+[2023-05-06 19:45:55 +0800] [1459825] [INFO] adding tasks number: 0
+[2023-05-06 19:46:26 +0800] [1459846] [INFO] get_generated_images user_id: 27F4Fe87Fn
+[2023-05-06 19:46:26 +0800] [1459846] [INFO] adding tasks number: 0
+[2023-05-06 19:46:26 +0800] [1459835] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:46:26 +0800] [1459846] [INFO] get_generated_images user_id: 27F4Fe87Fn
+[2023-05-06 19:46:26 +0800] [1459846] [INFO] adding tasks number: 0
+[2023-05-06 19:46:35 +0800] [1459835] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:46:43 +0800] [1459829] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:46:45 +0800] [1459829] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:46:49 +0800] [1459838] [INFO] get_generated_images user_id: 27F4Fe87Fn
+[2023-05-06 19:46:49 +0800] [1459838] [INFO] adding tasks number: 0
+[2023-05-06 19:46:50 +0800] [1459838] [INFO] get_generated_images user_id: 27F4Fe87Fn
+[2023-05-06 19:46:50 +0800] [1459838] [INFO] adding tasks number: 0
+[2023-05-06 19:47:00 +0800] [1459846] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:47:02 +0800] [1459846] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:47:06 +0800] [1459835] [INFO] get_generated_images user_id: 27F4Fe87Fn
+[2023-05-06 19:47:06 +0800] [1459835] [INFO] adding tasks number: 0
+[2023-05-06 19:48:05 +0800] [1459846] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:48:18 +0800] [1459846] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:48:28 +0800] [1459825] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:48:30 +0800] [1459825] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:49:01 +0800] [1459829] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:49:02 +0800] [1459829] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:49:11 +0800] [1459823] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:49:13 +0800] [1459823] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:49:28 +0800] [1459823] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:49:29 +0800] [1459823] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:49:38 +0800] [1459804] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:49:40 +0800] [1459804] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:49:57 +0800] [1459820] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:49:59 +0800] [1459820] [INFO] 2KdxZWZeSG上传失败，图片中有2人脸
+[2023-05-06 19:50:10 +0800] [1459807] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:50:11 +0800] [1459807] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:51:07 +0800] [1459835] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:51:15 +0800] [1459835] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 19:51:20 +0800] [1459846] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:51:22 +0800] [1459846] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:51:31 +0800] [1459825] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:51:33 +0800] [1459825] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:53:50 +0800] [1459825] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 19:53:50 +0800] [1459825] [INFO] adding tasks number: 0
+[2023-05-06 19:54:00 +0800] [1459804] [INFO] get_generated_images user_id: SXzzfqHDW9
+[2023-05-06 19:54:00 +0800] [1459804] [INFO] adding tasks number: 0
+[2023-05-06 19:54:08 +0800] [1459812] [INFO] upload source request 2KdxZWZeSG
+[2023-05-06 19:54:11 +0800] [1459812] [INFO] upload source success 2KdxZWZeSG 230 2KdxZWZeSG_1683372942599
+[2023-05-06 19:57:24 +0800] [1459805] [INFO] create new user ip is 101.10.67.117, ua is PicMagic/1.0.1 (iPhone; iOS 16.4; Scale/3.00)
+[2023-05-06 19:57:41 +0800] [1459808] [INFO] get_generated_images user_id: ciqemh2dhJ
+[2023-05-06 19:57:41 +0800] [1459808] [INFO] adding tasks number: 0
+[2023-05-06 19:58:16 +0800] [1459807] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:58:18 +0800] [1459807] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 19:58:19 +0800] [1459829] [INFO] 2KdxZWZeSG has new_combinations: [(769, [230]), (3585, [230]), (4617, [230]), (4619, [230]), (2865, [230]), (2884, [230]), (2885, [230]), (2886, [230]), (3398, [230]), (2889, [230]), (2892, [230]), (2894, [230]), (2895, [230]), (2897, [230]), (3429, [230]), (3441, [230]), (926, [230]), (3496, [230]), (3517, [230]), (3522, [230]), (3526, [230]), (3531, [230]), (3543, [230]), (3567, [230]), (3572, [230]), (3574, [230]), (3580, [230]), (3582, [230]), (3583, [230]), (2816, [230]), (1538, [230]), (3586, [230]), (1027, [230]), (3587, [230]), (772, [230]), (774, [230]), (1030, [230]), (1542, [230]), (3590, [230]), (775, [230]), (1543, [230]), (3591, [230]), (2056, [230]), (3592, [230]), (2825, [230]), (1034, [230]), (4618, [230]), (2059, [230]), (3596, [230]), (4620, [230])]
+[2023-05-06 19:58:19 +0800] [1459829] [INFO] 2KdxZWZeSG start to  train lora 230
+[2023-05-06 19:58:19 +0800] [1459807] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:58:23 +0800] [1459807] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 19:58:24 +0800] [1459807] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:58:25 +0800] [1459807] [INFO] ciqemh2dhJ上传失败，图片中有2人脸
+[2023-05-06 19:58:26 +0800] [1459805] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:58:27 +0800] [1459805] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 19:58:30 +0800] [1459812] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:58:37 +0800] [1459812] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 19:58:38 +0800] [1459846] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:58:40 +0800] [1459846] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 19:58:41 +0800] [1459809] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:58:43 +0800] [1459809] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 19:58:48 +0800] [1459835] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:58:49 +0800] [1459823] [INFO] get_generated_images user_id: 2KdxZWZeSG
+[2023-05-06 19:58:49 +0800] [1459823] [INFO] adding tasks number: 0
+[2023-05-06 19:58:55 +0800] [1459835] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 19:59:01 +0800] [1459809] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:59:08 +0800] [1459809] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 19:59:15 +0800] [1459808] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 19:59:22 +0800] [1459808] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:01:53 +0800] [1459825] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:01:55 +0800] [1459825] [INFO] ciqemh2dhJ上传失败，图片中有2人脸
+[2023-05-06 20:01:57 +0800] [1459803] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:01:59 +0800] [1459803] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:02:06 +0800] [1459829] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:02:11 +0800] [1459829] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:02:29 +0800] [1459805] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:02:35 +0800] [1459805] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:02:38 +0800] [1459808] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:02:40 +0800] [1459808] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:02:43 +0800] [1459807] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:02:44 +0800] [1459807] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:03:39 +0800] [1459809] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:03:46 +0800] [1459809] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:03:56 +0800] [1459800] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:04:03 +0800] [1459800] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:04:23 +0800] [1459838] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:04:30 +0800] [1459838] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:04:31 +0800] [1459807] [INFO] upload source request ciqemh2dhJ
+[2023-05-06 20:04:32 +0800] [1459807] [INFO] upload source success ciqemh2dhJ 231 ciqemh2dhJ_1683374269066
+[2023-05-06 20:04:33 +0800] [1459809] [INFO] ciqemh2dhJ has new_combinations: [(769, [231]), (3585, [231]), (4617, [231]), (4619, [231]), (2865, [231]), (2884, [231]), (2885, [231]), (2886, [231]), (3398, [231]), (2889, [231]), (2892, [231]), (2894, [231]), (2895, [231]), (2897, [231]), (3429, [231]), (3441, [231]), (926, [231]), (3496, [231]), (3517, [231]), (3522, [231]), (3526, [231]), (3531, [231]), (3543, [231]), (3567, [231]), (3572, [231]), (3574, [231]), (3580, [231]), (3582, [231]), (3583, [231]), (2816, [231]), (1538, [231]), (3586, [231]), (1027, [231]), (3587, [231]), (772, [231]), (774, [231]), (1030, [231]), (1542, [231]), (3590, [231]), (775, [231]), (1543, [231]), (3591, [231]), (2056, [231]), (3592, [231]), (2825, [231]), (1034, [231]), (4618, [231]), (2059, [231]), (3596, [231]), (4620, [231])]
+[2023-05-06 20:04:33 +0800] [1459809] [INFO] ciqemh2dhJ start to  train lora 231
+[2023-05-06 20:10:51 +0800] [1459838] [INFO] create new user ip is 58.240.94.148, ua is Dalvik/2.1.0 (Linux; U; Android 13; 22041216C Build/TP1A.220624.014)
+[2023-05-06 20:13:10 +0800] [1459802] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:11 +0800] [1459802] [INFO] ZQl8BMzV43上传失败，图片中有4人脸
+[2023-05-06 20:13:12 +0800] [1459802] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:13 +0800] [1459802] [INFO] ZQl8BMzV43上传失败，图片中有6人脸
+[2023-05-06 20:13:13 +0800] [1459835] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:15 +0800] [1459835] [INFO] ZQl8BMzV43上传失败，图片中有7人脸
+[2023-05-06 20:13:15 +0800] [1459835] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:16 +0800] [1459835] [INFO] upload source success ZQl8BMzV43 232 ZQl8BMzV43_1683375124
+[2023-05-06 20:13:17 +0800] [1459803] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:18 +0800] [1459803] [INFO] ZQl8BMzV43上传失败，图片中有3人脸
+[2023-05-06 20:13:19 +0800] [1459807] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:21 +0800] [1459807] [INFO] ZQl8BMzV43上传失败，图片中有2人脸
+[2023-05-06 20:13:21 +0800] [1459809] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:23 +0800] [1459809] [INFO] ZQl8BMzV43上传失败，图片中有3人脸
+[2023-05-06 20:13:23 +0800] [1459847] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:25 +0800] [1459847] [INFO] ZQl8BMzV43上传失败，图片中有2人脸
+[2023-05-06 20:13:25 +0800] [1459847] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:27 +0800] [1459847] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 20:13:28 +0800] [1459847] [INFO] upload source request ZQl8BMzV43
+[2023-05-06 20:13:28 +0800] [1459847] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 228, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-06 20:15:50 +0800] [1459808] [INFO] create new user ip is 119.123.66.212, ua is PicMagic/1.0.1 (iPhone; iOS 16.1.1; Scale/3.00)
+[2023-05-06 20:16:10 +0800] [1459809] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:12 +0800] [1459809] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:12 +0800] [1459825] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:15 +0800] [1459825] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:15 +0800] [1459825] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:16 +0800] [1459825] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:17 +0800] [1459835] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:19 +0800] [1459835] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:19 +0800] [1459825] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:20 +0800] [1459825] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:20 +0800] [1459835] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:22 +0800] [1459835] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:23 +0800] [1459812] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:25 +0800] [1459812] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:25 +0800] [1459820] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:27 +0800] [1459820] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:27 +0800] [1459829] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:30 +0800] [1459829] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:30 +0800] [1459809] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:32 +0800] [1459809] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:32 +0800] [1459847] [INFO] upload source request b4tb2YQZln
+[2023-05-06 20:16:34 +0800] [1459847] [INFO] upload source success b4tb2YQZln 233 b4tb2YQZln_1683375353874
+[2023-05-06 20:16:35 +0800] [1459829] [INFO] b4tb2YQZln has new_combinations: [(769, [233]), (3585, [233]), (4617, [233]), (4619, [233]), (2865, [233]), (2884, [233]), (2885, [233]), (2886, [233]), (3398, [233]), (2889, [233]), (2892, [233]), (2894, [233]), (2895, [233]), (2897, [233]), (3429, [233]), (3441, [233]), (926, [233]), (3496, [233]), (3517, [233]), (3522, [233]), (3526, [233]), (3531, [233]), (3543, [233]), (3567, [233]), (3572, [233]), (3574, [233]), (3580, [233]), (3582, [233]), (3583, [233]), (2816, [233]), (1538, [233]), (3586, [233]), (1027, [233]), (3587, [233]), (772, [233]), (774, [233]), (1030, [233]), (1542, [233]), (3590, [233]), (775, [233]), (1543, [233]), (3591, [233]), (2056, [233]), (3592, [233]), (2825, [233]), (1034, [233]), (4618, [233]), (2059, [233]), (3596, [233]), (4620, [233])]
+[2023-05-06 20:16:35 +0800] [1459829] [INFO] b4tb2YQZln start to  train lora 233
+[2023-05-06 20:28:08 +0800] [1459838] [INFO] create new user ip is 120.244.202.189, ua is PicMagic/1.0.1 (iPhone; iOS 16.1; Scale/3.00)
+[2023-05-06 20:29:24 +0800] [1459838] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:29:24 +0800] [1459838] [INFO] adding tasks number: 0
+[2023-05-06 20:29:53 +0800] [1459806] [INFO] upload_multiple_sources request bV11D3V8fr
+[2023-05-06 20:29:53 +0800] [1459806] [INFO] Exception: {'status': 404, 'x-oss-request-id': '64564841E0DCB93532A42982', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564841E0DCB93532A42982', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833761860000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:29:53 +0800] [1459806] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 294, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '64564841E0DCB93532A42982', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564841E0DCB93532A42982', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833761860000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:36:25 +0800] [1459803] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:36:25 +0800] [1459803] [INFO] adding tasks number: 0
+[2023-05-06 20:36:40 +0800] [1459806] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:36:42 +0800] [1459801] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:37:18 +0800] [1459846] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:37:18 +0800] [1459846] [INFO] adding tasks number: 0
+[2023-05-06 20:37:21 +0800] [1459847] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:37:34 +0800] [1459808] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:37:34 +0800] [1459808] [INFO] adding tasks number: 0
+[2023-05-06 20:38:00 +0800] [1459835] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:38:48 +0800] [1459835] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:39:06 +0800] [1459809] [INFO] upload_multiple_sources request bV11D3V8fr
+[2023-05-06 20:39:06 +0800] [1459809] [INFO] Exception: {'status': 404, 'x-oss-request-id': '64564A6A54280A3030DD12C7', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564A6A54280A3030DD12C7', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833767400000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:39:06 +0800] [1459809] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 294, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '64564A6A54280A3030DD12C7', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564A6A54280A3030DD12C7', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833767400000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:39:21 +0800] [1459835] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:39:47 +0800] [1459804] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:39:47 +0800] [1459804] [INFO] adding tasks number: 0
+[2023-05-06 20:39:54 +0800] [1459805] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:40:25 +0800] [1459838] [INFO] upload_multiple_sources request bV11D3V8fr
+[2023-05-06 20:40:25 +0800] [1459838] [INFO] Exception: {'status': 404, 'x-oss-request-id': '64564AB9D17D343831836C1C', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564AB9D17D343831836C1C', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833768040000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:40:25 +0800] [1459838] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 294, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '64564AB9D17D343831836C1C', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564AB9D17D343831836C1C', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833768040000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:41:36 +0800] [1459804] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:41:36 +0800] [1459804] [INFO] adding tasks number: 0
+[2023-05-06 20:41:43 +0800] [1459806] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:41:56 +0800] [1459825] [INFO] upload_multiple_sources request bV11D3V8fr
+[2023-05-06 20:41:56 +0800] [1459825] [INFO] Exception: {'status': 404, 'x-oss-request-id': '64564B14A55499363054416C', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564B14A55499363054416C', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833769120000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:41:56 +0800] [1459825] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 294, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '64564B14A55499363054416C', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564B14A55499363054416C', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833769120000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:49:24 +0800] [1459849] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:49:24 +0800] [1459849] [INFO] adding tasks number: 0
+[2023-05-06 20:49:26 +0800] [1459849] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:50:53 +0800] [1459829] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:50:53 +0800] [1459829] [INFO] adding tasks number: 0
+[2023-05-06 20:51:27 +0800] [1459802] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:51:56 +0800] [1459847] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:52:08 +0800] [1459804] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:52:21 +0800] [1459838] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:52:45 +0800] [1459805] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:53:06 +0800] [1459823] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:54:25 +0800] [1459808] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:56:20 +0800] [1459849] [INFO] upload_multiple_sources request bV11D3V8fr
+[2023-05-06 20:56:20 +0800] [1459849] [INFO] Exception: {'status': 404, 'x-oss-request-id': '64564E749B92023637AB9B87', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564E749B92023637AB9B87', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833776820000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:56:20 +0800] [1459849] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 294, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '64564E749B92023637AB9B87', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564E749B92023637AB9B87', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833776820000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:56:43 +0800] [1459820] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:56:43 +0800] [1459820] [INFO] adding tasks number: 0
+[2023-05-06 20:56:51 +0800] [1459805] [INFO] get_generated_images user_id: bV11D3V8fr
+[2023-05-06 20:56:51 +0800] [1459805] [INFO] adding tasks number: 0
+[2023-05-06 20:56:53 +0800] [1459849] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 20:57:35 +0800] [1459829] [INFO] upload_multiple_sources request bV11D3V8fr
+[2023-05-06 20:57:35 +0800] [1459829] [INFO] Exception: {'status': 404, 'x-oss-request-id': '64564EBF6EABC83539430578', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564EBF6EABC83539430578', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833778320000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:57:35 +0800] [1459829] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 294, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '64564EBF6EABC83539430578', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564EBF6EABC83539430578', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/bV11D3V8fr\\/20230506\\/16833778320000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:59:28 +0800] [1459808] [INFO] create new user ip is 120.244.202.189, ua is PicMagic/1.0.1 (iPhone; iOS 16.1; Scale/3.00)
+[2023-05-06 20:59:59 +0800] [1459820] [INFO] upload_multiple_sources request 4buc2Lnt9d
+[2023-05-06 20:59:59 +0800] [1459820] [INFO] Exception: {'status': 404, 'x-oss-request-id': '64564F4FCC8CEC3033D8F17E', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564F4FCC8CEC3033D8F17E', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/4buc2Lnt9d\\/20230506\\/16833779930000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 20:59:59 +0800] [1459820] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 294, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '64564F4FCC8CEC3033D8F17E', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '64564F4FCC8CEC3033D8F17E', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': 'sources\\/4buc2Lnt9d\\/20230506\\/16833779930000.jpg', 'EC': '0026-00000001'}}
+[2023-05-06 21:00:55 +0800] [1459804] [INFO] get_generated_images user_id: 4buc2Lnt9d
+[2023-05-06 21:00:55 +0800] [1459804] [INFO] adding tasks number: 0
+[2023-05-06 21:00:57 +0800] [1459804] [ERROR] Exception on /api/get_user [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 90, in get_user
+    head_img_url = utils.get_signed_url(person.head_img_key)
+  File "/root/photo-lab-core/backend/utils.py", line 54, in get_signed_url
+    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 467, in sign_url
+    raise ClientError("The key is invalid, please check it.")
+oss2.exceptions.ClientError: {'status': -1, 'x-oss-request-id': '', 'details': 'ClientError: The key is invalid, please check it.'}
+[2023-05-06 21:02:19 +0800] [1459798] [INFO] Handling signal: term
+[2023-05-06 21:02:19 +0800] [1459809] [INFO] Worker exiting (pid: 1459809)
+[2023-05-06 21:02:19 +0800] [1459802] [INFO] Worker exiting (pid: 1459802)
+[2023-05-06 21:02:19 +0800] [1459825] [INFO] Worker exiting (pid: 1459825)
+[2023-05-06 21:02:19 +0800] [1459829] [INFO] Worker exiting (pid: 1459829)
+[2023-05-06 21:02:19 +0800] [1459806] [INFO] Worker exiting (pid: 1459806)
+[2023-05-06 21:02:19 +0800] [1459808] [INFO] Worker exiting (pid: 1459808)
+[2023-05-06 21:02:19 +0800] [1459846] [INFO] Worker exiting (pid: 1459846)
+[2023-05-06 21:02:19 +0800] [1459812] [INFO] Worker exiting (pid: 1459812)
+[2023-05-06 21:02:19 +0800] [1459820] [INFO] Worker exiting (pid: 1459820)
+[2023-05-06 21:02:19 +0800] [1459800] [INFO] Worker exiting (pid: 1459800)
+[2023-05-06 21:02:19 +0800] [1459803] [INFO] Worker exiting (pid: 1459803)
+[2023-05-06 21:02:19 +0800] [1459823] [INFO] Worker exiting (pid: 1459823)
+[2023-05-06 21:02:19 +0800] [1459807] [INFO] Worker exiting (pid: 1459807)
+[2023-05-06 21:02:19 +0800] [1459835] [INFO] Worker exiting (pid: 1459835)
+[2023-05-06 21:02:19 +0800] [1459838] [INFO] Worker exiting (pid: 1459838)
+[2023-05-06 21:02:19 +0800] [1459847] [INFO] Worker exiting (pid: 1459847)
+[2023-05-06 21:02:19 +0800] [1459849] [INFO] Worker exiting (pid: 1459849)
+[2023-05-06 21:02:19 +0800] [1459805] [INFO] Worker exiting (pid: 1459805)
+[2023-05-06 21:02:19 +0800] [1459804] [INFO] Worker exiting (pid: 1459804)
+[2023-05-06 21:02:19 +0800] [1459801] [INFO] Worker exiting (pid: 1459801)
+[2023-05-06 21:02:22 +0800] [1459798] [INFO] Shutting down: Master
+[2023-05-06 21:02:25 +0800] [1531426] [INFO] Starting gunicorn 20.1.0
+[2023-05-06 21:02:25 +0800] [1531426] [INFO] Listening at: http://127.0.0.1:8000 (1531426)
+[2023-05-06 21:02:25 +0800] [1531426] [INFO] Using worker: sync
+[2023-05-06 21:02:25 +0800] [1531428] [INFO] Booting worker with pid: 1531428
+[2023-05-06 21:02:25 +0800] [1531429] [INFO] Booting worker with pid: 1531429
+[2023-05-06 21:02:25 +0800] [1531430] [INFO] Booting worker with pid: 1531430
+[2023-05-06 21:02:25 +0800] [1531431] [INFO] Booting worker with pid: 1531431
+[2023-05-06 21:02:25 +0800] [1531432] [INFO] Booting worker with pid: 1531432
+[2023-05-06 21:02:25 +0800] [1531433] [INFO] Booting worker with pid: 1531433
+[2023-05-06 21:02:25 +0800] [1531434] [INFO] Booting worker with pid: 1531434
+[2023-05-06 21:02:26 +0800] [1531435] [INFO] Booting worker with pid: 1531435
+[2023-05-06 21:02:26 +0800] [1531437] [INFO] Booting worker with pid: 1531437
+[2023-05-06 21:02:26 +0800] [1531444] [INFO] Booting worker with pid: 1531444
+[2023-05-06 21:02:26 +0800] [1531456] [INFO] Booting worker with pid: 1531456
+[2023-05-06 21:02:26 +0800] [1531462] [INFO] Booting worker with pid: 1531462
+[2023-05-06 21:02:26 +0800] [1531464] [INFO] Booting worker with pid: 1531464
+[2023-05-06 21:02:26 +0800] [1531466] [INFO] Booting worker with pid: 1531466
+[2023-05-06 21:02:26 +0800] [1531468] [INFO] Booting worker with pid: 1531468
+[2023-05-06 21:02:26 +0800] [1531471] [INFO] Booting worker with pid: 1531471
+[2023-05-06 21:02:26 +0800] [1531472] [INFO] Booting worker with pid: 1531472
+[2023-05-06 21:02:26 +0800] [1531473] [INFO] Booting worker with pid: 1531473
+[2023-05-06 21:02:26 +0800] [1531474] [INFO] Booting worker with pid: 1531474
+[2023-05-06 21:02:26 +0800] [1531475] [INFO] Booting worker with pid: 1531475
+[2023-05-06 21:08:29 +0800] [1531474] [INFO] upload_multiple_sources request yi
+[2023-05-06 21:08:29 +0800] [1531474] [INFO] Exception: {'status': 404, 'x-oss-request-id': '6456514DE144DC3637795013', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '6456514DE144DC3637795013', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': '[', 'EC': '0026-00000001'}}
+[2023-05-06 21:08:29 +0800] [1531474] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 296, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '6456514DE144DC3637795013', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '6456514DE144DC3637795013', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': '[', 'EC': '0026-00000001'}}
+[2023-05-06 21:09:00 +0800] [1531426] [INFO] Handling signal: term
+[2023-05-06 21:09:00 +0800] [1531428] [INFO] Worker exiting (pid: 1531428)
+[2023-05-06 21:09:00 +0800] [1531437] [INFO] Worker exiting (pid: 1531437)
+[2023-05-06 21:09:00 +0800] [1531429] [INFO] Worker exiting (pid: 1531429)
+[2023-05-06 21:09:00 +0800] [1531444] [INFO] Worker exiting (pid: 1531444)
+[2023-05-06 21:09:00 +0800] [1531462] [INFO] Worker exiting (pid: 1531462)
+[2023-05-06 21:09:00 +0800] [1531434] [INFO] Worker exiting (pid: 1531434)
+[2023-05-06 21:09:00 +0800] [1531473] [INFO] Worker exiting (pid: 1531473)
+[2023-05-06 21:09:00 +0800] [1531433] [INFO] Worker exiting (pid: 1531433)
+[2023-05-06 21:09:00 +0800] [1531432] [INFO] Worker exiting (pid: 1531432)
+[2023-05-06 21:09:00 +0800] [1531472] [INFO] Worker exiting (pid: 1531472)
+[2023-05-06 21:09:00 +0800] [1531435] [INFO] Worker exiting (pid: 1531435)
+[2023-05-06 21:09:00 +0800] [1531475] [INFO] Worker exiting (pid: 1531475)
+[2023-05-06 21:09:00 +0800] [1531471] [INFO] Worker exiting (pid: 1531471)
+[2023-05-06 21:09:00 +0800] [1531466] [INFO] Worker exiting (pid: 1531466)
+[2023-05-06 21:09:00 +0800] [1531464] [INFO] Worker exiting (pid: 1531464)
+[2023-05-06 21:09:00 +0800] [1531456] [INFO] Worker exiting (pid: 1531456)
+[2023-05-06 21:09:00 +0800] [1531431] [INFO] Worker exiting (pid: 1531431)
+[2023-05-06 21:09:00 +0800] [1531468] [INFO] Worker exiting (pid: 1531468)
+[2023-05-06 21:09:00 +0800] [1531430] [INFO] Worker exiting (pid: 1531430)
+[2023-05-06 21:09:00 +0800] [1531474] [INFO] Worker exiting (pid: 1531474)
+[2023-05-06 21:09:04 +0800] [1537565] [INFO] Starting gunicorn 20.1.0
+[2023-05-06 21:09:04 +0800] [1531426] [INFO] Shutting down: Master
+[2023-05-06 21:09:19 +0800] [1537828] [INFO] Starting gunicorn 20.1.0
+[2023-05-06 21:09:19 +0800] [1537828] [INFO] Listening at: http://127.0.0.1:8000 (1537828)
+[2023-05-06 21:09:19 +0800] [1537828] [INFO] Using worker: sync
+[2023-05-06 21:09:19 +0800] [1537830] [INFO] Booting worker with pid: 1537830
+[2023-05-06 21:09:19 +0800] [1537831] [INFO] Booting worker with pid: 1537831
+[2023-05-06 21:09:19 +0800] [1537832] [INFO] Booting worker with pid: 1537832
+[2023-05-06 21:09:19 +0800] [1537833] [INFO] Booting worker with pid: 1537833
+[2023-05-06 21:09:19 +0800] [1537834] [INFO] Booting worker with pid: 1537834
+[2023-05-06 21:09:19 +0800] [1537835] [INFO] Booting worker with pid: 1537835
+[2023-05-06 21:09:19 +0800] [1537843] [INFO] Booting worker with pid: 1537843
+[2023-05-06 21:09:19 +0800] [1537848] [INFO] Booting worker with pid: 1537848
+[2023-05-06 21:09:19 +0800] [1537850] [INFO] Booting worker with pid: 1537850
+[2023-05-06 21:09:19 +0800] [1537853] [INFO] Booting worker with pid: 1537853
+[2023-05-06 21:09:19 +0800] [1537856] [INFO] Booting worker with pid: 1537856
+[2023-05-06 21:09:19 +0800] [1537860] [INFO] Booting worker with pid: 1537860
+[2023-05-06 21:09:19 +0800] [1537861] [INFO] Booting worker with pid: 1537861
+[2023-05-06 21:09:19 +0800] [1537862] [INFO] Booting worker with pid: 1537862
+[2023-05-06 21:09:20 +0800] [1537863] [INFO] Booting worker with pid: 1537863
+[2023-05-06 21:09:20 +0800] [1537864] [INFO] Booting worker with pid: 1537864
+[2023-05-06 21:09:20 +0800] [1537865] [INFO] Booting worker with pid: 1537865
+[2023-05-06 21:09:20 +0800] [1537866] [INFO] Booting worker with pid: 1537866
+[2023-05-06 21:09:20 +0800] [1537867] [INFO] Booting worker with pid: 1537867
+[2023-05-06 21:09:20 +0800] [1537868] [INFO] Booting worker with pid: 1537868
+[2023-05-06 21:09:27 +0800] [1537832] [INFO] upload_multiple_sources request yi
+[2023-05-06 21:09:27 +0800] [1537832] [INFO] Exception: {'status': 404, 'x-oss-request-id': '6456518781477F3834E17997', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '6456518781477F3834E17997', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': '[', 'EC': '0026-00000001'}}
+[2023-05-06 21:09:27 +0800] [1537832] [ERROR] Exception on /api/upload_multiple_sources [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 296, in upload_multiple_sources
+    data = utils.oss_source_get(key)
+  File "/root/photo-lab-core/backend/utils.py", line 98, in oss_source_get
+    return bucket.get_object(key).read()
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 757, in get_object
+    resp = self.__do_object('GET', key, headers=headers, params=params)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 2754, in __do_object
+    return self._do(method, self.bucket_name, key, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/oss2/api.py", line 239, in _do
+    raise e
+oss2.exceptions.NoSuchKey: {'status': 404, 'x-oss-request-id': '6456518781477F3834E17997', 'details': {'Code': 'NoSuchKey', 'Message': 'The specified key does not exist.', 'RequestId': '6456518781477F3834E17997', 'HostId': 'photolab-sources.oss-cn-shenzhen.aliyuncs.com', 'Key': '[', 'EC': '0026-00000001'}}
+[2023-05-06 21:09:28 +0800] [1537864] [INFO] create new user ip is 120.133.133.87, ua is Dalvik/2.1.0 (Linux; U; Android 11; V1955A Build/RP1A.200720.012)
+[2023-05-06 21:10:32 +0800] [1537867] [INFO] get_generated_images user_id: 4buc2Lnt9d
+[2023-05-06 21:10:32 +0800] [1537867] [INFO] adding tasks number: 0
+[2023-05-06 21:11:53 +0800] [1537867] [INFO] get_generated_images user_id: 4buc2Lnt9d
+[2023-05-06 21:11:53 +0800] [1537867] [INFO] adding tasks number: 0
+[2023-05-06 21:15:06 +0800] [1537860] [INFO] get_generated_images user_id: PvtzHPRJvU
+[2023-05-06 21:15:06 +0800] [1537860] [INFO] adding tasks number: 0
+[2023-05-06 21:16:52 +0800] [1537868] [INFO] upload source request PvtzHPRJvU
+[2023-05-06 21:16:53 +0800] [1537868] [INFO] upload source success PvtzHPRJvU 241 PvtzHPRJvU_1683378978978
+[2023-05-06 21:18:05 +0800] [1537865] [INFO] create new user ip is 36.239.168.236, ua is PicMagic/1.0.1 (iPhone; iOS 16.1.1; Scale/2.00)
+[2023-05-06 21:19:26 +0800] [1537862] [INFO] upload source request eemGLKts06
+[2023-05-06 21:19:33 +0800] [1537862] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:20:12 +0800] [1537830] [INFO] upload source request eemGLKts06
+[2023-05-06 21:20:18 +0800] [1537830] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:21:12 +0800] [1537863] [INFO] upload source request eemGLKts06
+[2023-05-06 21:21:18 +0800] [1537863] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:21:25 +0800] [1537860] [INFO] upload source request eemGLKts06
+[2023-05-06 21:21:27 +0800] [1537860] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:21:35 +0800] [1537830] [INFO] upload source request eemGLKts06
+[2023-05-06 21:21:36 +0800] [1537830] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:22:56 +0800] [1537866] [INFO] get_generated_images user_id: 4buc2Lnt9d
+[2023-05-06 21:22:56 +0800] [1537866] [INFO] adding tasks number: 0
+[2023-05-06 21:23:04 +0800] [1537863] [INFO] upload source request eemGLKts06
+[2023-05-06 21:23:12 +0800] [1537863] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:24:10 +0800] [1537868] [INFO] upload source request eemGLKts06
+[2023-05-06 21:24:18 +0800] [1537868] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:25:14 +0800] [1537850] [INFO] upload source request eemGLKts06
+[2023-05-06 21:25:22 +0800] [1537850] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:25:58 +0800] [1537828] [INFO] Handling signal: term
+[2023-05-06 21:25:58 +0800] [1537843] [INFO] Worker exiting (pid: 1537843)
+[2023-05-06 21:25:58 +0800] [1537832] [INFO] Worker exiting (pid: 1537832)
+[2023-05-06 21:25:58 +0800] [1537848] [INFO] Worker exiting (pid: 1537848)
+[2023-05-06 21:25:58 +0800] [1537833] [INFO] Worker exiting (pid: 1537833)
+[2023-05-06 21:25:58 +0800] [1537850] [INFO] Worker exiting (pid: 1537850)
+[2023-05-06 21:25:58 +0800] [1537865] [INFO] Worker exiting (pid: 1537865)
+[2023-05-06 21:25:58 +0800] [1537835] [INFO] Worker exiting (pid: 1537835)
+[2023-05-06 21:25:58 +0800] [1537856] [INFO] Worker exiting (pid: 1537856)
+[2023-05-06 21:25:58 +0800] [1537830] [INFO] Worker exiting (pid: 1537830)
+[2023-05-06 21:25:58 +0800] [1537853] [INFO] Worker exiting (pid: 1537853)
+[2023-05-06 21:25:58 +0800] [1537860] [INFO] Worker exiting (pid: 1537860)
+[2023-05-06 21:25:58 +0800] [1537861] [INFO] Worker exiting (pid: 1537861)
+[2023-05-06 21:25:58 +0800] [1537862] [INFO] Worker exiting (pid: 1537862)
+[2023-05-06 21:25:58 +0800] [1537863] [INFO] Worker exiting (pid: 1537863)
+[2023-05-06 21:25:58 +0800] [1537864] [INFO] Worker exiting (pid: 1537864)
+[2023-05-06 21:25:58 +0800] [1537866] [INFO] Worker exiting (pid: 1537866)
+[2023-05-06 21:25:58 +0800] [1537867] [INFO] Worker exiting (pid: 1537867)
+[2023-05-06 21:25:58 +0800] [1537834] [INFO] Worker exiting (pid: 1537834)
+[2023-05-06 21:25:58 +0800] [1537831] [INFO] Worker exiting (pid: 1537831)
+[2023-05-06 21:25:58 +0800] [1537868] [INFO] Worker exiting (pid: 1537868)
+[2023-05-06 21:26:01 +0800] [1537828] [INFO] Shutting down: Master
+[2023-05-06 21:26:01 +0800] [1554426] [INFO] Starting gunicorn 20.1.0
+[2023-05-06 21:26:01 +0800] [1554426] [INFO] Listening at: http://127.0.0.1:8000 (1554426)
+[2023-05-06 21:26:01 +0800] [1554426] [INFO] Using worker: sync
+[2023-05-06 21:26:01 +0800] [1554428] [INFO] Booting worker with pid: 1554428
+[2023-05-06 21:26:01 +0800] [1554429] [INFO] Booting worker with pid: 1554429
+[2023-05-06 21:26:01 +0800] [1554430] [INFO] Booting worker with pid: 1554430
+[2023-05-06 21:26:01 +0800] [1554431] [INFO] Booting worker with pid: 1554431
+[2023-05-06 21:26:01 +0800] [1554444] [INFO] Booting worker with pid: 1554444
+[2023-05-06 21:26:01 +0800] [1554446] [INFO] Booting worker with pid: 1554446
+[2023-05-06 21:26:01 +0800] [1554450] [INFO] Booting worker with pid: 1554450
+[2023-05-06 21:26:01 +0800] [1554451] [INFO] Booting worker with pid: 1554451
+[2023-05-06 21:26:01 +0800] [1554452] [INFO] Booting worker with pid: 1554452
+[2023-05-06 21:26:02 +0800] [1554453] [INFO] Booting worker with pid: 1554453
+[2023-05-06 21:26:02 +0800] [1554454] [INFO] Booting worker with pid: 1554454
+[2023-05-06 21:26:02 +0800] [1554455] [INFO] Booting worker with pid: 1554455
+[2023-05-06 21:26:02 +0800] [1554456] [INFO] Booting worker with pid: 1554456
+[2023-05-06 21:26:02 +0800] [1554457] [INFO] Booting worker with pid: 1554457
+[2023-05-06 21:26:02 +0800] [1554458] [INFO] Booting worker with pid: 1554458
+[2023-05-06 21:26:02 +0800] [1554459] [INFO] Booting worker with pid: 1554459
+[2023-05-06 21:26:02 +0800] [1554460] [INFO] Booting worker with pid: 1554460
+[2023-05-06 21:26:02 +0800] [1554461] [INFO] Booting worker with pid: 1554461
+[2023-05-06 21:26:02 +0800] [1554462] [INFO] Booting worker with pid: 1554462
+[2023-05-06 21:26:02 +0800] [1554463] [INFO] Booting worker with pid: 1554463
+[2023-05-06 21:26:30 +0800] [1554463] [INFO] upload source request eemGLKts06
+[2023-05-06 21:26:38 +0800] [1554463] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:26:52 +0800] [1554461] [INFO] get_generated_images user_id: 4buc2Lnt9d
+[2023-05-06 21:26:52 +0800] [1554461] [INFO] adding tasks number: 0
+[2023-05-06 21:27:09 +0800] [1554461] [INFO] create new user ip is 86.55.52.233, ua is PicMagic/1.0.1 (iPhone; iOS 12.4; Scale/2.00)
+[2023-05-06 21:27:15 +0800] [1554456] [INFO] upload_multiple_sources request 4buc2Lnt9d
+[2023-05-06 21:27:30 +0800] [1554456] [INFO] upload source success 4buc2Lnt9d 243 4buc2Lnt9d_1683379615896
+[2023-05-06 21:29:00 +0800] [1554462] [INFO] upload source request eemGLKts06
+[2023-05-06 21:29:06 +0800] [1554462] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:30:03 +0800] [1554456] [INFO] upload source request eemGLKts06
+[2023-05-06 21:30:09 +0800] [1554456] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:30:18 +0800] [1554459] [INFO] upload source request eemGLKts06
+[2023-05-06 21:30:20 +0800] [1554459] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:30:29 +0800] [1554453] [INFO] upload source request eemGLKts06
+[2023-05-06 21:30:31 +0800] [1554453] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:30:41 +0800] [1554450] [INFO] upload source request eemGLKts06
+[2023-05-06 21:30:43 +0800] [1554450] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:30:57 +0800] [1554451] [INFO] upload source request eemGLKts06
+[2023-05-06 21:30:59 +0800] [1554451] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:31:27 +0800] [1554446] [INFO] 4buc2Lnt9d has new_combinations: [(769, [243]), (3585, [243]), (4617, [243]), (4619, [243]), (2865, [243]), (2884, [243]), (2885, [243]), (2886, [243]), (3398, [243]), (2889, [243]), (2892, [243]), (2894, [243]), (2895, [243]), (2897, [243]), (3429, [243]), (3441, [243]), (926, [243]), (3496, [243]), (3517, [243]), (3522, [243]), (3526, [243]), (3531, [243]), (3543, [243]), (3567, [243]), (3572, [243]), (3574, [243]), (3580, [243]), (3582, [243]), (3583, [243]), (2816, [243]), (1538, [243]), (3586, [243]), (1027, [243]), (3587, [243]), (772, [243]), (774, [243]), (1030, [243]), (1542, [243]), (3590, [243]), (775, [243]), (1543, [243]), (3591, [243]), (2056, [243]), (3592, [243]), (2825, [243]), (1034, [243]), (4618, [243]), (2059, [243]), (3596, [243]), (4620, [243])]
+[2023-05-06 21:31:27 +0800] [1554446] [INFO] 4buc2Lnt9d start to  train lora 243
+[2023-05-06 21:31:48 +0800] [1554453] [INFO] get_generated_images user_id: 4buc2Lnt9d
+[2023-05-06 21:31:48 +0800] [1554453] [INFO] adding tasks number: 0
+[2023-05-06 21:32:13 +0800] [1554455] [INFO] upload source request eemGLKts06
+[2023-05-06 21:32:19 +0800] [1554455] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:32:25 +0800] [1554431] [INFO] upload source request eemGLKts06
+[2023-05-06 21:32:27 +0800] [1554431] [INFO] upload source success eemGLKts06 242 eemGLKts06_1683379090894
+[2023-05-06 21:33:21 +0800] [1554459] [INFO] get_generated_images user_id: 4buc2Lnt9d
+[2023-05-06 21:33:21 +0800] [1554459] [INFO] adding tasks number: 0
+[2023-05-06 21:33:41 +0800] [1554444] [INFO] upload_multiple_sources request 4buc2Lnt9d
+[2023-05-06 21:33:47 +0800] [1554444] [INFO] upload source success 4buc2Lnt9d 244 4buc2Lnt9d_1683380003710
+[2023-05-06 21:34:13 +0800] [1554461] [INFO] upload source request yi
+[2023-05-06 21:34:15 +0800] [1554461] [INFO] upload source success yi 245 Fengyi-video
+[2023-05-06 21:34:15 +0800] [1554446] [INFO] upload source request yi
+[2023-05-06 21:34:17 +0800] [1554446] [INFO] upload source success yi 245 Fengyi-video
+[2023-05-06 21:34:17 +0800] [1554458] [INFO] upload source request yi
+[2023-05-06 21:34:19 +0800] [1554458] [INFO] upload source success yi 245 Fengyi-video
+[2023-05-06 21:34:19 +0800] [1554451] [INFO] upload source request yi
+[2023-05-06 21:34:20 +0800] [1554451] [INFO] upload source success yi 245 Fengyi-video
+[2023-05-06 21:34:20 +0800] [1554444] [INFO] upload source request yi
+[2023-05-06 21:34:22 +0800] [1554444] [INFO] yi上传失败，图片中有2人脸
+[2023-05-06 21:39:41 +0800] [1554455] [INFO] create new user ip is 61.149.220.116, ua is PicMagic/1.0.2 (iPhone; iOS 16.2; Scale/3.00)

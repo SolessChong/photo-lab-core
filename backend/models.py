@@ -49,6 +49,7 @@ class Person(db.Model):
     user_id = db.Column(db.String(255), nullable=True)
     lora_train_status = db.Column(db.String(255), nullable=True)
     head_img_key = db.Column(db.String(255), nullable=True)
+    train_note = db.Column(db.String(255), nullable=True)
 
     def update_model_file(self, modek_file_key):
         self.model_file_key = modek_file_key
@@ -140,6 +141,7 @@ class Task(db.Model):
     debug_img = db.Column(db.JSON, nullable=True)
     pack_id = db.Column(db.Integer, nullable=True)
     user_id = db.Column(db.String(255), nullable=True)
+    rate = db.Column(db.Integer, nullable=True)
 
     def update_result_img_key(self, result_img_key):
         self.result_img_key = result_img_key
