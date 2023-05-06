@@ -1,7 +1,29 @@
  * Serving Flask app 'backend.extensions'
  * Debug mode: off
-2023-05-01 18:57:13,907 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2023-05-04 00:23:49,172 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:80
  * Running on http://172.18.61.1:80
-2023-05-01 18:57:13,908 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2023-05-04 00:23:49,172 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2023-05-04 00:24:28,015 - werkzeug - INFO - 139.178.131.24 - - [04/May/2023 00:24:28] "GET /api/get_user?user_id=KGpIPXqpNf HTTP/1.1" 200 -
+2023-05-04 00:24:28,251 - werkzeug - INFO - 139.178.131.24 - - [04/May/2023 00:24:28] "GET /api/get_example_images?user_id=KGpIPXqpNf HTTP/1.1" 200 -
+2023-05-04 00:24:31,421 - werkzeug - INFO - 139.178.131.24 - - [04/May/2023 00:24:31] "GET /api/get_example_images?user_id=KGpIPXqpNf HTTP/1.1" 200 -
+2023-05-04 00:25:11,597 - werkzeug - INFO - 139.178.131.24 - - [04/May/2023 00:25:11] "GET /api/get_user?user_id=KGpIPXqpNf HTTP/1.1" 200 -
+2023-05-04 00:26:13,430 - werkzeug - INFO - 139.178.131.24 - - [04/May/2023 00:26:13] "GET /api/get_user?user_id=KGpIPXqpNf HTTP/1.1" 200 -
+2023-05-04 00:27:55,976 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:27:55] "GET / HTTP/1.1" 200 -
+2023-05-04 00:27:56,248 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:27:56] "GET /static/styles.css HTTP/1.1" 200 -
+2023-05-04 00:27:57,541 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:27:57] "GET /static/main.js HTTP/1.1" 200 -
+2023-05-04 00:27:58,380 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:27:58] "GET /api/get_source?user_id=michaelfeng007 HTTP/1.1" 200 -
+2023-05-04 00:27:59,273 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:27:59] "GET / HTTP/1.1" 200 -
+2023-05-04 00:27:59,351 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:27:59] "GET /get_scenes?action_type=sd,mj&img_type=boy,girl HTTP/1.1" 200 -
+2023-05-04 00:27:59,463 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:27:59] "[36mGET /static/styles.css HTTP/1.1[0m" 304 -
+2023-05-04 00:27:59,915 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:27:59] "[36mGET /static/main.js HTTP/1.1[0m" 304 -
+2023-05-04 00:28:00,682 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:28:00] "GET /api/get_source?user_id=michaelfeng007 HTTP/1.1" 200 -
+2023-05-04 00:28:01,249 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:28:01] "GET /get_scenes?action_type=sd,mj&img_type=boy,girl HTTP/1.1" 200 -
+2023-05-04 00:28:01,924 - werkzeug - INFO - 203.96.238.85 - - [04/May/2023 00:28:01] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2023-05-04 00:32:51,448 - root - INFO - get_generated_images user_id: 6oe2ssPFFp
+2023-05-04 00:32:51,461 - root - INFO - adding tasks number: 0
+2023-05-04 00:32:51,481 - werkzeug - INFO - 119.123.69.170 - - [04/May/2023 00:32:51] "GET /api/get_generated_images?user_id=6oe2ssPFFp HTTP/1.1" 200 -
+2023-05-04 00:33:02,427 - root - INFO - create new user ip is 119.123.69.170
+2023-05-04 00:33:02,445 - werkzeug - INFO - 119.123.69.170 - - [04/May/2023 00:33:02] "GET /api/create_user HTTP/1.1" 200 -
+2023-05-04 00:33:04,825 - werkzeug - INFO - 119.123.69.170 - - [04/May/2023 00:33:04] "GET /api/get_example_images?user_id=J8DWLMD4UF HTTP/1.1" 200 -

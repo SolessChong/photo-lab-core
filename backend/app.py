@@ -7,6 +7,7 @@ import string
 from celery import group, Celery, chain, chord
 import logging
 import argparse
+import ast
 
 from backend.extensions import  app, db
 from . import aliyun_face_detector
@@ -32,8 +33,15 @@ def create_user():
     # Generate a random user_id with 10 characters
     user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
 
+    if 'X-Forwarded-For' in request.headers:
+        user_ip = request.headers.getlist("X-Forwarded-For")[0].rpartition(' ')[-1]
+    else:
+        user_ip = request.remote_addr
+    user_agent = request.headers.get('User-Agent')
+    logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
+
     # Create a new user with the generated user_id
-    new_user = models.User(user_id=user_id)
+    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent)
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
@@ -44,7 +52,9 @@ def create_user():
         "code": 0,
         "msg": "create user successfully",
         "data": {
-            "user_id": user_id
+            "user_id": user_id,
+            "min_img_num": 10,
+            "max_img_num": 20
         }
     }
 
@@ -132,6 +142,40 @@ def upload_payment():
 
     return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
 
+@app.route('/api/get_example_2', methods=['GET'])
+def get_example_2():
+    examples = models.Example.query.all()
+
+    result = {
+        'before': [],
+        'after': [],
+        'bad': []
+    }
+
+    for example in examples:
+        img_height, img_width = utils.get_oss_image_size(example.img_key)
+
+        rs = {
+            'img_url': utils.get_signed_url(example.img_key),
+            'img_height': img_height,
+            'img_width': img_width,
+            'style': example.style,
+            'id': example.id
+        }
+        if example.type == 0:
+            result['before'].append(rs)
+        elif example.type == 1:
+            result['after'].append(rs)
+        elif example.type == 2:
+            result['bad'].append(rs)
+
+    response = {
+        'data': result,
+        'msg': '成功获取示例图片',
+        'code': 200
+    }
+    return jsonify(response)
+
 @app.route('/api/get_example_images', methods=['GET'])
 def get_example_images():
     scenes = models.Scene.query.filter(models.Scene.action_type == 'example', models.Scene.base_img_key != None).all()
@@ -157,11 +201,14 @@ def get_example_images():
     return jsonify(response)
 
 @app.route('/api/upload_source', methods=['POST'])
-def upload_source():
+def upload_source():        
     if 'img_file' not in request.files or 'user_id' not in request.form or 'person_name' not in request.form:
         return {"status": "error", "message": "Missing img_file, user_id or person_name"}, 400
     img_file = request.files['img_file']
     user_id = request.form['user_id']
+
+    logging.info(f'upload source request {user_id}')
+
     try: 
         png_img = utils.convert_to_png_bytes(img_file)
     except Exception as e:
@@ -213,6 +260,53 @@ def upload_source():
             "source_num": count
         }
     }
+    
+    logging.info(f'upload source success {user_id} {person_id} {person_name}')
+    return jsonify(response)
+
+@app.route('/api/upload_multiple_sources', methods = ['POST'])
+def upload_multiple_sources():
+    if 'img_oss_keys' not in request.form or 'user_id' not in request.form or 'person_name' not in request.form:
+        return {"status": "error", "message": "Missing img_oss_keys, user_id or person_name"}, 400
+    img_oss_keys = request.form.get('img_oss_keys', None)
+    user_id = request.form['user_id']
+    person_name = request.form['person_name']
+    source_type = request.form.get('type', None)
+    
+    logging.info(f'upload_multiple_sources request {user_id}')
+
+    # 查找 persons 表中是否存在相应的记录
+    person = models.Person.query.filter_by(user_id=user_id, name=person_name).first()
+    if not person:
+        # 如果不存在，创建一个新的 Person 对象并将其保存到数据库中
+        new_person = models.Person(name=person_name, user_id=user_id)
+        db.session.add(new_person)
+        db.session.commit()
+        person_id = new_person.id
+    else:
+        person_id = person.id
+
+    print(img_oss_keys, type(img_oss_keys))
+
+    for key in ast.literal_eval(img_oss_keys):
+        print(key)
+        data = utils.oss_source_get(key)
+        utils.oss_put(key, data)
+        source = models.Source(base_img_key=key, user_id=user_id, type=source_type, person_id=person_id)
+        db.session.add(source)
+    db.session.commit()
+
+    response = {
+        "msg": "上传人像图片成功", 
+        "code": 0, 
+        "data": {
+            "person_id": person_id,
+            "person_name": person_name,
+            "source_num": len(img_oss_keys)
+        }
+    }
+    
+    logging.info(f'upload source success {user_id} {person_id} {person_name}')
     return jsonify(response)
 
 @app.route('/api/start_sd_generate', methods=['POST'])
@@ -231,7 +325,7 @@ def start_sd_generate():
     person_id_list.sort()
     category = request.form['category']
     limit = request.form.get('limit', 50, type=int)
-
+    wati_status = 'wait'
     
     #TODO: use new method to choose which scene to render
     # 1. Get all scenes with the same category
@@ -239,13 +333,15 @@ def start_sd_generate():
         models.Scene.img_type==category, 
         models.Scene.action_type=='sd', 
         models.Scene.setup_status == 'finish'
-    ).order_by(models.Scene.rate.desc()).all()
+    ).order_by(models.Scene.rate.desc()).limit(500).all()
     
     # 2. Check for existing tasks and calculate new combinations
     new_combinations = []
     for scene in scenes:
         if not models.Task.query.filter_by(scene_id=scene.scene_id, person_id_list=person_id_list, user_id=user_id).first():
             new_combinations.append((scene.scene_id, person_id_list))
+        if (len(new_combinations) >= limit):
+            break
     new_combinations = new_combinations[:limit]
     m = len(new_combinations)
     logger.info(f'{user_id} has new_combinations: {new_combinations}')
@@ -256,7 +352,7 @@ def start_sd_generate():
         if not person:
             return {"status": "error", "message": f"person_id {person_id} not found"}, 400
         if person and person.lora_train_status is None:
-            person.lora_train_status = 'wait' # 等待woker_manager启动训练任务
+            person.lora_train_status = wati_status # 等待woker_manager启动训练任务
             db.session.commit()
             logger.info(f'{user_id} start to  train lora {person.id}')
 
@@ -268,7 +364,7 @@ def start_sd_generate():
             user_id=user_id,
             scene_id=scene_id,
             person_id_list=person_id_list,
-            status='wait',
+            status=wati_status,
             pack_id=pack.pack_id
         )
         db.session.add(task)
@@ -349,7 +445,7 @@ def get_generated_images():
     for image in images:
         create_new_pack(pack_dict, image.pack_id, image.img_url)
 
-    tasks = models.Task.query.filter(models.Task.user_id == user_id, models.Task.result_img_key != None).all()
+    tasks = models.Task.query.filter(models.Task.user_id == user_id, models.Task.result_img_key != None).limit(300).all()
     logging.info(f'adding tasks number: {len(tasks)}')
     for task in tasks:
         create_new_pack(pack_dict, task.pack_id, task.result_img_key)
@@ -421,3 +517,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     app.run(host='0.0.0.0', port=args.port)
+else:
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    logging.root.handlers = gunicorn_logger.handlers
+    logging.root.setLevel(gunicorn_logger.level)
+    logging.debug('logger setup.')
+
