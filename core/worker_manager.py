@@ -53,49 +53,66 @@ def render(Session):
     session = Session()
     session.begin()
 
-    # TODO: page size 
-    todo_task_id_list = []
-    try:
-        tasks = session.query(models.Task).filter(models.Task.status == 'wait').with_for_update().limit(20).all()
-        if len(tasks) > 0:
-            logger.info(f"======= Task: render task: waiting tasks number: {len(tasks)}, tasks: {tasks}")
-        for task in tasks:
-            flag = True
-            for person_id in task.person_id_list:
-                person = session.query(models.Person).filter(models.Person.id == person_id).first()
-                logger.info(f"    ---- Task: render task: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
-                if person.lora_train_status != 'finish':
-                    flag = False
-                    logger.info(f"    ---- 🙅‍♀️ Task: Not Ready: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
-                    task.status = 'fail'
-                    break
-            scene = models.Scene.query.get(task.scene_id)
-            if scene and scene.setup_status != 'finish':
-                flag = False
-                logger.info(f"    ---- 🙅‍♀️ Task: Not Ready: scene_id={task.scene_id}, scene={scene}, scene.setup_status={scene.setup_status}")
-                task.status = 'fail'
-            # Ready to render
-            if flag:
-                todo_task_id_list.append(task.id)
-                task.status = 'processing'
-    except Exception as e:
-        print(f"Error: {e}")
-    finally:
-        session.commit()
-        session.close()
+    # 查询并按照 id 降序排列，只返回第一个结果
+    max_task = session.query(models.Task).order_by(models.Task.id.desc()).first()
+    # 获取最大的 task id
+    max_task_id = max_task.id
+    
+    session.close()
 
-    for id in todo_task_id_list:
-        logger.info(f"     ------ Task: render task: task_id={id}")
+    logger.info(f"======= Start Task render iteration ==================")
+
+
+    # 开始全task表遍历，如果找到一个ready for render的task，就render
+    current_task_id = 0
+    step = 20
+    while current_task_id < max_task_id:
+        current_task_id += step
+
+        session = Session()
+        session.begin()
+        
+        # TODO: page size 
+        todo_task_id_list = []
         try:
-            worker.task_render_scene(id)
+            tasks = session.query(models.Task).filter(models.Task.status == 'wait' and models.Task.id >= current_task_id and models.Task.id < current_task_id+step).with_for_update().all()
+           
+            for task in tasks:
+                flag = True
+                for person_id in task.person_id_list:
+                    person = session.query(models.Person).filter(models.Person.id == person_id).first()
+                    logger.debug(f"    ---- Task: render task: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
+                    if person.lora_train_status != 'finish':
+                        flag = False
+                        logger.debug(f"    ---- 🙅‍♀️ Task: Not Ready: person_id={person_id}, person={person}, person.lora_train_status={person.lora_train_status}")
+                        break
+                scene = models.Scene.query.get(task.scene_id)
+                if (not scene) or (scene.setup_status != 'finish'):
+                    flag = False
+                    logger.debug(f"    ---- 🙅‍♀️ Task: Not Ready: scene_id={task.scene_id}, scene={scene}, scene.setup_status={scene.setup_status}")
+                # Ready to render
+                if flag:
+                    todo_task_id_list.append(task.id)
+                    task.status = 'processing'
         except Exception as e:
             print(f"Error: {e}")
-            session = Session()
-            session.begin()
-            task = models.Task.query.get(id)
-            task.status = 'fail'
-            a_c_c(task, db)
-            
+        finally:
+            session.commit()
+            session.close()
+
+        for id in todo_task_id_list:
+            logger.info(f"     ------ Task: render task: task_id={id}")
+            try:
+                worker.task_render_scene(id)
+            except Exception as e:
+                print(f"Error: {e}")
+                session = Session()
+                session.begin()
+                task = session.query(models.Task).filter(models.Task.id == id)
+                task.status = 'fail'
+                session.commit()
+                session.close()
+                
 
 def setup_scene(Session):
     session = Session()
