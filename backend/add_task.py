@@ -162,6 +162,7 @@ if __name__ == "__main__":
         collection_prefix = args.name
         logging.info(f'collection_name_prefix: {collection_prefix}')
         scene_list = Scene.query.filter(Scene.collection_name.startswith(collection_prefix.replace('\\', '\\\\'))).all()
+        logging.info(f'Found {len(scene_list)} scenes.')
         for person in args.person_list:
             render_person_on_scenes(person, scene_list)
     elif cmd == 'collection_name':
