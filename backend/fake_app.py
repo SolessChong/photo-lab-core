@@ -64,14 +64,21 @@ def index():
 def list_scenes():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 20, type=int)
+    collection_name_filter = request.args.get('collection_name_filter', '', type=str)
 
-    scenes_pagination = Scene.query.order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    # Filter scenes based on the collection_name_filter if it's not empty
+    if collection_name_filter:
+        scenes_pagination = Scene.query.filter(Scene.collection_name.contains(collection_name_filter)).order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    else:
+        scenes_pagination = Scene.query.order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+
     scenes = scenes_pagination.items
     total_pages = scenes_pagination.pages
 
     scene_list = [scene.to_dict() for scene in scenes]
 
     return jsonify({'scenes': scene_list, 'total_pages': total_pages})
+
 
 
 @app.route('/api/scene/<int:scene_id>/update_params', methods=['POST'])
@@ -263,7 +270,7 @@ def scene_stats():
 ### Person Tab
 @app.route('/list_persons', methods=['GET'])
 def list_persons():
-    persons = Person.query.order_by(Person.id.desc()).limit(20)
+    persons = Person.query.order_by(Person.id.desc()).limit(50)
     persons_data = [{'id': p.id, 'name': p.name} for p in persons]
     return jsonify(persons_data)
 

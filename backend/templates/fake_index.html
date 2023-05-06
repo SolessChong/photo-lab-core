@@ -133,6 +133,21 @@
         <div class="tab-pane fade" id="scene-edit" role="tabpanel" aria-labelledby="scene-edit-tab">
             <!-- Scene edit content -->
             <div class="container">
+                <div class="row mt-4">
+                    <div class="col">
+                        <label for="collection-name-filter">Filter by Collection Name:</label>
+                        <input type="text" id="collection-name-filter" placeholder="Enter collection name">
+                        <button class="btn btn-primary" onclick="applyFilter()">Apply Filter</button>
+                        <select id="collection-name-dropdown" onchange="selectFilterFromDropdown()">
+                            <option value="">Select a collection</option>
+                        </select>
+                    </div>
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        populateCollectionDropdown();
+                    });
+                </script>
                 <div id="scene-edit-data">
                     <!-- Add the scene edit HTML structure here -->
                 </div>
@@ -367,6 +382,35 @@
             return img;
         }
 
+        function populateCollectionDropdown() {
+            fetch('/get_collections')
+                .then(response => response.json())
+                .then(collections => {
+                    const dropdown = document.getElementById('collection-name-dropdown');
+                    collections.forEach(collection => {
+                        const option = document.createElement('option');
+                        option.value = collection;
+                        option.text = collection;
+                        dropdown.add(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching collections:', error));
+        }
+
+        function selectFilterFromDropdown() {
+            const dropdown = document.getElementById('collection-name-dropdown');
+            const collection_name_filter = dropdown.value;
+            document.getElementById('collection-name-filter').value = collection_name_filter;
+            applyFilter();
+        }
+        let currentCollectionFilter = '';
+
+        function applyFilter() {
+            const collection_name_filter = document.getElementById('collection-name-filter').value;
+            currentCollectionFilter = collection_name_filter;
+            loadSceneEditData(1, collection_name_filter);
+        }
+
         function updateSceneParams(scene_id) {
             const paramsTextarea = document.getElementById(`params-${scene_id}`);
             const updated_params = paramsTextarea.value;
@@ -417,9 +461,10 @@
 
         let currentScenePage = 1;
 
-        function loadSceneEditData() {
+        function loadSceneEditData(page, collection_name_filter='') {
             // Fetch the scenes
-            fetch(`/list_scenes?page=${currentScenePage}`)
+            const url = `/list_scenes?page=${page}&collection_name_filter=${encodeURIComponent(collection_name_filter)}`; 
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     const scenes = data.scenes;
@@ -500,7 +545,7 @@
 
         function loadMoreScenes() {
             currentScenePage += 1;
-            loadSceneEditData();
+            loadSceneEditData(currentPage, currentCollectionFilter);
         }
 
 
