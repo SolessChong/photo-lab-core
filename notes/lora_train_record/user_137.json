@@ -1,0 +1,90 @@
+{
+    "ss_sd_model_name": "chilloutmix_NiPrunedFp16Fix.safetensors",
+    "ss_resolution": "(512, 512)",
+    "ss_clip_skip": "None",
+    "ss_num_train_images": "2490",
+    "ss_tag_frequency": {
+        "166_girl_userxx girl": {
+            "girl_userxx girl": 15
+        },
+        "1_color_photo_of_a_woman_ddim": {
+            "color_photo_of_a_woman_ddim": 1500
+        }
+    },
+    "ss_batch_size_per_device": "36",
+    "ss_bucket_info": {
+        "buckets": {
+            "0": {
+                "resolution": [
+                    512,
+                    512
+                ],
+                "count": 4980
+            }
+        },
+        "mean_img_ar_error": 0.0
+    },
+    "ss_bucket_no_upscale": "True",
+    "ss_cache_latents": "False",
+    "ss_caption_dropout_every_n_epochs": "0",
+    "ss_caption_dropout_rate": "0.0",
+    "ss_caption_tag_dropout_rate": "0.0",
+    "ss_color_aug": "False",
+    "ss_dataset_dirs": {
+        "166_girl_userxx girl": {
+            "n_repeats": 166,
+            "img_count": 15
+        }
+    },
+    "ss_enable_bucket": "True",
+    "ss_epoch": "10",
+    "ss_face_crop_aug_range": "None",
+    "ss_flip_aug": "False",
+    "ss_full_fp16": "False",
+    "ss_gradient_accumulation_steps": "1",
+    "ss_gradient_checkpointing": "False",
+    "ss_keep_tokens": "0",
+    "ss_learning_rate": "0.001",
+    "ss_lowram": "False",
+    "ss_lr_scheduler": "cosine",
+    "ss_lr_warmup_steps": "100",
+    "ss_max_bucket_reso": "1024",
+    "ss_max_grad_norm": "1.0",
+    "ss_max_token_length": "None",
+    "ss_max_train_steps": "1390",
+    "ss_min_bucket_reso": "256",
+    "ss_min_snr_gamma": "None",
+    "ss_mixed_precision": "fp16",
+    "ss_network_alpha": "256.0",
+    "ss_network_dim": "256",
+    "ss_network_module": "networks.lora",
+    "ss_new_sd_model_hash": "59ffe2243a25c9fe137d590eb3c5c3d3273f1b4c86252da11bbdc9568773da0c",
+    "ss_noise_offset": "None",
+    "ss_num_batches_per_epoch": "139",
+    "ss_num_epochs": "10",
+    "ss_num_reg_images": "1500",
+    "ss_optimizer": "bitsandbytes.optim.adamw.AdamW8bit",
+    "ss_output_name": "137",
+    "ss_prior_loss_weight": "1.0",
+    "ss_random_crop": "True",
+    "ss_reg_dataset_dirs": {
+        "1_color_photo_of_a_woman_ddim": {
+            "n_repeats": 1,
+            "img_count": 1500
+        }
+    },
+    "ss_sd_model_hash": "44b31fce",
+    "ss_sd_scripts_commit_hash": "ddf67bb2ee49fa2f2f193aab2b2f2c2f7259d0b8",
+    "ss_seed": "4094196425",
+    "ss_session_id": "881565385",
+    "ss_shuffle_caption": "False",
+    "ss_text_encoder_lr": "5e-05",
+    "ss_total_batch_size": "36",
+    "ss_training_comment": "None",
+    "ss_training_finished_at": "1683267352.774449",
+    "ss_training_started_at": "1683264741.1526084",
+    "ss_unet_lr": "0.0001",
+    "ss_v2": "False",
+    "sshs_legacy_hash": "c32f1a3f",
+    "sshs_model_hash": "7d2251efa90c00dff2ab6c2b2e6dde63b5a9919acafdc91304fbef297630b8bf"
+}

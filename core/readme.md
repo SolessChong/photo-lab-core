@@ -25,6 +25,21 @@ e.g.
         },
     }
 
+    // head minimalist
+    {
+        "i2i_params": {
+            "sampler_name": "Euler a",
+            "denoising_strength": 0.7,
+            "steps": 30
+        },
+        "model": "chilloutmix_NiPrunedFp16Fix",
+        "lora_upscaler_params": {
+            "upscaler_1": "ESRGAN_4x",
+            "upscaler_2": "R-ESRGAN 4x+",
+            "extras_upscaler_2_visibility": 0.5
+        }
+    }
+
 ## Workflow: 
 
 1. Train lora:
@@ -83,3 +98,18 @@ chord(
 
 
 chord(celery_worker.task_train_lora.s(3, ['source/yi/2/d5010894d2fd8cbd3518e39c79c0a8df.png', 'source/yi/2/e5f14ff6cafafcf7e1760e4e81fad001.png', 'source/yi/2/68c136564e896d81c36d3f5e54cea386.png', 'source/yi/2/95b6a8ed4d9380f847cedd7a1adcd63d.png', 'source/yi/2/2f0dc8065b5887f59d957513956fd5cb.png', 'source/yi/2/faf7371bb8003b595913e041e3500c6d.png'], epoch=1), celery_worker.task_render_scene.si(18)).apply_async()
+
+
+# Training cases
+- 137 15p YML, 10 epoch * (2500+1500) -> 40k iter
+- 140 50p YML, 10 epoch * (2500+1500) -> 40k iter
+- 154 10p 代理, 20 epoch * (2500+1500) -> 80k iter
+- 153 15p YML, 20 epoch * (2500+1500) -> 80k iter
+- 185 8p 胖姐, 20 epoch * (2500+1500) -> 80k iter
+- 204 10p 小妹妹
+- 206 10p qian ge 
+- 263 10p 冯一妹妹 10 epoch * (2500+1500) -> 40k iter
+- 264 25p 网红2 10 epoch * (2500+1500) -> 40k iter
+- 265 25p 网红2 10 epoch * (2500+1500) -> 40k iter
+- 216 10p 韬哥妹妹 
+- 271 10p 韬哥妹妹 color, flip aug.
