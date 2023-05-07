@@ -1,0 +1,86 @@
+nohup: ignoring input
+/usr/lib/python3.10/runpy.py:126: RuntimeWarning: 'backend.discord_util' found in sys.modules after import of package 'backend', but prior to execution of 'backend.discord_util'; this may result in unpredictable behaviour
+  warn(RuntimeWarning(msg))
+INFO:root:start to send prompt to discord: http://photolab-test.oss-cn-shenzhen.aliyuncs.com/source%2Fmeizi%2F0%2F552b77aaad3d2e878d610163de058729.png?OSSAccessKeyId=LTAINBTpPolLKWoX&Expires=1682533688&Signature=fiNZ3zxFGa16HIkfd4CS9n3YtZI%3D https://s.mj.run/aJUe2BpW_-4 super cute girl IP , new art for Ink painting style, Youkai extermination youth, Sword, Holding amulet, Sanskrit characters, Written on Japanese paper in the style of Clay style, super cute girl IP, Genshin Impact, sandbox game style, ultra detailed, pastel color, blind box style, collectable toy, vivid color, BJD makeup, realistic PVC texture, fine luster, luminescence, chibi, whole body, head to body ratio 1:1, 3D render, oc render, 3d model, c4d, blender render, dreamy, fantasy, creativity, imagination, Crystal clear, good lighting, Transparent background, studio lighting, ultra detail, white background, best quality 8k,exquisite facial features, fine luster, clay materials, metallic texture, depth of field, ultra detoiled ,soft focus, bokeh, chiaroscuro 8K, best quality, Epic quality, intricately detailed, absolutely symmetrical composition, fine details, hyperdetailed, photographed on a Canon EOS R5, 28mm lens, F/2.8, sharp focus bokeh NFT art, Fluorescent color, Laser color, Combination of 2d and 3d, solid color background, cool acrylic background, intense backlight, cel shading, Tindal effect, Non-photorealistic rendering, Color Slant, animation, geometry art, epic, cinematic effect, neon cold lighting, masterpiece 32k, profound, futuristic, telephoto lens, natural light, playing the light and shadown, clay material, studio light, Ray tracing, virtual engine, product visual angle, high resolution, cinematic perspective, low angle of view clear glass texture, optical, holiness,fullface, unreal engine 5 clean detailed faces, analogous colors, anime, professional color grading, soft shadows, no contrast, clean sharp focus, pixiv illustrations, dynamic poses, gorgeous light and shadow, layered images with subtle satire, Cel-shading, Color Slant, Cinematic lighting, RAW, mother of pearl iridescence, holographic white --q 2 --s 750 --niji 5
+INFO:root:start to send prompt to discord: http://photolab-test.oss-cn-shenzhen.aliyuncs.com/source%2Fmeizi%2F0%2F552b77aaad3d2e878d610163de058729.png?OSSAccessKeyId=LTAINBTpPolLKWoX&Expires=1682672552&Signature=tyaph1cKYIOf7Rt2w0a26VfyL1E%3D handsome boy with glasses
+INFO:root:start to send prompt to discord: http://photolab-test.oss-cn-shenzhen.aliyuncs.com/source%2Fmeizi%2F0%2Fd95b7c8648e55e04ab015bf4b7628462.png?OSSAccessKeyId=LTAINBTpPolLKWoX&Expires=1682672563&Signature=mavXpx%2Foo%2FakMIekl4G5Q7%2BfblI%3D handsome boy with glasses
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/default.py", line 918, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/cursors.py", line 158, in execute
+    result = self._query(query)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/cursors.py", line 325, in _query
+    conn.query(q)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 549, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 779, in _read_query_result
+    result.read()
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 1157, in read
+    first_packet = self.connection._read_packet()
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 696, in _read_packet
+    packet_header = self._read_bytes(4)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 752, in _read_bytes
+    raise err.OperationalError(
+pymysql.err.OperationalError: (2013, 'Lost connection to MySQL server during query')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/root/photo-lab-core/backend/discord_util.py", line 92, in <module>
+    main()
+  File "/root/photo-lab-core/backend/discord_util.py", line 76, in main
+    processing_images = get_processing_images()
+  File "/root/photo-lab-core/backend/discord_util.py", line 57, in get_processing_images
+    return GeneratedImage.query.filter(GeneratedImage.status == 'processing').all()
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2688, in all
+    return self._iter().all()  # type: ignore
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2842, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/session.py", line 2231, in execute
+    return self._execute_internal(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/session.py", line 2126, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/context.py", line 292, in orm_execute_statement
+    result = conn.execute(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/base.py", line 1413, in execute
+    return meth(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/elements.py", line 483, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/base.py", line 1637, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/base.py", line 1841, in _execute_context
+    return self._exec_single_context(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/base.py", line 1982, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/base.py", line 2339, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/default.py", line 918, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/cursors.py", line 158, in execute
+    result = self._query(query)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/cursors.py", line 325, in _query
+    conn.query(q)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 549, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 779, in _read_query_result
+    result.read()
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 1157, in read
+    first_packet = self.connection._read_packet()
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 696, in _read_packet
+    packet_header = self._read_bytes(4)
+  File "/usr/local/lib/python3.10/dist-packages/pymysql/connections.py", line 752, in _read_bytes
+    raise err.OperationalError(
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2013, 'Lost connection to MySQL server during query')
+[SQL: SELECT generated_images.img_url AS generated_images_img_url, generated_images.id AS generated_images_id, generated_images.user_id AS generated_images_user_id, generated_images.pack_id AS generated_images_pack_id, generated_images.type AS generated_images_type, generated_images.prompt AS generated_images_prompt, generated_images.source_id AS generated_images_source_id, generated_images.scene_id AS generated_images_scene_id, generated_images.img_oss_key AS generated_images_img_oss_key, generated_images.status AS generated_images_status, generated_images.create_time AS generated_images_create_time 
+FROM generated_images 
+WHERE generated_images.status = %(status_1)s]
+[parameters: {'status_1': 'processing'}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
