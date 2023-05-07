@@ -8,10 +8,11 @@ from PIL import Image
 from typing import List
 from torchvision import transforms
 from torchvision.models import resnet50, vgg16
-from core.resource_manager import pil_to_cv2
-import torch
+from core.resource_manager import pil_to_cv2, read_PILimg
 from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances
+from backend import models
+from backend.extensions import db, app
 
 from insightface.app import FaceAnalysis
 from insightface.data import get_image as ins_get_image
@@ -21,56 +22,6 @@ from insightface.data import get_image as ins_get_image
 model = None
 face_analysis = None
 
-suggestions = {
-    "background_variety": {
-        "threshold": 0.6,
-        "suggestion": """\
-- Try to take photos in different backgrounds, such as:
-    - Parks
-    - Offices
-    - Restaurants
-    - Urban streets
-    - Home settings
-    - Nature settings
-- Take photos in various indoor and outdoor locations.
-- Vary the settings and environments for your photos.
-- Use different props or decorations to add variety to the background."""
-    },
-    "face_pose_variety": {
-        "threshold": 0.5,
-        "suggestion": """\
-- Try to take photos in different poses.
-- Tilt your head.
-- Look up or down.
-- Capture your face from various angles.
-- Experiment with different facial expressions."""
-    },
-    "jpeg_compression": {
-        "threshold": 0.3,
-        "suggestion": """\
-- Try to take photos and upload raw files, or use a higher quality image format like PNG or TIFF when possible.
-- Smartphone camera apps will often compress photos and apply filters, resulting in lower quality images. Use a dedicated camera app that allows for manual control over image quality settings.
-- Avoid using beautification filters or excessive image editing, as these can over-compress the image and degrade quality.
-- Transfer photos directly from your phone to a computer or cloud storage to avoid additional compression."""
-    },
-    "blurriness": {
-        "threshold": 0.5,
-        "suggestion": """\
-- Try to take photos in a well-lit environment.
-- Ensure sharp focus by using a camera with a good autofocus system.
-- Minimize shake or movement while taking the photo. Use a tripod if necessary.
-- Use a camera instead of a phone if possible, or avoid taking screenshots from videos, as they usually result in low-quality images.
-- Clean the camera lens to avoid blurry images."""
-    },
-    "lighting": {
-        "threshold": 0.3,
-        "suggestion": """\
-- Try to take photos in a well-lit environment.
-- Avoid direct sunlight or harsh shadows on the face.
-- Use natural light or soft artificial lighting.
-- Experiment with different light sources and angles to achieve balanced lighting."""
-    }
-}
 
 ######## Background variety ########
 ##
@@ -222,6 +173,25 @@ def analyze_image_quality(images: List[Image.Image]) -> dict:
     
     return quality_report, comment_string
 
+def analyze_person(person_id):
+    sources = models.Source.query.filter_by(person_id=person_id).all()
+    if len(sources) == 0:
+        print("===== Person {} =====".format(person_id))
+        print("No sources found.")
+        return
+    images = []
+    for source in sources:
+        images.append(read_PILimg(source.base_img_key))
+    quality_report, comment_string = analyze_image_quality(images)
+    print("===== Person {} =====".format(person_id))
+    print(quality_report)
+    print(comment_string)
+    person =  models.Person.query.get(person_id)
+    person.dataset_quality = quality_report
+    db.session.add(person)
+    db.session.commit()
+    
+
 if __name__ == "__main__":
     face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106', 'landmark_3d_68'])
     face_analysis.prepare(ctx_id=0, det_size=(640, 640))
@@ -229,13 +199,9 @@ if __name__ == "__main__":
     model = vgg16(pretrained=True)
     model.eval()
 
-    for dataset_name in [2, 3, 6, 127, 190, 255, 256, 271, 273]:
-        print(f"===== Dataset {dataset_name} =====")
-        dir_name = f"core/data/train_dataset/{dataset_name}/img_raw"
-        images = []  # List of PIL.Image objects
-        for fn in os.listdir(dir_name):
-            img = Image.open(os.path.join(dir_name, fn))
-            images.append(img)
-        quality_report, comment_string = analyze_image_quality(images)
-        print(quality_report)
-        print(comment_string)
+    app.app_context().push()
+
+    # iterate over all persons id desc
+    persons = models.Person.query.order_by(models.Person.id.desc()).all()
+    for person in persons:
+        analyze_person(person.id)
