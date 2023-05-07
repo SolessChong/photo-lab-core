@@ -50,6 +50,7 @@ class Person(db.Model):
     lora_train_status = db.Column(db.String(255), nullable=True)
     head_img_key = db.Column(db.String(255), nullable=True)
     train_note = db.Column(db.String(255), nullable=True)
+    dataset_quality = db.Column(db.JSON, nullable=True)
 
     def update_model_file(self, modek_file_key):
         self.model_file_key = modek_file_key
