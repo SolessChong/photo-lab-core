@@ -2,6 +2,7 @@ from core.face_mask import get_face_mask
 import os
 import cv2
 import numpy as np
+from scipy.stats import entropy
 from PIL import Image
 from typing import List
 from torchvision import transforms
@@ -69,13 +70,10 @@ def analyze_background_variety(images: List[Image.Image]) -> float:
     distances = pairwise_distances(feature_vectors.reshape(len(feature_vectors), -1))
     avg_pairwise_distance = np.mean(distances)
 
-    # Normalize the variety score between 0 and 1
-    variety_score = avg_pairwise_distance
-
-    print(f"Average pairwise distance: {avg_pairwise_distance}, variety score: {variety_score}")
+    print(f"Average pairwise distance: {avg_pairwise_distance}")
 
     # map avg_pairwise_distance from [130, 250] to [0, 1] linearly
-    avg_pairwise_distance = (avg_pairwise_distance - 130) / (250 - 130)
+    variety_score = (avg_pairwise_distance - 100) / (250 - 100)
 
     return variety_score
 
@@ -101,9 +99,9 @@ def analyze_face_pose_variety(images: List[Image.Image]) -> float:
 
     print(f"Average pairwise distance: {avg_pairwise_distance}")
 
-    # map avg_pairwise_distance from [4, 25] to [0, 1] linearly
-    avg_pairwise_distance = (avg_pairwise_distance - 4) / (25 - 4)
-    return avg_pairwise_distance
+    # map avg_pairwise_distance from [4, 30] to [0, 1] linearly
+    variety_score = (avg_pairwise_distance - 4) / (30 - 4)
+    return variety_score
 
 
 # Occlusion detection
@@ -114,19 +112,26 @@ def estimate_jpeg_compression(image: np.ndarray) -> float:
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     dct_coefficients = cv2.dct(np.float32(gray_image)/255.0)
     compression_level = np.mean(np.abs(dct_coefficients))
+    # map compression_level from [0.01, 0.05] to [0, 1] linearly
+    compression_level = (compression_level - 0.01) / (0.05 - 0.01)
     return compression_level
 
 def estimate_blurriness(image: np.ndarray) -> float:
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     laplacian_variance = cv2.Laplacian(gray_image, cv2.CV_64F).var()
+    # map laplacian_variance from [100, 700] to [0, 1] linearly
+    laplacian_variance = (laplacian_variance - 100) / (700 - 100)
     return laplacian_variance
 
 def estimate_lighting_conditions(image: np.ndarray) -> float:
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
     hist_norm = hist.ravel() / hist.sum()
-    variance = np.mean((np.arange(256) - np.mean(hist_norm)) ** 2)
-    return variance
+    lighting_entropy = entropy(hist_norm)
+    # map lighting_entropy from [3, 7] to [0, 1] linearly
+    lighting_entropy = (lighting_entropy - 3) / (7 - 3)
+    return lighting_entropy
+
 
 def analyze_image_quality(images: List[Image.Image]) -> dict:
     jpeg_compression_scores = []
@@ -168,4 +173,7 @@ if __name__ == "__main__":
         variety_score_background = analyze_background_variety(images)
         variety_score_face_pose = analyze_face_pose_variety(images)
         image_quality = analyze_image_quality(images)
-        print(f"-- Variety score (background): {variety_score_background}, variety score (face pose): {variety_score_face_pose}, image quality: {image_quality} \n")
+        print(f"""---------
+        -- Variety score (background): {variety_score_background}, 
+        -- Variety score (face pose): {variety_score_face_pose}, 
+        -- Image quality: {image_quality} \n""")
