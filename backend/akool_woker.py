@@ -8,13 +8,15 @@ import requests, time, logging, secrets
 # 调用akool_reface函数，将结果上传到oss，然后更新GeneratedImages中的img_url和status
 
 def work():
-    
+    logging.info('akool worker start')
     task = models.GeneratedImage.query.filter_by(status='wait', type='reface').first()
     if not task:
         logging.info('no task to process')
         return
     
     try:
+        logging.info('start to process task %d' % task.id)
+
         source = models.Source.query.filter_by(source_id=task.source_id).first()
         scene = models.Scene.query.filter_by(scene_id=task.scene_id).first()
 

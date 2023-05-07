@@ -13427,3 +13427,675 @@ AttributeError: 'NoneType' object has no attribute 'body'
 [2023-05-07 20:42:08 +0800] [13632] [INFO] Booting worker with pid: 13632
 [2023-05-07 20:42:08 +0800] [13637] [INFO] Booting worker with pid: 13637
 [2023-05-07 20:42:08 +0800] [13639] [INFO] Booting worker with pid: 13639
+[2023-05-07 20:48:25 +0800] [13625] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:26 +0800] [13632] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:26 +0800] [13629] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:26 +0800] [13627] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:26 +0800] [13637] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:27 +0800] [13623] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:28 +0800] [13625] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:28 +0800] [13639] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:30 +0800] [13627] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 234, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-07 20:48:30 +0800] [13622] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:31 +0800] [13629] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:31 +0800] [13637] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 234, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-07 20:48:31 +0800] [13629] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:31 +0800] [13632] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 234, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-07 20:48:31 +0800] [13637] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:31 +0800] [13623] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:31 +0800] [13639] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:31 +0800] [13629] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 234, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-07 20:48:32 +0800] [13629] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:32 +0800] [13639] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:32 +0800] [13615] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:32 +0800] [13623] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:33 +0800] [13622] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:33 +0800] [13622] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:34 +0800] [13639] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:35 +0800] [13639] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:35 +0800] [13622] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 234, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-07 20:48:35 +0800] [13623] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 234, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-07 20:48:35 +0800] [13623] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:35 +0800] [13622] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:35 +0800] [13637] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:35 +0800] [13629] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:35 +0800] [13629] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:35 +0800] [13637] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:36 +0800] [13623] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:36 +0800] [13622] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:36 +0800] [13622] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:36 +0800] [13623] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:37 +0800] [13615] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:37 +0800] [13615] [INFO] upload source request 1rMTFUNRCm
+[2023-05-07 20:48:38 +0800] [13639] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:39 +0800] [13622] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 234, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-07 20:48:39 +0800] [13637] [INFO] 1rMTFUNRCm上传失败，图片中有2人脸
+[2023-05-07 20:48:39 +0800] [13629] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:39 +0800] [13623] [ERROR] Exception on /api/upload_source [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/root/photo-lab-core/backend/app.py", line 234, in upload_source
+    face_count = aliyun_face_detector.detect_face(jpg_img)
+  File "/root/photo-lab-core/backend/aliyun_face_detector.py", line 44, in detect_face
+    return aliyun_face_detect(img).body.data.face_count
+AttributeError: 'NoneType' object has no attribute 'body'
+[2023-05-07 20:48:40 +0800] [13615] [INFO] upload source success 1rMTFUNRCm 293 1rMTFUNRCm_1683463603844
+[2023-05-07 20:48:51 +0800] [13632] [INFO] get_generated_images user_id: 1rMTFUNRCm
+[2023-05-07 20:48:52 +0800] [13632] [INFO] adding tasks number: 50
+[2023-05-07 20:52:08 +0800] [13609] [INFO] Handling signal: term
+[2023-05-07 20:52:08 +0800] [13612] [INFO] Worker exiting (pid: 13612)
+[2023-05-07 20:52:08 +0800] [13611] [INFO] Worker exiting (pid: 13611)
+[2023-05-07 20:52:08 +0800] [13613] [INFO] Worker exiting (pid: 13613)
+[2023-05-07 20:52:08 +0800] [13615] [INFO] Worker exiting (pid: 13615)
+[2023-05-07 20:52:08 +0800] [13614] [INFO] Worker exiting (pid: 13614)
+[2023-05-07 20:52:08 +0800] [13618] [INFO] Worker exiting (pid: 13618)
+[2023-05-07 20:52:08 +0800] [13617] [INFO] Worker exiting (pid: 13617)
+[2023-05-07 20:52:08 +0800] [13619] [INFO] Worker exiting (pid: 13619)
+[2023-05-07 20:52:08 +0800] [13620] [INFO] Worker exiting (pid: 13620)
+[2023-05-07 20:52:08 +0800] [13623] [INFO] Worker exiting (pid: 13623)
+[2023-05-07 20:52:08 +0800] [13627] [INFO] Worker exiting (pid: 13627)
+[2023-05-07 20:52:08 +0800] [13624] [INFO] Worker exiting (pid: 13624)
+[2023-05-07 20:52:08 +0800] [13629] [INFO] Worker exiting (pid: 13629)
+[2023-05-07 20:52:08 +0800] [13632] [INFO] Worker exiting (pid: 13632)
+[2023-05-07 20:52:08 +0800] [13637] [INFO] Worker exiting (pid: 13637)
+[2023-05-07 20:52:08 +0800] [13622] [INFO] Worker exiting (pid: 13622)
+[2023-05-07 20:52:08 +0800] [13616] [INFO] Worker exiting (pid: 13616)
+[2023-05-07 20:52:08 +0800] [13625] [INFO] Worker exiting (pid: 13625)
+[2023-05-07 20:52:08 +0800] [13621] [INFO] Worker exiting (pid: 13621)
+[2023-05-07 20:52:08 +0800] [13639] [INFO] Worker exiting (pid: 13639)
+[2023-05-07 20:52:11 +0800] [14567] [INFO] Starting gunicorn 20.1.0
+[2023-05-07 20:52:11 +0800] [13609] [INFO] Shutting down: Master
+[2023-05-07 20:52:20 +0800] [14608] [INFO] Starting gunicorn 20.1.0
+[2023-05-07 20:52:20 +0800] [14608] [INFO] Listening at: http://127.0.0.1:8000 (14608)
+[2023-05-07 20:52:20 +0800] [14608] [INFO] Using worker: sync
+[2023-05-07 20:52:20 +0800] [14610] [INFO] Booting worker with pid: 14610
+[2023-05-07 20:52:20 +0800] [14611] [INFO] Booting worker with pid: 14611
+[2023-05-07 20:52:20 +0800] [14612] [INFO] Booting worker with pid: 14612
+[2023-05-07 20:52:20 +0800] [14613] [INFO] Booting worker with pid: 14613
+[2023-05-07 20:52:20 +0800] [14614] [INFO] Booting worker with pid: 14614
+[2023-05-07 20:52:20 +0800] [14615] [INFO] Booting worker with pid: 14615
+[2023-05-07 20:52:20 +0800] [14616] [INFO] Booting worker with pid: 14616
+[2023-05-07 20:52:20 +0800] [14617] [INFO] Booting worker with pid: 14617
+[2023-05-07 20:52:20 +0800] [14618] [INFO] Booting worker with pid: 14618
+[2023-05-07 20:52:20 +0800] [14619] [INFO] Booting worker with pid: 14619
+[2023-05-07 20:52:20 +0800] [14620] [INFO] Booting worker with pid: 14620
+[2023-05-07 20:52:20 +0800] [14621] [INFO] Booting worker with pid: 14621
+[2023-05-07 20:52:20 +0800] [14623] [INFO] Booting worker with pid: 14623
+[2023-05-07 20:52:21 +0800] [14624] [INFO] Booting worker with pid: 14624
+[2023-05-07 20:52:21 +0800] [14625] [INFO] Booting worker with pid: 14625
+[2023-05-07 20:52:21 +0800] [14626] [INFO] Booting worker with pid: 14626
+[2023-05-07 20:52:21 +0800] [14627] [INFO] Booting worker with pid: 14627
+[2023-05-07 20:52:21 +0800] [14628] [INFO] Booting worker with pid: 14628
+[2023-05-07 20:52:21 +0800] [14629] [INFO] Booting worker with pid: 14629
+[2023-05-07 20:52:21 +0800] [14630] [INFO] Booting worker with pid: 14630
+[2023-05-07 20:54:55 +0800] [14626] [INFO] get_generated_images user_id: 1rMTFUNRCm
+[2023-05-07 20:54:55 +0800] [14626] [INFO] adding tasks number: 50
+[2023-05-07 20:55:12 +0800] [14614] [INFO] create new user ip is 218.18.130.133, ua is PicMagic/1.0.1 (iPhone; iOS 16.1.1; Scale/3.00)
+[2023-05-07 20:55:19 +0800] [14630] [INFO] get_generated_images user_id: AqOx23EvZ3
+[2023-05-07 20:55:19 +0800] [14630] [INFO] adding tasks number: 0
+[2023-05-07 20:55:22 +0800] [14626] [INFO] get_generated_images user_id: AqOx23EvZ3
+[2023-05-07 20:55:22 +0800] [14626] [INFO] adding tasks number: 0
+[2023-05-07 20:56:08 +0800] [14623] [INFO] create new user ip is 218.18.130.133, ua is PicMagic/1.0.2 (iPhone; iOS 16.1.1; Scale/3.00)
+[2023-05-07 20:57:10 +0800] [14627] [INFO] upload_multiple_sources request 1ytwnfIuI8
+[2023-05-07 20:57:12 +0800] [14627] [INFO] upload source success 1ytwnfIuI8 294 1ytwnfIuI8_1683464176643
+[2023-05-07 20:57:13 +0800] [14615] [INFO] start select other generate_task
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 448,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 475,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 450,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 459,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 446,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 496,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 503,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 457,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 403,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 428,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 471,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 463,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 420,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 526,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 472,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 464,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 405,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 401,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 525,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 461,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 469,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 497,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 505,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 419,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 457,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 411,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 408,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 390,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 540,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 509,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 430,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 455,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 400,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 423,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 403,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 547,  source_id: 2773
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 432,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 375,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 369,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 437,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 492,  source_id: 2774
+[2023-05-07 20:57:15 +0800] [14615] [INFO] start mj generete for scene id 468,  source_id: 2773
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start mj generete for scene id 387,  source_id: 2774
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start mj generete for scene id 388,  source_id: 2773
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start mj generete for scene id 521,  source_id: 2774
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start mj generete for scene id 402,  source_id: 2773
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start mj generete for scene id 360,  source_id: 2773
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start mj generete for scene id 456,  source_id: 2774
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start mj generete for scene id 367,  source_id: 2773
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start mj generete for scene id 376,  source_id: 2773
+[2023-05-07 20:57:16 +0800] [14615] [INFO] start select other generate_task
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1903,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 2003,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1441,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 3582,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1655,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 719,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 2892,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 983,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 770,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 2064,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1406,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1944,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 4623,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1000,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 3840,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 3537,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1356,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 3419,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1478,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 2002,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1298,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1963,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1606,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 4610,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 977,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 998,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 2187,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1754,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 2169,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 3434,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1951,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 1918,  source_id: 2774
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 2895,  source_id: 2773
+[2023-05-07 20:57:21 +0800] [14615] [INFO] start mj generete for scene id 870,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1750,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1925,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 2897,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1531,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1540,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1606,  source_id: 2773
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1876,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1243,  source_id: 2773
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 929,  source_id: 2773
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1323,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 2308,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 3073,  source_id: 2773
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1662,  source_id: 2773
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 2048,  source_id: 2773
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 3583,  source_id: 2774
+[2023-05-07 20:57:22 +0800] [14615] [INFO] start mj generete for scene id 1520,  source_id: 2773
+[2023-05-07 20:57:30 +0800] [14625] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:57:30 +0800] [14625] [INFO] adding tasks number: 0
+[2023-05-07 20:57:31 +0800] [14624] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:57:31 +0800] [14624] [INFO] adding tasks number: 0
+[2023-05-07 20:57:36 +0800] [14624] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:57:36 +0800] [14624] [INFO] adding tasks number: 0
+[2023-05-07 20:57:38 +0800] [14615] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:57:38 +0800] [14615] [INFO] adding tasks number: 0
+[2023-05-07 20:57:40 +0800] [14623] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:57:40 +0800] [14623] [INFO] adding tasks number: 0
+[2023-05-07 20:57:47 +0800] [14625] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:57:47 +0800] [14625] [INFO] adding tasks number: 0
+[2023-05-07 20:57:49 +0800] [14625] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:57:49 +0800] [14625] [INFO] adding tasks number: 0
+[2023-05-07 20:57:55 +0800] [14615] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:57:55 +0800] [14615] [INFO] adding tasks number: 0
+[2023-05-07 20:58:01 +0800] [14620] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:58:01 +0800] [14620] [INFO] adding tasks number: 0
+[2023-05-07 20:58:04 +0800] [14629] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:58:04 +0800] [14629] [INFO] adding tasks number: 0
+[2023-05-07 20:58:06 +0800] [14625] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:58:06 +0800] [14625] [INFO] adding tasks number: 0
+[2023-05-07 20:58:08 +0800] [14628] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:58:08 +0800] [14628] [INFO] adding tasks number: 0
+[2023-05-07 20:58:09 +0800] [14628] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:58:09 +0800] [14628] [INFO] adding tasks number: 0
+[2023-05-07 20:58:11 +0800] [14624] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:58:11 +0800] [14624] [INFO] adding tasks number: 0
+[2023-05-07 20:58:13 +0800] [14614] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:58:13 +0800] [14614] [INFO] adding tasks number: 0
+[2023-05-07 20:58:23 +0800] [14610] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 20:58:23 +0800] [14610] [INFO] adding tasks number: 0
+[2023-05-07 21:09:25 +0800] [14610] [INFO] create new user ip is 103.182.10.160, ua is PicMagic/1.0.1 (iPhone; iOS 16.4.1; Scale/3.00)
+[2023-05-07 21:10:38 +0800] [14627] [INFO] get_generated_images user_id: QE3BWQl7Yd
+[2023-05-07 21:10:38 +0800] [14627] [INFO] adding tasks number: 0
+[2023-05-07 21:10:54 +0800] [14624] [INFO] upload source request QE3BWQl7Yd
+[2023-05-07 21:10:56 +0800] [14624] [INFO] upload source success QE3BWQl7Yd 295 QE3BWQl7Yd_1683465040655
+[2023-05-07 21:10:57 +0800] [14626] [INFO] upload source request QE3BWQl7Yd
+[2023-05-07 21:10:59 +0800] [14626] [INFO] upload source success QE3BWQl7Yd 295 QE3BWQl7Yd_1683465040655
+[2023-05-07 21:11:00 +0800] [14625] [INFO] upload source request QE3BWQl7Yd
+[2023-05-07 21:11:02 +0800] [14625] [INFO] upload source success QE3BWQl7Yd 295 QE3BWQl7Yd_1683465040655
+[2023-05-07 21:11:02 +0800] [14626] [INFO] start select other generate_task
+[2023-05-07 21:11:05 +0800] [14626] [INFO] start mj generete for scene id 500,  source_id: 2777
+[2023-05-07 21:11:05 +0800] [14626] [INFO] start mj generete for scene id 475,  source_id: 2777
+[2023-05-07 21:11:05 +0800] [14626] [INFO] start mj generete for scene id 508,  source_id: 2775
+[2023-05-07 21:11:05 +0800] [14626] [INFO] start mj generete for scene id 528,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 494,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 458,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 502,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 375,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 444,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 533,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 359,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 364,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 444,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 403,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 493,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 435,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 440,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 424,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 394,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 495,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 415,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 410,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 456,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 525,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 484,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 501,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 454,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 441,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 425,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 382,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 498,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 7,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 375,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 499,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 474,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 545,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 491,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 412,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 400,  source_id: 2777
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 433,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 492,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 421,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 534,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 402,  source_id: 2776
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 540,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 487,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 498,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 440,  source_id: 2775
+[2023-05-07 21:11:06 +0800] [14626] [INFO] start mj generete for scene id 363,  source_id: 2775
+[2023-05-07 21:11:07 +0800] [14626] [INFO] start mj generete for scene id 466,  source_id: 2777
+[2023-05-07 21:11:07 +0800] [14626] [INFO] start select other generate_task
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 2563,  source_id: 2777
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 1150,  source_id: 2775
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 1900,  source_id: 2776
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 1521,  source_id: 2776
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 566,  source_id: 2776
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 1439,  source_id: 2777
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 897,  source_id: 2777
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 750,  source_id: 2775
+[2023-05-07 21:11:14 +0800] [14626] [INFO] start mj generete for scene id 1991,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 4620,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1944,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 4624,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1766,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 2184,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 4098,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 2307,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1796,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 658,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 2865,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1270,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 3551,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 2167,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 3537,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1002,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1338,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1376,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 769,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1000,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1598,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 3494,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1201,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1027,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1403,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 726,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1004,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 969,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 2002,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 3399,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1985,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 3573,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 3584,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 652,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 2130,  source_id: 2777
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1888,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1323,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 2891,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1041,  source_id: 2776
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1899,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 1478,  source_id: 2775
+[2023-05-07 21:11:15 +0800] [14626] [INFO] start mj generete for scene id 2161,  source_id: 2776
+[2023-05-07 21:11:23 +0800] [14613] [INFO] get_generated_images user_id: QE3BWQl7Yd
+[2023-05-07 21:11:23 +0800] [14613] [INFO] adding tasks number: 0
+[2023-05-07 21:12:01 +0800] [14621] [INFO] upload source request QE3BWQl7Yd
+[2023-05-07 21:12:06 +0800] [14621] [INFO] upload source success QE3BWQl7Yd 296 QE3BWQl7Yd_1683465095066
+[2023-05-07 21:12:10 +0800] [14625] [INFO] upload source request QE3BWQl7Yd
+[2023-05-07 21:12:15 +0800] [14625] [INFO] upload source success QE3BWQl7Yd 296 QE3BWQl7Yd_1683465095066
+[2023-05-07 21:12:16 +0800] [14616] [INFO] upload source request QE3BWQl7Yd
+[2023-05-07 21:12:22 +0800] [14616] [INFO] upload source success QE3BWQl7Yd 296 QE3BWQl7Yd_1683465095066
+[2023-05-07 21:12:22 +0800] [14613] [INFO] start select other generate_task
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 396,  source_id: 2779
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 538,  source_id: 2780
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 469,  source_id: 2778
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 411,  source_id: 2779
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 526,  source_id: 2779
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 427,  source_id: 2780
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 460,  source_id: 2778
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 403,  source_id: 2780
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 440,  source_id: 2779
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 440,  source_id: 2780
+[2023-05-07 21:12:25 +0800] [14613] [INFO] start mj generete for scene id 434,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 533,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 507,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 514,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 471,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 432,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 457,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 454,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 491,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 435,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 512,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 510,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 521,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 541,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 444,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 435,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 497,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 428,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 458,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 500,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 369,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 484,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 373,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 397,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 398,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 472,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 442,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 513,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 372,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 377,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 488,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 421,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 506,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 451,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 456,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 542,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 470,  source_id: 2779
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 438,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 404,  source_id: 2778
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start mj generete for scene id 523,  source_id: 2780
+[2023-05-07 21:12:26 +0800] [14613] [INFO] start select other generate_task
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1939,  source_id: 2780
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 3561,  source_id: 2780
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1659,  source_id: 2780
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 3596,  source_id: 2780
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 3415,  source_id: 2778
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1945,  source_id: 2779
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1283,  source_id: 2780
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1793,  source_id: 2778
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1769,  source_id: 2778
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1477,  source_id: 2778
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1744,  source_id: 2779
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1510,  source_id: 2778
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 726,  source_id: 2780
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1895,  source_id: 2779
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 3579,  source_id: 2779
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1374,  source_id: 2779
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1763,  source_id: 2778
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 1398,  source_id: 2778
+[2023-05-07 21:12:34 +0800] [14613] [INFO] start mj generete for scene id 773,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1538,  source_id: 2778
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1766,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 922,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1585,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1790,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 2075,  source_id: 2778
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 3496,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 3540,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1920,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 3330,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 2564,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1543,  source_id: 2778
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1517,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1510,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 2059,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1992,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 4567,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 2000,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 3841,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 560,  source_id: 2778
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 3558,  source_id: 2778
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 2304,  source_id: 2778
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1626,  source_id: 2778
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1999,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 649,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1839,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 922,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 3561,  source_id: 2778
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1555,  source_id: 2780
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 1881,  source_id: 2779
+[2023-05-07 21:12:35 +0800] [14613] [INFO] start mj generete for scene id 2184,  source_id: 2780
+[2023-05-07 21:14:18 +0800] [14625] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 21:14:18 +0800] [14625] [INFO] adding tasks number: 0
+[2023-05-07 21:14:19 +0800] [14630] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 21:14:19 +0800] [14630] [INFO] adding tasks number: 0
+[2023-05-07 21:14:21 +0800] [14626] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 21:14:21 +0800] [14626] [INFO] adding tasks number: 0
+[2023-05-07 21:14:22 +0800] [14623] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 21:14:22 +0800] [14623] [INFO] adding tasks number: 0
+[2023-05-07 21:16:35 +0800] [14608] [INFO] Handling signal: term
+[2023-05-07 21:16:35 +0800] [14613] [INFO] Worker exiting (pid: 14613)
+[2023-05-07 21:16:35 +0800] [14612] [INFO] Worker exiting (pid: 14612)
+[2023-05-07 21:16:35 +0800] [14614] [INFO] Worker exiting (pid: 14614)
+[2023-05-07 21:16:35 +0800] [14615] [INFO] Worker exiting (pid: 14615)
+[2023-05-07 21:16:35 +0800] [14616] [INFO] Worker exiting (pid: 14616)
+[2023-05-07 21:16:35 +0800] [14617] [INFO] Worker exiting (pid: 14617)
+[2023-05-07 21:16:35 +0800] [14618] [INFO] Worker exiting (pid: 14618)
+[2023-05-07 21:16:35 +0800] [14621] [INFO] Worker exiting (pid: 14621)
+[2023-05-07 21:16:35 +0800] [14619] [INFO] Worker exiting (pid: 14619)
+[2023-05-07 21:16:35 +0800] [14623] [INFO] Worker exiting (pid: 14623)
+[2023-05-07 21:16:35 +0800] [14624] [INFO] Worker exiting (pid: 14624)
+[2023-05-07 21:16:35 +0800] [14628] [INFO] Worker exiting (pid: 14628)
+[2023-05-07 21:16:35 +0800] [14625] [INFO] Worker exiting (pid: 14625)
+[2023-05-07 21:16:35 +0800] [14626] [INFO] Worker exiting (pid: 14626)
+[2023-05-07 21:16:35 +0800] [14627] [INFO] Worker exiting (pid: 14627)
+[2023-05-07 21:16:35 +0800] [14620] [INFO] Worker exiting (pid: 14620)
+[2023-05-07 21:16:35 +0800] [14611] [INFO] Worker exiting (pid: 14611)
+[2023-05-07 21:16:35 +0800] [14630] [INFO] Worker exiting (pid: 14630)
+[2023-05-07 21:16:35 +0800] [14629] [INFO] Worker exiting (pid: 14629)
+[2023-05-07 21:16:35 +0800] [14610] [INFO] Worker exiting (pid: 14610)
+[2023-05-07 21:16:38 +0800] [14608] [INFO] Shutting down: Master
+[2023-05-07 21:16:38 +0800] [15799] [INFO] Starting gunicorn 20.1.0
+[2023-05-07 21:16:38 +0800] [15799] [INFO] Listening at: http://127.0.0.1:8000 (15799)
+[2023-05-07 21:16:38 +0800] [15799] [INFO] Using worker: sync
+[2023-05-07 21:16:38 +0800] [15800] [INFO] Booting worker with pid: 15800
+[2023-05-07 21:16:39 +0800] [15801] [INFO] Booting worker with pid: 15801
+[2023-05-07 21:16:39 +0800] [15802] [INFO] Booting worker with pid: 15802
+[2023-05-07 21:16:39 +0800] [15803] [INFO] Booting worker with pid: 15803
+[2023-05-07 21:16:39 +0800] [15804] [INFO] Booting worker with pid: 15804
+[2023-05-07 21:16:39 +0800] [15805] [INFO] Booting worker with pid: 15805
+[2023-05-07 21:16:39 +0800] [15806] [INFO] Booting worker with pid: 15806
+[2023-05-07 21:16:39 +0800] [15807] [INFO] Booting worker with pid: 15807
+[2023-05-07 21:16:39 +0800] [15808] [INFO] Booting worker with pid: 15808
+[2023-05-07 21:16:39 +0800] [15809] [INFO] Booting worker with pid: 15809
+[2023-05-07 21:16:39 +0800] [15810] [INFO] Booting worker with pid: 15810
+[2023-05-07 21:16:39 +0800] [15811] [INFO] Booting worker with pid: 15811
+[2023-05-07 21:16:39 +0800] [15812] [INFO] Booting worker with pid: 15812
+[2023-05-07 21:16:39 +0800] [15813] [INFO] Booting worker with pid: 15813
+[2023-05-07 21:16:39 +0800] [15814] [INFO] Booting worker with pid: 15814
+[2023-05-07 21:16:39 +0800] [15815] [INFO] Booting worker with pid: 15815
+[2023-05-07 21:16:39 +0800] [15816] [INFO] Booting worker with pid: 15816
+[2023-05-07 21:16:39 +0800] [15817] [INFO] Booting worker with pid: 15817
+[2023-05-07 21:16:39 +0800] [15818] [INFO] Booting worker with pid: 15818
+[2023-05-07 21:16:39 +0800] [15819] [INFO] Booting worker with pid: 15819
+[2023-05-07 21:17:02 +0800] [15814] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 21:17:02 +0800] [15814] [INFO] adding tasks number: 0
+[2023-05-07 21:19:26 +0800] [15818] [INFO] get_generated_images user_id: 1ytwnfIuI8
+[2023-05-07 21:19:27 +0800] [15818] [INFO] adding tasks number: 0
+[2023-05-07 21:19:29 +0800] [15818] [INFO] get_generated_images user_id: vfbkJD4woH
+[2023-05-07 21:19:29 +0800] [15818] [INFO] adding tasks number: 0
+[2023-05-07 21:23:05 +0800] [15815] [INFO] get_generated_images user_id: eDSn9z3Vvr
+[2023-05-07 21:23:05 +0800] [15815] [INFO] adding tasks number: 49
+[2023-05-07 21:29:43 +0800] [15816] [INFO] get_generated_images user_id: Vy4VbkVkOJ
+[2023-05-07 21:29:43 +0800] [15816] [INFO] adding tasks number: 135
+[2023-05-07 21:58:11 +0800] [15811] [INFO] create new user ip is 111.119.187.45, ua is PicMagic/1.0.1 (iPhone; iOS 16.4.1; Scale/3.00)
+[2023-05-07 21:59:52 +0800] [15807] [INFO] upload source request UHJ886GWHi
+[2023-05-07 21:59:53 +0800] [15807] [INFO] upload source success UHJ886GWHi 297 UHJ886GWHi_1683467910302
+[2023-05-07 22:00:18 +0800] [15800] [INFO] upload source request UHJ886GWHi
+[2023-05-07 22:00:19 +0800] [15800] [INFO] UHJ886GWHi上传失败，图片中有3人脸
+[2023-05-07 22:00:34 +0800] [15801] [INFO] upload source request UHJ886GWHi
+[2023-05-07 22:00:35 +0800] [15801] [INFO] upload source success UHJ886GWHi 297 UHJ886GWHi_1683467910302
+[2023-05-07 22:00:52 +0800] [15809] [INFO] upload source request UHJ886GWHi
+[2023-05-07 22:00:54 +0800] [15809] [INFO] upload source success UHJ886GWHi 297 UHJ886GWHi_1683467910302
+[2023-05-07 22:00:54 +0800] [15809] [INFO] start select other generate_task
+[2023-05-07 22:01:06 +0800] [15800] [INFO] get_generated_images user_id: UHJ886GWHi
+[2023-05-07 22:01:07 +0800] [15800] [INFO] adding tasks number: 0
+[2023-05-07 22:04:26 +0800] [15804] [INFO] get_generated_images user_id: UHJ886GWHi
+[2023-05-07 22:04:26 +0800] [15804] [INFO] adding tasks number: 0
+[2023-05-07 22:04:41 +0800] [15805] [INFO] get_generated_images user_id: UHJ886GWHi
+[2023-05-07 22:04:41 +0800] [15805] [INFO] adding tasks number: 0
+[2023-05-07 22:04:48 +0800] [15806] [INFO] get_generated_images user_id: UHJ886GWHi
+[2023-05-07 22:04:48 +0800] [15806] [INFO] adding tasks number: 0
+[2023-05-07 22:04:59 +0800] [15804] [INFO] get_generated_images user_id: UHJ886GWHi
+[2023-05-07 22:04:59 +0800] [15804] [INFO] adding tasks number: 0
+[2023-05-07 22:05:00 +0800] [15817] [INFO] get_generated_images user_id: UHJ886GWHi
+[2023-05-07 22:05:00 +0800] [15817] [INFO] adding tasks number: 0

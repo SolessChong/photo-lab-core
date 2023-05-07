@@ -83,6 +83,7 @@ class Pack(db.Model):
     price = db.Column(db.Integer, nullable=True)
     is_unlock = db.Column(db.Integer, nullable=True, default=0, comment='0代表上锁，1代表已经付费解锁')
     banner_img_key = db.Column(db.String(2000), nullable=True)
+    total_seconds = db.Column(db.Integer, nullable=True)
 
 
 class Scene(db.Model):

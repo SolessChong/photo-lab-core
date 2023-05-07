@@ -296,9 +296,7 @@ def upload_multiple_sources():
 
     success_count = 0
     keys = json.loads(img_oss_keys)
-    print(keys, type(keys))
     for key in keys:
-        print(key)
         data = utils.oss_source_get(key)
         if aliyun_face_detector.one_face(data):
             utils.oss_put(key, data)
@@ -347,10 +345,13 @@ def start_sd_generate():
     # --------------------------- SD 生成任务 ------------------------------------
     if (models.User.query.filter_by(user_id=user_id).first().group == 1):
         m += selector_sd.generate_sd_task(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, limit=limit, wait_status=wait_status)
+        pack.total_seconds = 3*60*60
 
     # --------------------------- 以下是启动mj的任务 ------------------------------
     if (models.User.query.filter_by(user_id=user_id).first().group == 2):
-        m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='mj', limit=limit, wait_status=wait_status)
+        limit = 10
+        pack.total_seconds = 3*60
+        # m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='mj', limit=limit, wait_status=wait_status)
 
         m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='reface', limit=limit, wait_status=wait_status)
 
@@ -359,7 +360,7 @@ def start_sd_generate():
         'code': 0, 
         'msg': f'启动{m}张照片的AI拍摄任务',
         'data': {
-            "total_time_seconds":3600,
+            "total_time_seconds": pack.total_seconds,
             "total_img_num": m,
             "des": f"AI拍摄完成后，您将获得{m}张照片"
         }
@@ -394,8 +395,8 @@ def create_new_pack(pack_dict, pack_id, img_key):
             "total_img_num": pack.total_img_num,
             "is_unlock": pack.is_unlock,
             "imgs": [],
-            "finish_seconds_left": 60*60 - int((datetime.utcnow() - pack.start_time).total_seconds()),
-            'total_seconds': 60*60,
+            "finish_seconds_left": pack.total_seconds - int((datetime.utcnow() - pack.start_time).total_seconds()),
+            'total_seconds': pack.total_seconds ,
             # 'banner_img_url': utils.get_signed_url('static/test1.png'),
             'banner_img_url': None,
             'heights': [],
@@ -425,9 +426,9 @@ def get_generated_images():
 
     logging.info(f'get_generated_images user_id: {user_id}')
     pack_dict = {}
-    images = models.GeneratedImage.query.filter(models.GeneratedImage.user_id == user_id, models.GeneratedImage.img_url != None).all()
+    images = models.GeneratedImage.query.filter(models.GeneratedImage.user_id == user_id, models.GeneratedImage.img_oss_key != None).all()
     for image in images:
-        create_new_pack(pack_dict, image.pack_id, image.img_url)
+        create_new_pack(pack_dict, image.pack_id, image.img_oss_key)
 
     tasks = models.Task.query.filter(models.Task.user_id == user_id, models.Task.result_img_key != None).limit(300).all()
     logging.info(f'adding tasks number: {len(tasks)}')
