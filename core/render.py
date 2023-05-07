@@ -22,10 +22,13 @@ from core.libs.openpose.util import draw_bodypose
 from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg
 
 # create API client with custom host, port
-options = {}
-options['sd_model_checkpoint'] = 'chilloutmix_NiPrunedFp16Fix.safetensors [59ffe2243a]'
-api = webuiapi.WebUIApi(host='127.0.0.1', port=7890)
-api.set_options(options)
+
+api = None
+def get_api_instance():
+    global api
+    if api is None:
+        api = webuiapi.WebUIApi(host='127.0.0.1', port=7890)
+    return api
 
 body_estimate = Body()
 
@@ -80,7 +83,7 @@ def render_lora_on_prompt(task) -> Image:
     logging.info(f"prompt_with_lora: {prompt_with_lora}, t2i_args: {t2i_args}")
 
     interpret_params(t2i_args)
-    rst = api.txt2img(
+    rst = get_api_instance().txt2img(
         prompt=prompt_with_lora,
         **t2i_args
     ).images[0]
@@ -117,7 +120,7 @@ def render_lora_on_base_img(task) -> Image:
         i2i_params.update(scene.params.get("i2i_params"))
 
     options['sd_model_checkpoint'] = scene.params.get('model')
-    api.set_options(options)
+    get_api_instance().set_options(options)
     logging.info(f"    ---- 🔄 Switching to model: {options['sd_model_checkpoint']}")
 
     scene_id = task.scene_id
@@ -187,7 +190,7 @@ def render_lora_on_base_img(task) -> Image:
         # log params
         logging.info(f"prompt_with_lora: {prompt_with_lora}, i2i_args: {i2i_params}")
 
-        char_lora_img = api.img2img(
+        char_lora_img = get_api_instance().img2img(
             prompt=prompt_with_lora, 
             images=[char_base_img],
             controlnet_units=char_controlnet_units,
@@ -201,7 +204,7 @@ def render_lora_on_base_img(task) -> Image:
         if bb[2] < char_lora_img.width:
             char_lora_img_enlarge = char_lora_img.resize((bb[2], bb[3]))      
         else:
-            char_lora_img_enlarge = api.extra_single_image(
+            char_lora_img_enlarge = get_api_instance().extra_single_image(
                 char_lora_img,
                 resize_mode=1,
                 upscaling_resize_w=bb[2],

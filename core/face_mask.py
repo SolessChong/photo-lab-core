@@ -3,18 +3,25 @@ import numpy as np
 from PIL import Image
 from typing import List
 import os
+from core.resource_manager import cv2_to_pil
 from insightface.app import FaceAnalysis
 from insightface.data import get_image as ins_get_image
 
-face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106'])
-face_analysis.prepare(ctx_id=0, det_size=(640, 640))
+face_analysis = None
+
+def get_face_analysis_instance() -> FaceAnalysis:
+    global face_analysis_instance
+    if face_analysis_instance is None:
+        face_analysis_instance = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106'])
+        face_analysis_instance.prepare(ctx_id=0, det_size=(640, 640))
+    return face_analysis_instance
 
 # return array of PIL.Image
 def get_face_mask(image: Image.Image, expand_face=0.6) -> List[Image.Image]:
     image = np.array(image)
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     # Detect the face(s) in the image
-    faces = face_analysis.get(image)
+    faces = get_face_analysis_instance().get(image)
 
     # Loop through each detected face
     mask_list = []
@@ -51,66 +58,24 @@ def get_face_mask(image: Image.Image, expand_face=0.6) -> List[Image.Image]:
 
     return mask_list
 
+def crop_face_img(image: Image, enlarge=0.3) -> List[Image.Image]:
+    image = np.array(image)
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    # Detect the face(s) in the image
+    faces = get_face_analysis_instance().get(image)
+    face_imgs = []
+    for face in faces:
+        # enlarge the bounding box by enlarge
+        r = int((face.bbox[2] - face.bbox[0]) * enlarge / 2)
+        b = face.bbox
+        b[0] = max(0, b[0] - r)
+        b[1] = max(0, b[1] - r)
+        b[2] = min(image.shape[1], b[2] + r)
+        b[3] = min(image.shape[0], b[3] + r)
 
-def crop_face_img(image: Image.Image, enlarge=1.2) -> Image.Image:
-    # Read the input image
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # crop the face
+        face_img = image[int(b[1]):int(b[3]), int(b[0]):int(b[2])]
 
-    # get current path
-    script_path = os.path.dirname(os.path.abspath(__file__))
-    # join path to haarcascade.xml
-    xml_path = os.path.join(script_path, 'haarcascade.xml')
-
-    # Load the Haar Cascade Classifier
-    face_cascade = cv2.CascadeClassifier(xml_path)
-
-    # Detect faces in the image
-    faces = face_cascade.detectMultiScale(
-        gray_image,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(30, 30),
-        flags=cv2.CASCADE_SCALE_IMAGE
-    )
-
-    subj_img = image
-
-    # Check if a face was detected
-    # TODO: handle multiple face situation
-    if len(faces) > 0:
-        x, y, w, h = faces[0]  # Use the first detected face
-
-        # Make the bounding box square
-        if w > h:
-            y -= (w - h) // 2
-            h = w
-        elif h > w:
-            x -= (h - w) // 2
-            w = h
-
-        # Enlarge the bounding box by the specified scale
-        scale = enlarge
-        w_enlarged, h_enlarged = int(w * scale), int(h * scale)
-        x_center, y_center = x + w // 2, y + h // 2
-        x, y = x_center - w_enlarged // 2, y_center - int(h / 2 * (1 + (enlarge - 1) * 0.3))
-        
-        w, h = w_enlarged, h_enlarged
-
-        # Calculate the required padding for each side
-        height, width = image.shape[:2]
-        left_pad = max(-x, 0)
-        right_pad = max(x + w - width, 0)
-        top_pad = max(-y, 0)
-        bottom_pad = max(y + h - height, 0)
-
-        # Pad the image using the calculated padding values
-        image_padded = cv2.copyMakeBorder(image, top_pad, bottom_pad, left_pad, right_pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-
-        # Update the bounding box coordinates
-        x = x + left_pad
-        y = y + top_pad
-
-        # Crop the face and resize it to the desired size
-        subj_img = image_padded[y:y + h, x:x + w]
-
-    return subj_img
+        face_imgs.append(cv2_to_pil(face_img))
+    return face_imgs
+    
