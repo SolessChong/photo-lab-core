@@ -42,7 +42,7 @@ def aug_img(fn: str):
         # Rotate the image to make the head horizontally straight
         angles =  [-0.5, 0.5, 0.75, 1, 1.25, 1.5, 1.8, 2.5]
         for r in range(len(angles)):
-            rotated_image = image.rotate(roll * angles[r], resample=Image.LANCZOS, expand=True)
+            rotated_image = image.rotate(roll * angles[r], resample=Image.BICUBIC, expand=True)
 
             # Save the augmented image
             file_name, file_ext = os.path.splitext(fn)
