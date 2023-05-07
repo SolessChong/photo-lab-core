@@ -113,10 +113,10 @@ def LEGACY():
     db.session.add(task)
     db.session.commit()
 
-def render_person_on_scenes(person_id, scene_list):
+def render_person_on_scenes(person_id, scene_list, pack_id=None):
     task_list = []
     for scene in scene_list:
-        task = Task(scene_id=scene.scene_id, person_id_list = [person_id], status="wait")
+        task = Task(scene_id=scene.scene_id, person_id_list = [person_id], status="wait", pack_id=pack_id)
         db.session.add(task)
         task_list.append(task)
     db.session.commit()
@@ -140,6 +140,7 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--person_list', type=int, nargs='+', required=True, help='Person id list.')
     parser.add_argument('--rate', type=int, default=1)
     parser.add_argument('--scene', type=int, nargs='+', help='Scene id list.')
+    parser.add_argument('--pack_id', type=int, default=None)
 
     args = parser.parse_args()
     logging.info(f'args: {args}')
@@ -164,24 +165,24 @@ if __name__ == "__main__":
         scene_list = Scene.query.filter(Scene.collection_name.startswith(collection_prefix.replace('\\', '\\\\'))).all()
         logging.info(f'Found {len(scene_list)} scenes.')
         for person in args.person_list:
-            render_person_on_scenes(person, scene_list)
+            render_person_on_scenes(person, scene_list, args.pack_id)
     elif cmd == 'collection_name':
         collection_name = args.name
         logging.info(f'collection_name: {collection_name}')
         scene_list = Scene.query.filter(Scene.collection_name==collection_name).all()
         logging.info(f'Found {len(scene_list)} scenes.')
         for person in args.person_list:
-            render_person_on_scenes(person, scene_list)
+            render_person_on_scenes(person, scene_list, args.pack_id)
     elif cmd == 'rate':
         scene_list = Scene.query.filter(Scene.rate >= args.rate).filter(Scene.scene_id > 500).all()
         logging.info(f'Found {len(scene_list)} scenes.')
         for person in args.person_list:
-            render_person_on_scenes(person, scene_list)
+            render_person_on_scenes(person, scene_list, args.pack_id)
     elif cmd == 'scene':
         scene_list = Scene.query.filter(Scene.scene_id.in_(args.scene)).all()
         logging.info(f'Found {len(scene_list)} scenes.')
         for person in args.person_list:
-            render_person_on_scenes(person, scene_list)
+            render_person_on_scenes(person, scene_list, args.pack_id)
 
 
     # ### Collection name X user -> task
