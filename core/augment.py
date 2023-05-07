@@ -22,11 +22,11 @@ from insightface.data import get_image as ins_get_image
 # Global variables
 face_analysis = None
 def get_face_analysis_instance() -> FaceAnalysis:
-    global face_analysis_instance
-    if face_analysis_instance is None:
-        face_analysis_instance = FaceAnalysis(allowed_modules=['detection', 'landmark_3d_68'])
-        face_analysis_instance.prepare(ctx_id=0, det_size=(640, 640))
-    return face_analysis_instance
+    global face_analysis
+    if face_analysis is None:
+        face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_3d_68'])
+        face_analysis.prepare(ctx_id=0, det_size=(640, 640))
+    return face_analysis
 
 # Augment image
 def aug_img(fn: str):
@@ -36,10 +36,11 @@ def aug_img(fn: str):
 
     if len(rst) > 0:
         pose = rst[0].pose
-        roll = pose.roll
+        #pitch, yaw, roll
+        roll = pose[2]
 
         # Rotate the image to make the head horizontally straight
-        rotated_image = image.rotate(-roll, resample=Image.BICUBIC, expand=True)
+        rotated_image = image.rotate(roll, resample=Image.BICUBIC, expand=True)
 
         # Save the augmented image
         file_name, file_ext = os.path.splitext(fn)
@@ -54,9 +55,15 @@ def aug_img(fn: str):
         print(f"No face detected in the image: {fn}")
 
 def aug_folder(folder: str):
+    total = 0
     for fn in os.listdir(folder):
         if fn.endswith(".jpg") or fn.endswith(".png"):
-            aug_img(os.path.join(folder, fn))
+            try:
+                aug_img(os.path.join(folder, fn))
+                total += 3
+            except Exception as e:
+                logging.exception(f"Error augmenting image: {fn}")
+    return total
 
 if __name__ == "__main__":
     # Parse arguments

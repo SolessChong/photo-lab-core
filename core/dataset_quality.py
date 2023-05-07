@@ -207,6 +207,11 @@ def analyze_person(person_id):
     db.session.add(person)
     db.session.commit()
     
+def is_qualified(quality_report, suggestions):
+    for key, value in quality_report.items():
+        if key in suggestions and value < suggestions[key]["threshold"]:
+            return False
+    return True
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

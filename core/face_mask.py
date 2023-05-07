@@ -10,11 +10,11 @@ from insightface.data import get_image as ins_get_image
 face_analysis = None
 
 def get_face_analysis_instance() -> FaceAnalysis:
-    global face_analysis_instance
-    if face_analysis_instance is None:
-        face_analysis_instance = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106'])
-        face_analysis_instance.prepare(ctx_id=0, det_size=(640, 640))
-    return face_analysis_instance
+    global face_analysis
+    if face_analysis is None:
+        face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106'])
+        face_analysis.prepare(ctx_id=0, det_size=(640, 640))
+    return face_analysis
 
 # return array of PIL.Image
 def get_face_mask(image: Image.Image, expand_face=0.6) -> List[Image.Image]:

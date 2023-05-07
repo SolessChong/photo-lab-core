@@ -69,6 +69,9 @@ def task_train_lora(person_id, train_img_list, epoch=5):
     for i, img_url in enumerate(train_img_list):
         # download img using oss2
         bucket.get_object_to_file(img_url, str(img_raw_path / f"{i}.png"))
+
+    ## 1. Augment image
+    total_imgs = train_lora.aug_folder(img_raw_path)
         
     # read img list from img_path
     train_lora.detect_subject_and_crop(dataset_path, remove_bg=conf.TRAIN_PARAMS['REMOVE_BACKGROUND'], enlarge=conf.TRAIN_PARAMS['ENLARGE_FACE'])
@@ -97,6 +100,9 @@ def task_train_lora(person_id, train_img_list, epoch=5):
         bucket.put_object_from_file(url, model_path)
         bucket.put_object_from_file(url + '.log', dataset_path / 'train.log')
         person.update_model_file(url)
+        person.train_note = f"Epoch: {epoch}, Dataset augmented, total_imgs: {total_imgs}"
+        db.session.add(person)
+        db.session.commit()
         logging.info(f"  --- LORA model {person_id} Success")
         db.session.close()
         return 0

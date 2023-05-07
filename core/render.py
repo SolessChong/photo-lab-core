@@ -119,6 +119,7 @@ def render_lora_on_base_img(task) -> Image:
     if scene.params and scene.params.get("i2i_params"):
         i2i_params.update(scene.params.get("i2i_params"))
 
+    options = {}
     options['sd_model_checkpoint'] = scene.params.get('model')
     get_api_instance().set_options(options)
     logging.info(f"    ---- 🔄 Switching to model: {options['sd_model_checkpoint']}")

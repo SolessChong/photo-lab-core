@@ -13,6 +13,7 @@ from pathlib import Path
 from core import face_mask
 from core import pose_detect
 from core.resource_manager import ResourceMgr, ResourceType
+from core.augment import aug_folder
 
 import sys
 import io
