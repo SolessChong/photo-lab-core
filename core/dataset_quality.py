@@ -5,9 +5,15 @@ from PIL import Image
 from typing import List
 from torchvision import transforms
 from torchvision.models import resnet50, vgg16
+from core.resource_manager import pil_to_cv2
 import torch
 from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances
+
+from insightface.app import FaceAnalysis
+from insightface.data import get_image as ins_get_image
+
+
 
 def extract_background(image: Image.Image, face_mask: Image.Image) -> Image.Image:
     background = Image.composite(Image.new("RGB", image.size), image, face_mask.convert("L"))
@@ -47,9 +53,6 @@ model = vgg16(pretrained=True)
 model.eval()
 
 def analyze_background_variety(images: List[Image.Image]) -> float:
-    # Load pre-trained ResNet model
-
-
     # Extract backgrounds and convert them to feature vectors
     feature_vectors = []
     for image in images:
@@ -68,20 +71,55 @@ def analyze_background_variety(images: List[Image.Image]) -> float:
     avg_pairwise_distance = np.mean(distances)
 
     # Normalize the variety score between 0 and 1
-    variety_score = avg_pairwise_distance / np.max(distances)
+    variety_score = avg_pairwise_distance
 
     print(f"Average pairwise distance: {avg_pairwise_distance}, variety score: {variety_score}")
 
+    # map avg_pairwise_distance from [130, 250] to [0, 1] linearly
+    avg_pairwise_distance = (avg_pairwise_distance - 130) / (250 - 130)
+    
     return variety_score
 
+def analyze_face_pose_variety(images: List[Image.Image]) -> float:
+    pose_vectors = []
+
+    for image in images:
+        img = pil_to_cv2(image)
+        rst = face_analysis.get(img)
+        
+        if len(rst) > 0:
+            pose = rst[0].pose
+            pose_vectors.append(pose)
+
+    pose_vectors = np.array(pose_vectors)
+
+    # Calculate the average pairwise distance between pose vectors
+    distances = pairwise_distances(pose_vectors)
+    avg_pairwise_distance = np.mean(distances)
+
+    print(f"Average pairwise distance: {avg_pairwise_distance}")
+
+    # map avg_pairwise_distance from [4, 25] to [0, 1] linearly
+    avg_pairwise_distance = (avg_pairwise_distance - 4) / (25 - 4)
+    return avg_pairwise_distance
+
+
+# Occlusion detection
+# Image quality
+
+face_analysis = None
 
 if __name__ == "__main__":
-    for dataset_name in [2, 3, 6, 127, 190, 255, 256]:
+    face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106', 'landmark_3d_68'])
+    face_analysis.prepare(ctx_id=0, det_size=(640, 640))
+
+    for dataset_name in [2, 3, 6, 127, 190, 255, 256, 271, 273]:
         print(f"===== Dataset {dataset_name} =====")
         dir_name = f"core/data/train_dataset/{dataset_name}/img_raw"
         images = []  # List of PIL.Image objects
         for fn in os.listdir(dir_name):
             img = Image.open(os.path.join(dir_name, fn))
             images.append(img)
-        variety_score = analyze_background_variety(images)
-        print(f"Background variety score for dataset {dataset_name}: {variety_score}")
+        variety_score_background = analyze_background_variety(images)
+        variety_score_face_pose = analyze_face_pose_variety(images)
+        print(f"Variety score (background): {variety_score_background}, variety score (face pose): {variety_score_face_pose}")
