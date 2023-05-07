@@ -285,7 +285,7 @@ def scene_stats():
 @app.route('/list_persons', methods=['GET'])
 def list_persons():
     persons = db.session.query(Person, User.ip).join(User, Person.user_id == User.user_id).order_by(Person.id.desc()).limit(100)
-    persons_data = [{'id': p.id, 'name': p.name, 'user_id': p.user_id, 'ip': ip} for p, ip in persons]
+    persons_data = [{'id': p.id, 'name': p.name, 'user_id': p.user_id, 'ip': ip, 'lora_train_status': p.lora_train_status} for p, ip in persons]
     return jsonify(persons_data)
 
 
