@@ -52,7 +52,6 @@ def one_face(img):
     except:
         return False
 
-
 def crop_face_pil(image_data, face_coordinates):
     # 从二进制数据创建一个PIL图像对象
     img = Image.open(io.BytesIO(image_data))

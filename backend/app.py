@@ -14,7 +14,7 @@ from . import aliyun_face_detector
 from . import web_function
 from . import utils
 from . import models
-from . import selector_mj
+from . import selector_other, selector_sd
 
 celery_app = Celery('myapp',
                     broker='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0',
@@ -41,7 +41,11 @@ def create_user():
     logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
 
     # Create a new user with the generated user_id
-    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent)
+    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = 1, min_img_num = 20, max_img_num = 100)
+    if random.random() < 0.75:
+        new_user.group = 2
+        new_user.min_img_num = 2
+        new_user.max_img_num = 5
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
@@ -53,8 +57,8 @@ def create_user():
         "msg": "create user successfully",
         "data": {
             "user_id": user_id,
-            "min_img_num": 10,
-            "max_img_num": 20
+            "min_img_num": new_user.min_img_num,
+            "max_img_num": new_user.max_img_num
         }
     }
 
@@ -86,8 +90,10 @@ def get_user():
                 utils.oss_put(person.head_img_key, cropped_face)
 
                 db.session.commit()
-
-        head_img_url = utils.get_signed_url(person.head_img_key)
+        if person.head_img_key:
+            head_img_url = utils.get_signed_url(person.head_img_key)
+        else:
+            head_img_url = None
         result_persons.append({
             "person_id": person.id,
             "person_name": person.name,
@@ -289,7 +295,9 @@ def upload_multiple_sources():
     print(img_oss_keys, type(img_oss_keys))
 
     success_count = 0
-    for key in ast.literal_eval(img_oss_keys):
+    keys = json.loads(img_oss_keys)
+    print(keys, type(keys))
+    for key in keys:
         print(key)
         data = utils.oss_source_get(key)
         if aliyun_face_detector.one_face(data):
@@ -328,55 +336,23 @@ def start_sd_generate():
     person_id_list.sort()
     category = request.form['category']
     limit = request.form.get('limit', 50, type=int)
-    wati_status = 'wait'
+    wait_status = request.form.get('wait_status', 'wait')
     
-    #TODO: use new method to choose which scene to render
-    # 1. Get all scenes with the same category
-    scenes = models.Scene.query.filter(
-        models.Scene.img_type==category, 
-        models.Scene.action_type=='sd', 
-        models.Scene.setup_status == 'finish'
-    ).order_by(models.Scene.rate.desc()).limit(500).all()
-    
-    # 2. Check for existing tasks and calculate new combinations
-    new_combinations = []
-    for scene in scenes:
-        if not models.Task.query.filter_by(scene_id=scene.scene_id, person_id_list=person_id_list, user_id=user_id).first():
-            new_combinations.append((scene.scene_id, person_id_list))
-        if (len(new_combinations) >= limit):
-            break
-    new_combinations = new_combinations[:limit]
-    m = len(new_combinations)
-    logger.info(f'{user_id} has new_combinations: {new_combinations}')
-    
-    # 3. start train lora 
-    for person_id in person_id_list:
-        person = models.Person.query.filter(models.Person.id == person_id).first()
-        if not person:
-            return {"status": "error", "message": f"person_id {person_id} not found"}, 400
-        if person and person.lora_train_status is None:
-            person.lora_train_status = wati_status # 等待woker_manager启动训练任务
-            db.session.commit()
-            logger.info(f'{user_id} start to  train lora {person.id}')
-
-    pack = models.Pack(user_id=user_id, total_img_num=m, start_time= datetime.utcnow(), description=f'合集{m}张')
+    pack = models.Pack(user_id=user_id, total_img_num=0, start_time= datetime.utcnow(), description='合集')
     db.session.add(pack)
     db.session.commit()
-    for scene_id, person_id_list in new_combinations:
-        task = models.Task(
-            user_id=user_id,
-            scene_id=scene_id,
-            person_id_list=person_id_list,
-            status=wati_status,
-            pack_id=pack.pack_id
-        )
-        db.session.add(task)
-        db.session.commit()
 
-    # --------------------------- 以上是SD 生成任务 -------------------------------
+
+    m = 0
+    # --------------------------- SD 生成任务 ------------------------------------
+    if (models.User.query.filter_by(user_id=user_id).first().group == 1):
+        m += selector_sd.generate_sd_task(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, limit=limit, wait_status=wait_status)
 
     # --------------------------- 以下是启动mj的任务 ------------------------------
-    # m += selector_mj.generate_mj_task(person_id=person_id_list[0], category = category, pack_id=pack.pack_id, user_id=user_id)
+    if (models.User.query.filter_by(user_id=user_id).first().group == 2):
+        m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='mj', limit=limit, wait_status=wait_status)
+
+        m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='reface', limit=limit, wait_status=wait_status)
 
     # --------------------------- 以下是返回结果 ----------------------------------
     response = {
@@ -388,6 +364,11 @@ def start_sd_generate():
             "des": f"AI拍摄完成后，您将获得{m}张照片"
         }
     }
+    pack.total_img_num = m
+    pack.description = f'合集{m}张'
+    db.session.add(pack)
+    db.session.commit()
+
     return jsonify(response)
 
 # 为pack增加img图片，和单纯增加pack两种情况都会调用此函数

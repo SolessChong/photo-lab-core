@@ -15,15 +15,19 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # 启动异步生成图片任务，传入参数为person_id、category、pack_id、user_id
-# 首先获取person_id对应的所有sources， 然后获取对应type的所有mj scene
+# 首先获取person_id对应的所有sources， 然后获取对应type的所有mj scene或sd scene
 # 双重循环遍历scene和source， 分别获得scene和source对应的oss中的图片内容，scene的prompt，source图片的可访问oss地址
 # 然后在generated_images表中生成mj 任务
-def generate_mj_task(person_id, category, pack_id, user_id):
-    logger.info("start generate_mj_task")
+def generate_task(person_id, category, pack_id, user_id, action_type='mj', limit=20, wait_status='wait'):
+    logger.info("start select other generate_task")
 
-    
     sources = models.Source.query.filter(models.Source.person_id==person_id, models.Source.base_img_key != None).all()
-    scenes = models.Scene.query.filter_by(img_type=category, action_type='mj').all()
+
+    if action_type == 'reface':
+        scenes = models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type==action_type, models.Scene.base_img_key != None).order_by(models.Scene.rate.desc()).limit(limit*10).all()
+        scenes.extend(models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type=='sd', models.Scene.base_img_key != None).order_by(models.Scene.rate.desc()).limit(limit*10).all())
+    elif action_type == 'mj':
+        scenes = models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type==action_type).order_by(models.Scene.rate.desc()).limit(limit*10).all()
 
     new_combinations = []
     for scene in scenes:
@@ -31,17 +35,18 @@ def generate_mj_task(person_id, category, pack_id, user_id):
             if not models.GeneratedImage.query.filter_by(scene_id=scene.scene_id, source_id=source.source_id).first():
                 new_combinations.append((scene, source))
     random.shuffle(new_combinations)
-    new_combinations = new_combinations[:10]
+    new_combinations = new_combinations[:limit]
 
     for scene, source in new_combinations:
         logger.info('start mj generete for scene id %d,  source_id: %d', scene.scene_id, source.source_id)
         
-        new_image = models.GeneratedImage(scene_id=scene.scene_id, source_id=source.source_id, pack_id=pack_id, user_id=user_id, type=scene.action_type, prompt=scene.prompt, status = 'init')
+        new_image = models.GeneratedImage(scene_id=scene.scene_id, source_id=source.source_id, pack_id=pack_id, user_id=user_id, type=action_type, prompt=scene.prompt, status = wait_status)
 
         extensions.db.session.add(new_image)
         extensions.db.session.commit()
 
     return len(new_combinations)
+
 
         # image_id = new_image.id        
 

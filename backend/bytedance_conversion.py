@@ -13,7 +13,7 @@ from . import aliyun_face_detector
 from . import web_function
 from . import utils
 from . import models
-from . import selector_mj
+from . import selector_other
 
 
 logger = logging.getLogger(__name__)

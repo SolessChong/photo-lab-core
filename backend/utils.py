@@ -17,7 +17,9 @@ OSS_BUCKET_NAME = 'photolab-test'
 OSS_ENDPOINT = 'oss-cn-shenzhen.aliyuncs.com'
 
 AKOOL_URL = 'https://faceswap.akool.com/api/v1/faceswap/highquality/specifyimage'
-AKOOL_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjZiNDU3NzczNTM2MDE2MDU1Nzk0NCIsInVpZCI6MTcwNTk1LCJ0eXBlIjoidXNlciIsImlhdCI6MTY4MDY1ODgyNywiZXhwIjoxNjgzMjUwODI3fQ.a50zmoaKgdqZvVzyItTBesnnQBGZ6umJPsE5sY03Apc'
+# AKOOL_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjZiNDU3NzczNTM2MDE2MDU1Nzk0NCIsInVpZCI6MTcwNTk1LCJ0eXBlIjoidXNlciIsImlhdCI6MTY4MDY1ODgyNywiZXhwIjoxNjgzMjUwODI3fQ.a50zmoaKgdqZvVzyItTBesnnQBGZ6umJPsE5sY03Apc'
+
+AKOOL_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjZiNDU3NzczNTM2MDE2MDU1Nzk0NCIsInVpZCI6MTcwNTk1LCJ0eXBlIjoidXNlciIsImlhdCI6MTY4MTE1MTM0NCwiZXhwIjoxNjgzNzQzMzQ0fQ.CzSgtcI1crGm7NOnUvcQdMEBHaTeASgDsJXVHZH04L8'
 
 # 创建数据库连接
 def create_db_conn():

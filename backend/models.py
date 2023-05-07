@@ -29,6 +29,9 @@ class User(db.Model):
     user_id = db.Column(db.String(255), nullable=False)
     ip = db.Column(db.String(255), nullable=True)
     ua = db.Column(db.String(255), nullable=True)
+    min_img_num = db.Column(db.Integer, nullable=True)
+    group = db.Column(db.Integer, nullable=True)
+    max_img_num = db.Column(db.Integer, nullable=True)
 
 class Source(db.Model):
     __tablename__ = 'source'
@@ -142,6 +145,7 @@ class Task(db.Model):
     debug_img = db.Column(db.JSON, nullable=True)
     pack_id = db.Column(db.Integer, nullable=True)
     user_id = db.Column(db.String(255), nullable=True)
+    rate = db.Column(db.Integer, nullable=True)
 
     def update_result_img_key(self, result_img_key):
         self.result_img_key = result_img_key
