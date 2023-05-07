@@ -38,6 +38,7 @@ def train(Session):
         if person:
             person.lora_train_status = 'processing'
             person_id = person.id
+        session.add(person)
         session.commit()
     except Exception as e:
         print(f"Error: {e}")
