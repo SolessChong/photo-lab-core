@@ -7,16 +7,25 @@ from core.resource_manager import *
 
 app.app_context().push()
 
-file_path = '/home/chong/downloads/2d-scenes/watercolor-full'
+file_path = '/home/chong/downloads/2d-scenes/chong_snow_white_LY_0505'
 
-collection_name = 'DS_watercolor_full_0501'
-prompt = '(watercolor:1.3), a girl, extremely luminous bright design, glowing, sparkling, lens flare,'
+collection_name = 'chong_snow_white_LY_0505'
+prompt = """(masterpiece, best quality, high resolution:1.4), portrait, snow white, a girl, woman, smile, looking at viewer, (medieval dress, yellow skirt, long skirt, red hairband),
+disney style, comic, cartoon, castle, forest, pink dress, animals, lens flare, pro lighting,
+"""
+
 params = {
-    "model": "dreamshaper_4BakedVaeFp16", 
-    "sampler_name": "Euler a",
-    "lora_upscaler": "R-ESRGAN 4x+ Anime6B"
+    "model": "lyriel_v14", 
+    "i2i_params": {
+        "sampler_name": "Euler a"
+    },
+    "lora_upscaler_params": {
+        "extras_upscaler_2_visibility": 0.7,
+        "upscaler_1": "ESRGAN_4x",
+        "upscaler_2": "R-ESRGAN 4x+ Anime6B"
+    },
 }
-negative_prompt = '(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck'
+negative_prompt = '3nsfw, EasyNegative, badhandv4, (bad anatomy, worst quality, low quality:2), watermark, signature, username, patreon, monochrome, zombie, large breasts, cleavage, logo, earrings, long hair,'
 
 # iterate over all files in file_path
 # create scene

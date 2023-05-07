@@ -5,6 +5,8 @@
 1. Color correction, fix neck connection
 1. Eye redraw
 1. Pose controlnet regenerate for crop img
+1. Detailed controlnet on face
+1. Render wrap up after composition
 
 # Training Lora
 1. Rotation augmentation
