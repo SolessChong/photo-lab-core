@@ -112,4 +112,4 @@ chord(celery_worker.task_train_lora.s(3, ['source/yi/2/d5010894d2fd8cbd3518e39c7
 - 264 25p 网红2 10 epoch * (2500+1500) -> 40k iter
 - 265 25p 网红2 10 epoch * (2500+1500) -> 40k iter
 - 216 10p 韬哥妹妹 
-- 271 10p 韬哥妹妹 color, flip aug.
+- 301 10p 韬哥妹妹 color, flip aug.
