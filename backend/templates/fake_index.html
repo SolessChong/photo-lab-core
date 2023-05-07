@@ -719,6 +719,14 @@
                     personLoraTrainStatus.innerHTML = `<h5 class="card-title mb-0">Lora Train Status: ${person.lora_train_status}</h5>`;
                     infoRow.appendChild(personLoraTrainStatus);
 
+                    // Add person dataset quality
+                    const personDatasetQuality = document.createElement('div');
+                    personDatasetQuality.className = 'col-12 mb-2';
+                    // Stringify the JSON object
+                    const datasetQualityStr = JSON.stringify(person.dataset_quality, null, 2);
+                    personDatasetQuality.innerHTML = `<pre class="card-text mb-0">Dataset Quality: ${datasetQualityStr}</pre>`;
+                    infoRow.appendChild(personDatasetQuality);
+
                     // Add person user ID
                     const personUserId = document.createElement('div');
                     personUserId.className = 'col-md-4 mb-2';
