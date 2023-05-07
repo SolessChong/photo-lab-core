@@ -13,6 +13,7 @@ from pathlib import Path
 from core import face_mask
 from core import pose_detect
 from core.resource_manager import ResourceMgr, ResourceType
+from core.augment import aug_folder
 
 import sys
 import io
@@ -69,7 +70,7 @@ def detect_subject_and_crop(dataset_path, size=512, remove_bg=True, enlarge=1.2)
             # save image
             cv2.imwrite(str(Path(img_train_path) / img_fn), subj_img)
         except Exception as e:
-            logging.error(f"error processing image: {img_fn}")
+            logging.exception(f"error processing image: {img_fn}")
 
     return len(img_list)
 

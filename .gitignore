@@ -36,3 +36,6 @@ app.logs
 import
 app.logs
 import
+
+# log
+*.log
