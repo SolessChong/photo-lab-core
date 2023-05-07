@@ -40,7 +40,13 @@ def aug_img(fn: str):
         roll = pose[2]
 
         # Rotate the image to make the head horizontally straight
-        rotated_image = image.rotate(roll, resample=Image.BICUBIC, expand=True)
+        angles =  [-0.5, 0.5, 0.75, 1, 1.25, 1.5, 1.8, 2.5]
+        for r in range(len(angles)):
+            rotated_image = image.rotate(roll * angles[r], resample=Image.LANCZOS, expand=True)
+
+            # Save the augmented image
+            file_name, file_ext = os.path.splitext(fn)
+            rotated_image.save(f"{file_name}_aug_rot_{r}{file_ext}")
 
         # Save the augmented image
         file_name, file_ext = os.path.splitext(fn)
@@ -53,14 +59,15 @@ def aug_img(fn: str):
         flipped_image.save(f"{file_name}_aug_flip{file_ext}")
     else:
         print(f"No face detected in the image: {fn}")
+    return len(angles) + 1
 
 def aug_folder(folder: str):
     total = 0
     for fn in os.listdir(folder):
         if fn.endswith(".jpg") or fn.endswith(".png"):
             try:
-                aug_img(os.path.join(folder, fn))
-                total += 3
+                n = aug_img(os.path.join(folder, fn))
+                total += n + 1    # original + augmented
             except Exception as e:
                 logging.exception(f"Error augmenting image: {fn}")
     return total
