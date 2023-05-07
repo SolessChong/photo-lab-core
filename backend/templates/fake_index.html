@@ -713,6 +713,12 @@
                     personName.innerHTML = `<h5 class="card-title mb-0">Name: ${person.name}</h5>`;
                     infoRow.appendChild(personName);
 
+                    // Add person lora_train_status
+                    const personLoraTrainStatus = document.createElement('div');
+                    personLoraTrainStatus.className = 'col-md-4 mb-2';
+                    personLoraTrainStatus.innerHTML = `<h5 class="card-title mb-0">Lora Train Status: ${person.lora_train_status}</h5>`;
+                    infoRow.sappendChild(personLoraTrainStatus);
+
                     // Add person user ID
                     const personUserId = document.createElement('div');
                     personUserId.className = 'col-md-4 mb-2';
