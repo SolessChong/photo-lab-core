@@ -46,6 +46,13 @@ def detect_face(img):
 def get_face_coordinates(img):
     return aliyun_face_detect(img).body.data.face_rectangles[:4]
 
+def one_face(img):
+    try: 
+        return detect_face(img) == 1
+    except:
+        return False
+
+
 def crop_face_pil(image_data, face_coordinates):
     # 从二进制数据创建一个PIL图像对象
     img = Image.open(io.BytesIO(image_data))
