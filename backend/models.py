@@ -29,6 +29,9 @@ class User(db.Model):
     user_id = db.Column(db.String(255), nullable=False)
     ip = db.Column(db.String(255), nullable=True)
     ua = db.Column(db.String(255), nullable=True)
+    min_img_num = db.Column(db.Integer, nullable=True)
+    group = db.Column(db.Integer, nullable=True)
+    max_img_num = db.Column(db.Integer, nullable=True)
 
 class Source(db.Model):
     __tablename__ = 'source'
