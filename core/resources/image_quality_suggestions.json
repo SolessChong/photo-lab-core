@@ -1,0 +1,28 @@
+{
+    "background_variety": {
+      "threshold": 0.6,
+      "problem": "The background of your photos is too similar.",
+      "suggestion": "- Try to take photos in different backgrounds, such as:\n    - Parks\n    - Offices\n    - Restaurants\n    - Urban streets\n    - Home settings\n    - Nature settings\n- Take photos in various indoor and outdoor locations.\n- Vary the settings and environments for your photos.\n- Use different props or decorations to add variety to the background."
+    },
+    "face_pose_variety": {
+      "threshold": 0.5,
+      "problem": "The pose of your face is too similar.",
+      "suggestion": "- Try to take photos in different poses.\n- Tilt your head.\n- Look up or down.\n- Capture your face from various angles.\n- Experiment with different facial expressions."
+    },
+    "jpeg_compression": {
+      "threshold": 0.3,
+      "problem": "Your photos are over compressed and resulted in bad quality.",
+      "suggestion": "- Try to take photos and upload raw files, or use a higher quality image format like PNG or TIFF when possible.\n- Smartphone camera apps will often compress photos and apply filters, resulting in lower quality images. Use a dedicated camera app that allows for manual control over image quality settings.\n- Avoid using beautification filters or excessive image editing, as these can over-compress the image and degrade quality.\n- Transfer photos directly from your phone to a computer or cloud storage to avoid additional compression."
+    },
+    "blurriness": {
+      "threshold": 0.5,
+      "problem": "Your photos are blurry.",
+      "suggestion": "- Try to take photos in a well-lit environment.\n- Ensure sharp focus by using a camera with a good autofocus system.\n- Minimize shake or movement while taking the photo. Use a tripod if necessary.\n- Use a camera instead of a phone if possible, or avoid taking screenshots from videos, as they usually result in low-quality images.\n- Clean the camera lens to avoid blurry images."
+    },
+    "lighting": {
+      "threshold": 0.3,
+      "problem": "The lighting conditions of your photos are not good enough.",
+      "suggestion": "- Try to take photos in a well-lit environment.\n- Avoid direct sunlight or harsh shadows on the face.\n- Use natural light or soft artificial lighting.\n- Experiment with different light sources and angles to achieve balanced lighting."
+    }
+  }
+  
