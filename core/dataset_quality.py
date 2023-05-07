@@ -1,5 +1,6 @@
 from core.face_mask import get_face_mask
 import os
+import cv2
 import numpy as np
 from PIL import Image
 from typing import List
@@ -14,7 +15,12 @@ from insightface.app import FaceAnalysis
 from insightface.data import get_image as ins_get_image
 
 
+# Global variables
+model = None
+face_analysis = None
 
+######## Background variety ########
+##
 def extract_background(image: Image.Image, face_mask: Image.Image) -> Image.Image:
     background = Image.composite(Image.new("RGB", image.size), image, face_mask.convert("L"))
     background.save('background.png')
@@ -32,9 +38,6 @@ def image_to_feature_vector(image: Image.Image, model) -> np.ndarray:
     
     return features
 
-from sklearn.preprocessing import normalize
-from sklearn.metrics import silhouette_score
-
 def optimal_num_clusters(feature_vectors, max_clusters=10):
     wcss = []
     for i in range(2, max_clusters + 1):
@@ -47,10 +50,6 @@ def optimal_num_clusters(feature_vectors, max_clusters=10):
     elbow_point = np.argmax(deltas) + 2
 
     return elbow_point
-
-
-model = vgg16(pretrained=True)
-model.eval()
 
 def analyze_background_variety(images: List[Image.Image]) -> float:
     # Extract backgrounds and convert them to feature vectors
@@ -77,9 +76,12 @@ def analyze_background_variety(images: List[Image.Image]) -> float:
 
     # map avg_pairwise_distance from [130, 250] to [0, 1] linearly
     avg_pairwise_distance = (avg_pairwise_distance - 130) / (250 - 130)
-    
+
     return variety_score
 
+
+######## Face pose variety ########
+## 
 def analyze_face_pose_variety(images: List[Image.Image]) -> float:
     pose_vectors = []
 
@@ -105,13 +107,56 @@ def analyze_face_pose_variety(images: List[Image.Image]) -> float:
 
 
 # Occlusion detection
-# Image quality
 
-face_analysis = None
+######## Image Quality ########
+##
+def estimate_jpeg_compression(image: np.ndarray) -> float:
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    dct_coefficients = cv2.dct(np.float32(gray_image)/255.0)
+    compression_level = np.mean(np.abs(dct_coefficients))
+    return compression_level
+
+def estimate_blurriness(image: np.ndarray) -> float:
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    laplacian_variance = cv2.Laplacian(gray_image, cv2.CV_64F).var()
+    return laplacian_variance
+
+def estimate_lighting_conditions(image: np.ndarray) -> float:
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+    hist_norm = hist.ravel() / hist.sum()
+    variance = np.mean((np.arange(256) - np.mean(hist_norm)) ** 2)
+    return variance
+
+def analyze_image_quality(images: List[Image.Image]) -> dict:
+    jpeg_compression_scores = []
+    blurriness_scores = []
+    lighting_scores = []
+
+    for image in images:
+        img_np = np.array(image.convert("RGB"))[:, :, ::-1].copy()
+
+        jpeg_compression_scores.append(estimate_jpeg_compression(img_np))
+        blurriness_scores.append(estimate_blurriness(img_np))
+        lighting_scores.append(estimate_lighting_conditions(img_np))
+
+    avg_jpeg_compression = np.mean(jpeg_compression_scores)
+    avg_blurriness = np.mean(blurriness_scores)
+    avg_lighting = np.mean(lighting_scores)
+
+    return {
+        "jpeg_compression": avg_jpeg_compression,
+        "blurriness": avg_blurriness,
+        "lighting": avg_lighting
+    }
+
 
 if __name__ == "__main__":
     face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106', 'landmark_3d_68'])
     face_analysis.prepare(ctx_id=0, det_size=(640, 640))
+
+    model = vgg16(pretrained=True)
+    model.eval()
 
     for dataset_name in [2, 3, 6, 127, 190, 255, 256, 271, 273]:
         print(f"===== Dataset {dataset_name} =====")
@@ -122,4 +167,5 @@ if __name__ == "__main__":
             images.append(img)
         variety_score_background = analyze_background_variety(images)
         variety_score_face_pose = analyze_face_pose_variety(images)
-        print(f"Variety score (background): {variety_score_background}, variety score (face pose): {variety_score_face_pose}")
+        image_quality = analyze_image_quality(images)
+        print(f"-- Variety score (background): {variety_score_background}, variety score (face pose): {variety_score_face_pose}, image quality: {image_quality} \n")
