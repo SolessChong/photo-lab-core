@@ -18,6 +18,7 @@ import argparse
 
 from insightface.app import FaceAnalysis
 from insightface.data import get_image as ins_get_image
+from concurrent.futures import ThreadPoolExecutor
 
 # Global variables
 face_analysis = None
@@ -27,6 +28,13 @@ def get_face_analysis_instance() -> FaceAnalysis:
         face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_3d_68'])
         face_analysis.prepare(ctx_id=0, det_size=(640, 640))
     return face_analysis
+
+def save_rotated_image(image, roll, fn, angle, r):
+    rotated_image = image.rotate(roll * angle, resample=Image.BICUBIC, expand=True)
+
+    # Save the augmented image
+    file_name, file_ext = os.path.splitext(fn)
+    rotated_image.save(f"{file_name}_aug_rot_{r}{file_ext}")
 
 # Augment image
 def aug_img(fn: str):
@@ -40,22 +48,16 @@ def aug_img(fn: str):
         roll = pose[2]
 
         # Rotate the image to make the head horizontally straight
-        angles =  [-0.5, 0.5, 0.75, 1, 1.25, 1.5, 1.8, 2.5]
-        for r in range(len(angles)):
-            rotated_image = image.rotate(roll * angles[r], resample=Image.BICUBIC, expand=True)
-
-            # Save the augmented image
-            file_name, file_ext = os.path.splitext(fn)
-            rotated_image.save(f"{file_name}_aug_rot_{r}{file_ext}")
-
-        # Save the augmented image
-        file_name, file_ext = os.path.splitext(fn)
-        rotated_image.save(f"{file_name}_aug_rot{file_ext}")
+        angles =  [-0.8, -0.5, 0.5, 0.75, 1, 1.25, 1.5, 1.8]
+        with ThreadPoolExecutor() as executor:
+            for r, angle in enumerate(angles):
+                executor.submit(save_rotated_image, image, roll, fn, angle, r)
 
         # Flip the image left-right
         flipped_image = image.transpose(Image.FLIP_LEFT_RIGHT)
 
         # Save the flipped image
+        file_name, file_ext = os.path.splitext(fn)
         flipped_image.save(f"{file_name}_aug_flip{file_ext}")
     else:
         print(f"No face detected in the image: {fn}")
