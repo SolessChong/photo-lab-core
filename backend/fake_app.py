@@ -9,6 +9,8 @@ import json
 from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task
 from celery import Celery, chain, chord, group, signature
 from backend.config import CELERY_CONFIG
+from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 app.app_context().push()
 
@@ -155,7 +157,18 @@ def get_tasks():
     page = request.args.get('page', 1, type=int)
     per_page = 100
 
-    tasks_pagination = Task.query.filter(Task.result_img_key != None).order_by(Task.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    collection_name_filter = request.args.get('collection_name', None)
+    person_id_filter = request.args.get('person_id', None, type=int)
+
+    tasks_query = Task.query.filter(Task.result_img_key != None)
+
+    if collection_name_filter:
+        tasks_query = tasks_query.join(Scene, Task.scene_id == Scene.scene_id).filter(Scene.collection_name == collection_name_filter)
+
+    if person_id_filter:
+        tasks_query = tasks_query.filter(func.JSON_CONTAINS(Task.person_id_list, str(person_id_filter)))
+
+    tasks_pagination = tasks_query.order_by(Task.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
     tasks = tasks_pagination.items
     total_pages = tasks_pagination.pages
 
@@ -171,6 +184,7 @@ def get_tasks():
 
     return jsonify({"tasks": tasks_data, "total_pages": total_pages})
 
+
 @app.route('/get_collections', methods=['GET'])
 def get_collections():
     collections = Scene.query.with_entities(Scene.collection_name).distinct().all()
@@ -178,7 +192,7 @@ def get_collections():
 
 @app.route('/get_persons', methods=['GET'])
 def get_persons():
-    persons = Person.query.with_entities(Person.id, Person.name).all()
+    persons = Person.query.with_entities(Person.id, Person.name).order_by(Person.id.desc()).all()
     return jsonify([{"id": person[0], "name": person[1]} for person in persons])
 
 @app.route('/generate_tasks', methods=['POST'])
@@ -270,9 +284,11 @@ def scene_stats():
 ### Person Tab
 @app.route('/list_persons', methods=['GET'])
 def list_persons():
-    persons = Person.query.order_by(Person.id.desc()).limit(10).order_by(Person.id.desc()).limit(50)
-    persons_data = [{'id': p.id, 'name': p.name} for p in persons]
+    persons = db.session.query(Person, User.ip).join(User, Person.user_id == User.user_id).order_by(Person.id.desc()).limit(100)
+    persons_data = [{'id': p.id, 'name': p.name, 'user_id': p.user_id, 'ip': ip} for p, ip in persons]
     return jsonify(persons_data)
+
+
 
 @app.route('/list_sources', methods=['GET'])
 def list_sources():

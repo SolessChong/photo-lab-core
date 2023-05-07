@@ -112,12 +112,38 @@
             <!-- Scenes content -->
         </div>
         <div class="tab-pane fade show active" id="taskViewer" role="tabpanel" aria-labelledby="taskViewer-tab">
+            <!-- Filter section -->
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <label class="input-group-text" for="collection-name-filter">Collection:</label>
+                        <select class="form-select" id="collection-name-filter">
+                            <option value="">All Collections</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <label class="input-group-text" for="person-id-filter">Person:</label>
+                        <select class="form-select" id="person-id-filter">
+                            <option value="">All Persons</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary" id="apply-filters-btn">Apply Filters</button>
+                </div>
+            </div>
+        
             <!-- Task Viewer content -->
-            <div class="row task-container" id="task-container">
+            <div class="row task-container mt-4" id="task-container">
                 <!-- Task viewer panels will be added here -->
             </div>
-            <button id="load-more-btn" class="btn btn-primary">Load More</button>
+            <div class="d-grid mt-3">
+                <button id="load-more-btn" class="btn btn-primary">Load More</button>
+            </div>
         </div>
+        
         <div class="tab-pane fade" id="createTask" role="tabpanel" aria-labelledby="createTask-tab">
             <!-- Create Task content -->
             <div class="row" id="create-task-container">
@@ -183,9 +209,6 @@
     </div>
 
     <script>
-        let currentPage = 1;
-        let totalPages = 1;
-
         ////////////////////////////
         // Stats Tab
         function fetchStats() {
@@ -233,22 +256,28 @@
 
         ////////////////////////////////////////////////
         // Add task tab
+
+        let currentPage = 1;
+        let totalPages = 1;
+
         function addTaskPanel(task) {
             const taskContainer = document.getElementById('task-container');
 
             const column = document.createElement('div');
-            column.className = 'col-md-4';
+            column.className = 'col-12 col-md-6 col-lg-4';
 
             const panel = document.createElement('div');
             panel.className = 'card task-panel';
 
             const img = document.createElement('img');
-            img.src = 'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/' + task.result_img_key;
+            const originalImgSrc = 'https://photolab-test.oss-cn-shenzhen.aliyuncs.com/' + task.result_img_key;
+            const croppedImgSrc = originalImgSrc + '?x-oss-process=image/resize,w_400';
+            img.src = croppedImgSrc;
             img.classList.add('card-img-top');
 
             // Add the Fancybox functionality
             const lightboxLink = document.createElement('a');
-            lightboxLink.href = img.src;
+            lightboxLink.href = originalImgSrc;
             lightboxLink.setAttribute('data-fancybox', 'gallery');
             lightboxLink.appendChild(img);
             panel.appendChild(lightboxLink);
@@ -264,12 +293,16 @@
             taskContainer.appendChild(column);
         }
 
+
         function fetchTasks(page) {
             fetch(`/get_tasks?page=${page}`)
             .then((response) => response.json())
             .then((data) => {
                 const tasks = data.tasks;
                 totalPages = data.total_pages;
+
+                const taskContainer = document.getElementById('task-container');
+                taskContainer.innerHTML = '';
 
                 tasks.forEach(addTaskPanel);
 
@@ -285,24 +318,94 @@
         }
 
         function loadTasks(page) {
-            fetch(`/get_tasks?page=${page}`)
-            .then((response) => response.json())
-            .then((data) => {
-                const tasks = data.tasks;
-                totalPages = data.total_pages;
+            const collection_name_filter = document.getElementById('collection-name-filter').value;
+            const person_id_filter = document.getElementById('person-id-filter').value;
 
-                tasks.forEach(addTaskPanel);
+            let url = `/get_tasks?page=${page}`;
+            if (collection_name_filter) url += `&collection_name=${encodeURIComponent(collection_name_filter)}`;
+            if (person_id_filter) url += `&person_id=${encodeURIComponent(person_id_filter)}`;
 
-                if (currentPage === totalPages) {
-                    const loadMoreBtn = document.getElementById('load-more-btn');
-                    loadMoreBtn.disabled = true;
-                    loadMoreBtn.textContent = 'No More Tasks';
-                }
-            })
-            .catch((error) => {
-                console.error('Error fetching tasks:', error);
-            });
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    const taskContainer = document.getElementById('task-container');
+                    taskContainer.innerHTML = '';
+
+                    const tasks = data.tasks;
+                    totalPages = data.total_pages;
+
+                    if (tasks.length === 0) {
+                        // Display an empty message when there are no tasks
+                        const emptyMessageContainer = document.createElement('div');
+                        emptyMessageContainer.className = 'col-12 text-center my-5';
+
+                        const emptyMessage = document.createElement('h3');
+                        emptyMessage.className = 'text-muted';
+                        emptyMessage.textContent = 'Empty';
+
+                        emptyMessageContainer.appendChild(emptyMessage);
+                        taskContainer.appendChild(emptyMessageContainer);
+                    } else {
+                        tasks.forEach(addTaskPanel);
+                    }
+
+                    if (currentPage === totalPages) {
+                        const loadMoreBtn = document.getElementById('load-more-btn');
+                        loadMoreBtn.disabled = true;
+                        loadMoreBtn.textContent = 'No More Tasks';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching tasks:', error);
+                });
         }
+
+
+        function fetchCollections() {
+            fetch('/get_collections')
+            .then(response => response.json())
+            .then(collections => {
+                const collectionFilter = document.getElementById('collection-name-filter');
+                collections.forEach(collection => {
+                    const option = document.createElement('option');
+                    option.value = collection;
+                    option.textContent = collection;
+                    collectionFilter.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching collections:', error));
+        }
+
+        function fetchPersons() {
+            fetch('/get_persons')
+            .then(response => response.json())
+            .then(persons => {
+                const personFilter = document.getElementById('person-id-filter');
+                persons.forEach(person => {
+                    const option = document.createElement('option');
+                    option.value = person.id;
+                    option.textContent = `[${person.id}] - ${person.name}`;
+                    personFilter.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching persons:', error));
+        }
+
+        fetchCollections();
+        fetchPersons();
+
+        // Add this function to handle the apply filters button click event
+        function applyFilters() {
+            const collectionFilter = document.getElementById('collection-name-filter');
+            const personFilter = document.getElementById('person-id-filter');
+
+            // Reset the currentPage and call loadTasks with new filters
+            currentPage = 1;
+            loadTasks(currentPage);
+        }
+
+        // Attach the click event to the "Apply Filters" button
+        document.getElementById('apply-filters-btn').addEventListener('click', applyFilters);
 
         // Initialize Task Viewer
         // fetchTasks(currentPage);
@@ -333,17 +436,17 @@
                     });
                 });
 
-        fetch('/get_persons')
-            .then(response => response.json())
-            .then(persons => {
-                const select = document.getElementById('person-select');
-                persons.forEach(person => {
-                    const option = document.createElement('option');
-                    option.value = person.id;
-                    option.textContent = person.name;
-                    select.appendChild(option);
+            fetch('/get_persons')
+                .then(response => response.json())
+                .then(persons => {
+                    const select = document.getElementById('person-select');
+                    persons.forEach(person => {
+                        const option = document.createElement('option');
+                        option.value = person.id;
+                        option.textContent = `[${person.id}] - ${person.name}`;
+                        select.appendChild(option);
+                    });
                 });
-            });
         }
 
         ////////////////////////////////////////////////
@@ -452,11 +555,6 @@
             });
         }
 
-
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     // Load scene edit data when the "Scene Edit" tab is clicked
-        //     document.getElementById('scene-edit-tab').addEventListener('click', loadSceneEditData);
-        // });
         document.getElementById('scene-edit-tab').addEventListener('shown.bs.tab', loadSceneEditData);
 
         let currentScenePage = 1;
@@ -568,53 +666,95 @@
 
         ////////////////////////////////////////////////
         // Person Tab
-        function loadPersonData() {
-            // Fetch the persons
-            fetch('/list_persons')
-                .then(response => response.json())
-                .then(persons => {
-                    const container = document.querySelector('#person-container');
-                    container.innerHTML = '';
-
-                    persons.forEach(person => {
-                        // Create person card
-                        const personCard = document.createElement('div');
-                        personCard.className = 'card mb-3';
-                        container.appendChild(personCard);
-
-                        // Create person card body
-                        const cardBody = document.createElement('div');
-                        cardBody.className = 'card-body';
-                        personCard.appendChild(cardBody);
-
-                        // Add person name
-                        const personName = document.createElement('h5');
-                        personName.className = 'card-title';
-                        personName.textContent = person.name;
-                        cardBody.appendChild(personName);
-
-                        // Add person photos container
-                        const photosContainer = document.createElement('div');
-                        photosContainer.className = 'd-flex flex-row flex-wrap';
-                        cardBody.appendChild(photosContainer);
-
-                        // Fetch photos for this person
-                        fetch(`/list_sources?person_id=${person.id}`)
-                            .then(response => response.json())
-                            .then(sources => {
-                                sources.forEach(source => {
-                                    const photo = document.createElement('img');
-                                    photo.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${source.base_img_key}`;
-                                    photo.className = 'img-thumbnail me-2 mb-2';
-                                    photo.style.maxWidth = '150px';
-                                    photosContainer.appendChild(photo);
-                                });
-                            })
-                            .catch(error => console.error('Error fetching sources:', error));
-                    });
-                })
-                .catch(error => console.error('Error fetching persons:', error));
+        async function getGeoLocation(ip, apiKey) {
+            const response = await fetch(`https://ipapi.co/${ip}/json`);
+            const data = await response.json();
+            return data;
         }
+
+        async function loadPersonData() {
+            // Fetch the persons
+            try {
+                const response = await fetch('/list_persons');
+                const persons = await response.json();
+
+                const container = document.querySelector('#person-container');
+                container.innerHTML = '';
+
+                for (const person of persons) {
+                    // Fetch geo location
+                    const geoData = await getGeoLocation(person.ip, 'your_api_key_here');
+                    const location = `${geoData.city}, ${geoData.region}, ${geoData.country_name}`;
+
+                    // Create person card
+                    const personCard = document.createElement('div');
+                    personCard.className = 'card mb-3';
+                    container.appendChild(personCard);
+
+                    // Create person card body
+                    const cardBody = document.createElement('div');
+                    cardBody.className = 'card-body';
+                    personCard.appendChild(cardBody);
+
+                    // Create a row for person info
+                    const infoRow = document.createElement('div');
+                    infoRow.className = 'row';
+                    cardBody.appendChild(infoRow);
+
+                    // Add person ID
+                    const personId = document.createElement('div');
+                    personId.className = 'col-md-4 mb-2';
+                    personId.innerHTML = `<h5 class="card-title mb-0">ID: ${person.id}</h5>`;
+                    infoRow.appendChild(personId);
+
+                    // Add person name
+                    const personName = document.createElement('div');
+                    personName.className = 'col-md-4 mb-2';
+                    personName.innerHTML = `<h5 class="card-title mb-0">Name: ${person.name}</h5>`;
+                    infoRow.appendChild(personName);
+
+                    // Add person user ID
+                    const personUserId = document.createElement('div');
+                    personUserId.className = 'col-md-4 mb-2';
+                    personUserId.innerHTML = `<h5 class="card-title mb-0">User ID: ${person.user_id}</h5>`;
+                    infoRow.appendChild(personUserId);
+
+                    // Add person IP and location
+                    const personIpLocation = document.createElement('div');
+                    personIpLocation.className = 'col-12 mb-2';
+                    personIpLocation.innerHTML = `<p class="card-text mb-0">IP: ${person.ip}, Location: ${location}</p>`;
+                    infoRow.appendChild(personIpLocation);
+
+                    // Add person photos container
+                    const photosContainer = document.createElement('div');
+                    photosContainer.className = 'd-flex flex-row flex-wrap';
+                    cardBody.appendChild(photosContainer);
+
+                    // Fetch photos for this person
+                    const sourcesResponse = await fetch(`/list_sources?person_id=${person.id}`);
+                    const sources = await sourcesResponse.json();
+
+                    sources.forEach(source => {
+                        const photo = document.createElement('img');
+                        const photoSrc = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${source.base_img_key}`;
+
+                        // Add FancyBox functionality
+                        const lightboxLink = document.createElement('a');
+                        lightboxLink.href = photoSrc;
+                        lightboxLink.setAttribute('data-fancybox', `gallery-${person.id}`);
+                        photosContainer.appendChild(lightboxLink);
+
+                        // Configure the thumbnail image
+                        photo.src = `${photoSrc}?x-oss-process=image/resize,w_150`;
+                        photo.className = 'img-thumbnail me-2 mb-2';
+                        lightboxLink.appendChild(photo);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching persons:', error);
+            }
+        }
+
 
         // Load person data when the Person tab is clicked
         document.getElementById('person-tab').addEventListener('click', loadPersonData);
