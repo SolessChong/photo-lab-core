@@ -1,6 +1,7 @@
-from core.face_mask import get_face_mask
+from core.face_mask import get_face_mask, crop_face_img
 import os
 import cv2
+import logging
 import json
 import numpy as np
 from scipy.stats import entropy
@@ -13,6 +14,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances
 from backend import models
 from backend.extensions import db, app
+import argparse
 
 from insightface.app import FaceAnalysis
 from insightface.data import get_image as ins_get_image
@@ -120,11 +122,18 @@ def estimate_jpeg_compression(image: np.ndarray) -> float:
     return compression_level
 
 def estimate_blurriness(image: np.ndarray) -> float:
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    face_area = pil_to_cv2(crop_face_img(image, 0.5)[0])
+    gray_image = cv2.cvtColor(face_area, cv2.COLOR_BGR2GRAY)
+
+    cv2.imwrite('face_area.png', gray_image)
+
     laplacian_variance = cv2.Laplacian(gray_image, cv2.CV_64F).var()
-    # map laplacian_variance from [100, 700] to [0, 1] linearly
-    laplacian_variance = (laplacian_variance - 100) / (700 - 100)
+    # map laplacian_variance from [0, 800] to [0, 1] linearly
+    laplacian_variance = (laplacian_variance - 0) / (800 - 0)
+
     return laplacian_variance
+
+
 
 def estimate_lighting_conditions(image: np.ndarray) -> float:
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -144,17 +153,24 @@ def analyze_image_quality(images: List[Image.Image]) -> dict:
     lighting_scores = []
 
     for image in images:
-        img_np = np.array(image.convert("RGB"))[:, :, ::-1].copy()
+        try:
+            img_np = np.array(image.convert("RGB"))[:, :, ::-1].copy()
 
-        jpeg_compression_scores.append(estimate_jpeg_compression(img_np))
-        blurriness_scores.append(estimate_blurriness(img_np))
-        lighting_scores.append(estimate_lighting_conditions(img_np))
-
+            jpeg_compression_scores.append(estimate_jpeg_compression(img_np))
+            blurriness_scores.append(estimate_blurriness(img_np))
+            lighting_scores.append(estimate_lighting_conditions(img_np))
+        except Exception as e:
+            logging.exception(f"Error: {e}")
+                
     avg_jpeg_compression = np.mean(jpeg_compression_scores)
     avg_blurriness = np.mean(blurriness_scores)
     avg_lighting = np.mean(lighting_scores)
+
+    # num_score: linear score, <10 imgs: 0; 1-20 imgs: 0-0.6; >20 imgs: 0.6-1
+    num_score = min(1, max(0, (len(images) - 10) / 10 * 0.6))
     
     quality_report = {
+        "num_score": num_score,
         "background_variety": background_variety_score,
         "face_pose_variety": face_pose_variety_score,
         "jpeg_compression": avg_jpeg_compression,
@@ -193,6 +209,9 @@ def analyze_person(person_id):
     
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--person_id", type=int, help="person id")    
+
     face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106', 'landmark_3d_68'])
     face_analysis.prepare(ctx_id=0, det_size=(640, 640))
 
@@ -201,7 +220,14 @@ if __name__ == "__main__":
 
     app.app_context().push()
 
-    # iterate over all persons id desc
-    persons = models.Person.query.order_by(models.Person.id.desc()).all()
+    if parser.parse_args().person_id:
+        persons = models.Person.query.filter_by(id=parser.parse_args().person_id).all()
+    else:
+        # iterate over all persons id desc
+        persons = models.Person.query.order_by(models.Person.id.desc()).all()
+
     for person in persons:
-        analyze_person(person.id)
+        try:
+            analyze_person(person.id)
+        except Exception as e:
+            logging.exception(f"Error: {e}")
