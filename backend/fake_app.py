@@ -297,9 +297,14 @@ def list_sources():
     sources_data = [{'base_img_key': s.base_img_key} for s in sources]
     return jsonify(sources_data)
 
+@app.route('/get_all_user', methods=['GET'])
+def get_all_user():
+    users = User.query.all()
+    user_ids = [user.user_id for user in users]
+    return jsonify({"data": {"user_ids": user_ids}})
 
 # Other endpoints remain the same...
 
 if __name__ == '__main__':
     # app.run(debug=True)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)

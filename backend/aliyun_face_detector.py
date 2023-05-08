@@ -1,9 +1,14 @@
+import base64
 import io
+import logging
 from PIL import Image
 from alibabacloud_facebody20191230.client import Client
 from alibabacloud_facebody20191230.models import DetectFaceAdvanceRequest
 from alibabacloud_tea_openapi.models import Config
 from alibabacloud_tea_util.models import RuntimeOptions
+from alibabacloud_imageseg20191230.client import Client as ImageSegClient
+from alibabacloud_imageseg20191230.models import SegmentBodyAdvanceRequest
+import requests
 
 # 阿里云API密钥
 access_key_id = 'LTAINBTpPolLKWoX'
@@ -13,6 +18,13 @@ config = Config(
     access_key_id=access_key_id,
     access_key_secret=access_key_secret,
     endpoint='facebody.cn-shanghai.aliyuncs.com',
+    region_id='cn-shanghai'
+)
+
+image_seg_config = Config(
+    access_key_id=access_key_id,
+    access_key_secret=access_key_secret,
+    endpoint='imageseg.cn-shanghai.aliyuncs.com',
     region_id='cn-shanghai'
 )
 
@@ -135,3 +147,54 @@ def crop_16_9_pil(image_data, face_coordinates):
     cropped_image_bytes = cropped_image_bytes.getvalue()
 
     return cropped_image_bytes
+
+def aliyun_human_segmentation(img):
+    try:
+        # 获取人脸坐标
+        face_coordinates = get_face_coordinates(img)
+
+        logging.info(f"face_coordinates: {face_coordinates}")
+
+        # 将人脸坐标矩阵放大到原来的2倍
+        x, y, width, height = face_coordinates
+        new_width, new_height = int(width * 1.5), int(height * 2)
+        left, top = x - (new_width - width) // 2, y - (new_height - height) // 2
+        right, bottom = left + new_width, top + new_height
+
+        # 处理边界情况
+        img_pil = Image.open(io.BytesIO(img))
+        left = max(0, left)
+        top = max(0, top)
+        right = min(img_pil.width, right)
+        bottom = min(img_pil.height, bottom)
+
+        # 截取放大后的人脸区域
+        cropped_image = img_pil.crop((left, top, right, bottom))
+
+        # 将截取后的图像转换为字节对象
+        cropped_image_bytes = io.BytesIO()
+        cropped_image.save(cropped_image_bytes, format='JPEG')
+
+        # 创建 SegmentBodyRequest 对象
+        segment_body_request = SegmentBodyAdvanceRequest()
+
+        # print("Cropped image bytes type:", type(cropped_image_bytes))
+
+        # segment_body_request.image_urlobject = cropped_image_bytes
+    #
+        segment_body_request.image_urlobject = io.BytesIO(cropped_image_bytes.getvalue())
+        runtime = RuntimeOptions()
+
+        # 初始化 ImageSegClient
+        image_seg_client = ImageSegClient(image_seg_config)
+        response = image_seg_client.segment_body_advance(segment_body_request, runtime)
+
+        if response is not None:
+            new_image = requests.get(response.body.data.image_url)
+            return new_image.content
+        else:
+            print("Error: No response or data received.")
+    except Exception as error:
+        print("Error:", error)
+
+    return None
