@@ -100,7 +100,7 @@ def task_train_lora(person_id, train_img_list, epoch=5):
         bucket.put_object_from_file(url, model_path)
         bucket.put_object_from_file(url + '.log', dataset_path / 'train.log')
         person.update_model_file(url)
-        person.train_note = f"Epoch: {epoch}, Dataset augmented, total_imgs: {total_imgs}"
+        person.train_note = f"Epoch: {epoch}, Dataset augmented, enlarge, total_imgs: {total_imgs}"
         db.session.add(person)
         db.session.commit()
         logging.info(f"  --- LORA model {person_id} Success")
