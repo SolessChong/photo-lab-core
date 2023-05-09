@@ -31,8 +31,8 @@ def get_face_mask(image: Image.Image, expand_face=0.6) -> List[Image.Image]:
 
         # estimate forhead with nose and eye
         vec = (lmk[39] + lmk[89]) / 2 - lmk[80]
-        left_forehead = lmk[1] + vec
-        right_forehead = lmk[17] + vec
+        left_forehead = lmk[1] + vec * 1.7
+        right_forehead = lmk[17] + vec * 1.7
 
         # Get the points of interest (landmarks) for the face mask
         mask_points = []
