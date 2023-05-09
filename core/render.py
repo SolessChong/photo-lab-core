@@ -157,7 +157,7 @@ def render_lora_on_base_img(task) -> Image:
 
         upper_body_coords.append((forehead_x, forehead_y))
 
-        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2.3)
+        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2.6)
         ######## save char_base_img
         if conf.DEBUG:
             char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_char_base_img_{i}")

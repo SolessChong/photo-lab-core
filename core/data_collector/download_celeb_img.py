@@ -2,12 +2,13 @@ import os
 import requests
 import json
 import shutil
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Replace with your Bing Image Search API key
 API_KEY = "87eaa95062ba42399cd23525e4de48c1"
 
 # Define the search query and parameters
-person_name = "周杰伦"
+person_name = "Rihanna"
 offset = 0
 search_query = person_name
 search_url = "https://api.bing.microsoft.com/v7.0/images/search"
@@ -26,9 +27,7 @@ os.makedirs("data", exist_ok=True)
 person_dir = os.path.join("pipeline/data", person_name)
 os.makedirs(person_dir, exist_ok=True)
 
-# Download the images
-for idx, image in enumerate(results["value"]):
-    image_url = image["contentUrl"]
+def download_image(idx, image_url, person_dir, offset):
     try:
         response = requests.get(image_url, stream=True, timeout=5)
         response.raise_for_status()
@@ -43,3 +42,17 @@ for idx, image in enumerate(results["value"]):
 
     except Exception as e:
         print(f"Error downloading image {idx}: {e}")
+
+
+# Download the images using multiple threads
+with ThreadPoolExecutor(max_workers=10) as executor:
+    futures = [
+        executor.submit(download_image, idx, image["contentUrl"], person_dir, offset)
+        for idx, image in enumerate(results["value"])
+    ]
+
+    for future in as_completed(futures):
+        try:
+            future.result()
+        except Exception as e:
+            print(f"Error occurred during download: {e}")
