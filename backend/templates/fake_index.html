@@ -632,12 +632,12 @@
                                 sceneRow.appendChild(tasksCol);
                                 tasks.forEach(task => {
                                     const taskImgLink = document.createElement('a');
-                                    taskImgLink.href = task.result_img_key;
+                                    taskImgLink.href = task.result_img_key; // Original size for FancyBox
                                     taskImgLink.setAttribute('data-fancybox', `gallery-${scene.scene_id}`);
                                     tasksCol.appendChild(taskImgLink);
 
                                     const taskImg = document.createElement('img');
-                                    taskImg.src = task.result_img_key;
+                                    taskImg.src = `${task.result_img_key}?x-oss-process=image/resize,w_400`; // Preview with width 400px
                                     taskImg.className = 'task-img';
                                     taskImgLink.appendChild(taskImg);
                                 });
@@ -670,7 +670,7 @@
 
         function loadMoreScenes() {
             currentScenePage += 1;
-            loadSceneEditData(currentPage, currentCollectionFilter);
+            loadSceneEditData(currentScenePage, currentCollectionFilter);
         }
 
 
