@@ -15,6 +15,7 @@ from sklearn.metrics import pairwise_distances
 from backend import models
 from backend.extensions import db, app
 import argparse
+from typing import Tuple, Dict
 
 from insightface.app import FaceAnalysis
 from insightface.data import get_image as ins_get_image
@@ -23,6 +24,20 @@ from insightface.data import get_image as ins_get_image
 # Global variables
 model = None
 face_analysis = None
+
+def get_face_analysis() -> FaceAnalysis:
+    global face_analysis
+    if face_analysis is None:
+        face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106', 'landmark_3d_68'])
+        face_analysis.prepare(ctx_id=0, det_size=(640, 640))
+    return face_analysis
+
+def get_model() -> vgg16:
+    global model
+    if model is None:
+        model = vgg16(pretrained=True)
+        model.eval()
+    return model
 
 
 ######## Background variety ########
@@ -64,7 +79,7 @@ def analyze_background_variety(images: List[Image.Image]) -> float:
         face_masks = get_face_mask(image)
         for face_mask in face_masks:
             background = extract_background(image, face_mask)
-            features = image_to_feature_vector(background, model)
+            features = image_to_feature_vector(background, get_model())
             feature_vectors.append(features)
 
     # Ensure all feature vectors have the same shape
@@ -90,7 +105,7 @@ def analyze_face_pose_variety(images: List[Image.Image]) -> float:
 
     for image in images:
         img = pil_to_cv2(image)
-        rst = face_analysis.get(img)
+        rst = get_face_analysis().get(img)
         
         if len(rst) > 0:
             pose = rst[0].pose
@@ -179,17 +194,16 @@ def analyze_image_quality(images: List[Image.Image]) -> dict:
     }
     
     comments = []
-    with open("core/resources/image_quality_suggestions.json", "r") as f:
+    with open(os.path.join(os.path.dirname(__file__), "resources/image_quality_suggestions.json"), "r") as f:
         suggestions = json.load(f)
     for key, value in quality_report.items():
         if value < suggestions[key]["threshold"]:
             comments.append(f"{suggestions[key]['problem']}:\n{suggestions[key]['suggestion']}\n")
-    
-    comment_string = "\n".join(comments)
-    
+
+    comment_string = "\n".join(comments)    
     return quality_report, comment_string
 
-def analyze_person(person_id):
+def analyze_person(person_id: int) -> Tuple[Dict, str]:
     sources = models.Source.query.filter_by(person_id=person_id).all()
     if len(sources) == 0:
         print("===== Person {} =====".format(person_id))
@@ -200,12 +214,12 @@ def analyze_person(person_id):
         images.append(read_PILimg(source.base_img_key))
     quality_report, comment_string = analyze_image_quality(images)
     print("===== Person {} =====".format(person_id))
-    print(quality_report)
-    print(comment_string)
     person =  models.Person.query.get(person_id)
     person.dataset_quality = quality_report
     db.session.add(person)
     db.session.commit()
+
+    return quality_report, comment_string
     
 def is_qualified(quality_report, suggestions):
     for key, value in quality_report.items():
@@ -216,12 +230,6 @@ def is_qualified(quality_report, suggestions):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--person_id", type=int, help="person id")    
-
-    face_analysis = FaceAnalysis(allowed_modules=['detection', 'landmark_2d_106', 'landmark_3d_68'])
-    face_analysis.prepare(ctx_id=0, det_size=(640, 640))
-
-    model = vgg16(pretrained=True)
-    model.eval()
 
     app.app_context().push()
 
