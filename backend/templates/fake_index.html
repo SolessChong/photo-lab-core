@@ -86,6 +86,10 @@
             <a class="nav-link" id="user-result-tab" data-bs-toggle="tab" href="#user-result" role="tab"
                 aria-controls="user-result" aria-selected="false">User Result</a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="create-scene-tab" data-bs-toggle="tab" href="#create-scene" role="tab"
+               aria-controls="create-scene" aria-selected="false">Create Scene</a>
+        </li>
     </ul>
     <div class="tab-content" id="mainTabsContent">
         <div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
@@ -232,6 +236,53 @@
             </div>
         </div>
         
+        <div class="tab-pane fade" id="create-scene" role="tabpanel" aria-labelledby="create-scene-tab">
+            <!-- Scene creation form goes here -->
+            <!-- Copy Scene From -->
+            <label for="copy-scene-id">Copy from Scene ID:</label>
+            <input type="number" id="copy-scene-id" class="form-control mb-2" placeholder="Enter Scene ID">
+            <button id="load-scene" class="btn btn-primary mb-3">Load Scene</button>
+
+            <form id="create-scene-form">
+                <div class="mb-3">
+                    <label for="prompt" class="form-label">Prompt</label>
+                    <textarea class="form-control" id="prompt" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="params" class="form-label">Params</label>
+                    <textarea class="form-control" id="params" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="negative-prompt" class="form-label">Negative Prompt</label>
+                    <textarea class="form-control" id="negative-prompt" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="base-img-key" class="form-label">Base Image</label>
+                    <input class="form-control" type="file" id="base-img-key">
+                </div>
+                <div class="mb-3">
+                    <label for="collection-name" class="form-label">Collection Name</label>
+                    <input type="text" class="form-control" id="collection-name">
+                </div>
+                <div class="mb-3">
+                    <label for="action-type" class="form-label">Action Type</label>
+                    <select class="form-select" id="action-type">
+                        <option value="sd">SD</option>
+                        <option value="mj">MJ</option>
+                        <option value="reface">Reface</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="img-type" class="form-label">Image Type</label>
+                    <select class="form-select" id="img-type">
+                        <option value="girl">Girl</option>
+                        <option value="boy">Boy</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Scene</button>
+            </form>
+            <div id="scene-creation-result"></div>            
+        </div>
         
     </div>
 
@@ -807,6 +858,79 @@
 
         // Initialize the user ID selection and load the results
         loadAllUserIds();
+
+
+        ////////////////////////////////////////////////
+        // Create Scene Tab
+        document.getElementById('create-scene-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const promptInput = document.getElementById('prompt');
+            const paramsInput = document.getElementById('params');
+            const negativePromptInput = document.getElementById('negative-prompt');
+            const collectionNameInput = document.getElementById('collection-name');
+            const actionTypeInput = document.getElementById('action-type');
+            const imgTypeInput = document.getElementById('img-type');
+            const fileInput = document.getElementById('base-img-key'); // Added this line
+
+            const formData = new FormData();
+            formData.append('base_img_key', fileInput.files[0]);
+            formData.append('prompt', promptInput.value);
+            formData.append('params', paramsInput.value);
+            formData.append('negative_prompt', negativePromptInput.value);
+            formData.append('collection_name', collectionNameInput.value);
+            formData.append('action_type', actionTypeInput.value);
+            formData.append('img_type', imgTypeInput.value);
+
+
+            fetch('/api/create_scene', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('scene-creation-result').innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    document.getElementById('scene-creation-result').innerHTML = `<div class="alert alert-success">Scene created successfully with ID: ${data.scene_id}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('scene-creation-result').innerHTML = `<div class="alert alert-danger">Error creating scene. Please try again.</div>`;
+            });
+        });
+
+        document.getElementById('load-scene').addEventListener('click', () => {
+            const sceneIdInput = document.getElementById('copy-scene-id');
+            const sceneId = sceneIdInput.value;
+
+            fetch(`/api/get_scene?scene_id=${sceneId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('scene-creation-result').innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                    } else {
+                        const promptInput = document.getElementById('prompt');
+                        const paramsInput = document.getElementById('params');
+                        const negativePromptInput = document.getElementById('negative-prompt');
+                        const collectionNameInput = document.getElementById('collection-name');
+                        const actionTypeInput = document.getElementById('action-type');
+                        const imgTypeInput = document.getElementById('img-type');
+                        
+                        promptInput.value = data.prompt;
+                        paramsInput.value = JSON.stringify(data.params, null, 2);
+                        negativePromptInput.value = data.negative_prompt;
+                        collectionNameInput.value = data.collection_name;
+                        actionTypeInput.value = data.action_type;
+                        imgTypeInput.value = data.img_type;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('scene-creation-result').innerHTML = `<div class="alert alert-danger">Error loading scene. Please try again.</div>`;
+                });
+        });
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
