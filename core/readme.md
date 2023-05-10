@@ -115,6 +115,7 @@ chord(celery_worker.task_train_lora.s(3, ['source/yi/2/d5010894d2fd8cbd3518e39c7
 - 265 25p 网红2 10 epoch * (2500+1500) -> 40k iter
 - 216 10p 韬哥妹妹 
 - 293 20p Ins姐 
+- 299 20p Ins姐 Train v0.2.0
 - 301 10p 韬哥妹妹 color, flip aug.
 - 340 10p 冯一妹妹 color, flip aug, rot aug, rembg
 - 344 10p 台湾发型师 color, flip aug, rot aug, rembg

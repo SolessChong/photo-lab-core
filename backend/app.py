@@ -41,7 +41,7 @@ def create_user():
     logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
 
     # Create a new user with the generated user_id
-    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = 1, min_img_num = 20, max_img_num = 100)
+    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = 1, min_img_num =15, max_img_num = 100)
     if random.random() < 0.75:
         new_user.group = 2
         new_user.min_img_num = 2
