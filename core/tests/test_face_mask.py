@@ -12,6 +12,7 @@ class TestOps(unittest.TestCase):
         return super().setUp()
     
     def test_face_mask(self):
-        # rst = face_analysis.get( pil_to_cv2(Image.open('photo-lab-core/core/tests/dataset/1.png')))
-        # self.assertTrue(len(rst) > 0)
+        image = Image.open(os.path.join(os.path.dirname(__file__), 'dataset/1.png'))
+        rst = get_face_mask(image)
+        self.assertTrue(rst is not None)
         pass

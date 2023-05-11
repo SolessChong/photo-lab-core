@@ -12432,3 +12432,5 @@ requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
 [2023-05-12 00:32:03 +0800] [638574] [INFO] DwRFwtNV80 start to  train lora 491
 [2023-05-12 00:32:17 +0800] [638577] [INFO] get_generated_images user_id: DwRFwtNV80
 [2023-05-12 00:32:17 +0800] [638577] [INFO] adding tasks number: 0
+[2023-05-12 00:33:25 +0800] [638570] [INFO] get_generated_images user_id: HdRn40WAVQ
+[2023-05-12 00:33:25 +0800] [638570] [INFO] adding tasks number: 200

@@ -80,7 +80,7 @@ async function loadAllUserIds() {
     try {
         const response = await fetch('/get_all_user');
         const data = await response.json();
-        const sortedUserIds = data.data.user_ids.sort((a, b) => b.localeCompare(a, undefined, {numeric: true}));
+        const sortedUserIds = data.data.user_ids;
         const userSelect = document.querySelector('#user-select');
 
         // Clear the default option

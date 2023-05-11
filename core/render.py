@@ -17,9 +17,10 @@ from core.libs.openpose.body import Body
 from core import pose_detect
 import numpy as np
 import typing
+import argparse
 from backend import models
 from core.libs.openpose.util import draw_bodypose
-from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg
+from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, read_cv2img, read_PILimg, write_cv2img, write_PILimg
 
 # create API client with custom host, port
 
@@ -157,7 +158,7 @@ def render_lora_on_base_img(task) -> Image:
 
         upper_body_coords.append((forehead_x, forehead_y))
 
-        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=3)
+        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2.6)
         ######## save char_base_img
         if conf.DEBUG:
             char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_char_base_img_{i}")
@@ -233,38 +234,70 @@ def render_lora_on_base_img(task) -> Image:
 
 # main program
 if __name__ == "__main__":
+    # Argument 'task'
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--task", help="task id")
+    # Argument 'person‘
+    parser.add_argument("--person", help="person id")
+    # Argument 'scene'
+    parser.add_argument("--scene", help="scene id")
 
-    prompt = """
-    (8k, best quality, masterpiece:1.2), (realistic, photo-realistic:1.5),a girl, , dating,(smile:1.15),  small breasts, beautiful detailed eyes, ,full body, , ,
-    """
+    args = parser.parse_args()
+    task_id = args.task
+    person_id = args.person
+    scene_id = args.scene
+    # Should have task, or (person and scene)
+    assert task_id or (person_id and scene_id), "  -- ❌ Task id or (person id and scene id) is required."
 
-    for i in range(10, 16):
-        for fn in os.listdir(f"pipeline/data/base_img/{i}/"):
-            if fn.endswith(".png"):
-                try:
-                    # filename without extension
-                    fn = os.path.splitext(fn)[0]
-                    task = {
-                        'task_id': '0000001',
-                        'scene_id': f'{i}/{fn}',
-                        'lora_list': ['zheng-girl-r-2-000009'],
-                        'prompt': prompt,
-                        'params':{
-                            "negative_prompt": "EasyNegative, paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans,extra fingers,fewer fingers,strange fingers,bad hand",
-                            "inpainting_fill": 1,
-                            "inpaint_full_res": False,
-                            "seed": -1,
-                            "sampler_name": "DPM++ SDE Karras",
-                            "restore_faces": True,
-                            "width": conf.LORA_ROI_RENDERING_SETTINGS['size'][0],
-                            "height": conf.LORA_ROI_RENDERING_SETTINGS['size'][1],
-                            "cfg_scale": 7,
-                            "steps": 40,
-                            "denoising_strength": 0.4
-                        }
-                    }
+    if task_id:
+        task = models.Task.query.get(task_id)
+        img = render_lora_on_base_img(task)
+        write_PILimg(img, ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id))
+        db.session.add(task)
+        db.session.commit()
+
+    elif person_id and scene_id:
+        from backend.extensions import db, app
+        app.app_context().push()
+        task = models.Task(scene_id=scene_id, person_id_list=[person_id])
+        db.session.add(task)
+        img = render_lora_on_base_img(task)
+        task.result_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
+        write_PILimg(img, task.result_img_key)
+        db.session.commit()
+
+
+    # prompt = """
+    # (8k, best quality, masterpiece:1.2), (realistic, photo-realistic:1.5),a girl, , dating,(smile:1.15),  small breasts, beautiful detailed eyes, ,full body, , ,
+    # """
+
+    # for i in range(10, 16):
+    #     for fn in os.listdir(f"pipeline/data/base_img/{i}/"):
+    #         if fn.endswith(".png"):
+    #             try:
+    #                 # filename without extension
+    #                 fn = os.path.splitext(fn)[0]
+    #                 task = {
+    #                     'task_id': '0000001',
+    #                     'scene_id': f'{i}/{fn}',
+    #                     'lora_list': ['zheng-girl-r-2-000009'],
+    #                     'prompt': prompt,
+    #                     'params':{
+    #                         "negative_prompt": "EasyNegative, paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans,extra fingers,fewer fingers,strange fingers,bad hand",
+    #                         "inpainting_fill": 1,
+    #                         "inpaint_full_res": False,
+    #                         "seed": -1,
+    #                         "sampler_name": "DPM++ SDE Karras",
+    #                         "restore_faces": True,
+    #                         "width": conf.LORA_ROI_RENDERING_SETTINGS['size'][0],
+    #                         "height": conf.LORA_ROI_RENDERING_SETTINGS['size'][1],
+    #                         "cfg_scale": 7,
+    #                         "steps": 40,
+    #                         "denoising_strength": 0.4
+    #                     }
+    #                 }
                     
-                    render_lora_on_base_img(task)
-                except Exception as e:
-                    logging.error(f" ❌ ERROR: {fn}, {e}")
-                    continue
+    #                 render_lora_on_base_img(task)
+    #             except Exception as e:
+    #                 logging.error(f" ❌ ERROR: {fn}, {e}")
+    #                 continue

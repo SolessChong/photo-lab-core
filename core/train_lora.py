@@ -58,17 +58,20 @@ def detect_subject_and_crop(dataset_path, size=512, remove_bg=True, enlarge=1.2)
             # use pose estimation by MediaPipe. Better
             if image is None:
                 continue
-            subj_img, _ = pose_detect.crop_upper_body_img(image, enlarge=enlarge)
-            if subj_img is None:
-                continue
+            enlarge_aug_list = [1, 1.1, 1.2]
+            for i in range(len(enlarge_aug_list)):
+                subj_img, _ = pose_detect.crop_upper_body_img(image, enlarge=enlarge * enlarge_aug_list[i])
+                if subj_img is None:
+                    continue
 
-            # remove background using rembg
-            if remove_bg:
-                subj_img = rembg.remove(subj_img, bgcolor=(255, 255, 255, 255))
+                # remove background using rembg
+                if remove_bg:
+                    subj_img = rembg.remove(subj_img, bgcolor=(255, 255, 255, 255))
 
-            subj_img = cv2.resize(subj_img, (size, size), interpolation=cv2.INTER_LANCZOS4)
-            # save image
-            cv2.imwrite(str(Path(img_train_path) / img_fn), subj_img)
+                subj_img = cv2.resize(subj_img, (size, size), interpolation=cv2.INTER_LANCZOS4)
+                # save images
+                file_name, file_ext = os.path.splitext(img_fn)
+                cv2.imwrite(str(Path(img_train_path) / f"{file_name}_enlarge_{i}{file_ext}"), subj_img)
         except Exception as e:
             logging.exception(f"error processing image: {img_fn}")
 

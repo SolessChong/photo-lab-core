@@ -1,0 +1,7 @@
+(masterpiece:1.1, best quality), (real picture, intricate details), girl_userxx, solo, upper body, Clothes: dress, Appearance: silver hair ,long hair, blue eyes, large breasts, expressionless, Behavior: cup, Location: garden, Hobbies:, Background: white background, simple background, looking at viewer, illustration, artistic, minimalism, Anna Dittman, fantasy illustration, a storybook illustration, fantasy art
+
+<lora:flat illustration:1>, 
+<lora:user_366:1>, a close-up photo of girl_userxx,
+
+Negative prompt: (worst quality, low quality:1.4), badhandv4, easynegative, verybadimagenegative_v1.3,multiple views, multiple panels, blurry, watermark, letterbox, text, earrings, headgear, lowres, bad anatomy, bad hands, error, missing fingers, extra digit, fewer digits, cropped, normal quality, jpeg artifacts, signature,username, NSFW, naked, large breasts,
+Steps: 20, Sampler: DPM++ SDE Karras, CFG scale: 7, Seed: 20595493, Size: 512x512, Model hash: 59ffe2243a, Model: chilloutmix_NiPrunedFp16Fix, Denoising strength: 0.52, Mask blur: 4

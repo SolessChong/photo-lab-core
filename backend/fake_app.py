@@ -6,11 +6,15 @@ from flask_sqlalchemy import SQLAlchemy
 from backend.extensions import  app, db
 from flask_cors import CORS
 import json
+from PIL import Image
+from core.resource_manager import *
 from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task
 from celery import Celery, chain, chord, group, signature
 from backend.config import CELERY_CONFIG
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
+from werkzeug.datastructures import FileStorage
+from io import BytesIO
 
 app.app_context().push()
 
@@ -70,7 +74,7 @@ def list_scenes():
 
     # Filter scenes based on the collection_name_filter if it's not empty
     if collection_name_filter:
-        scenes_pagination = Scene.query.filter(Scene.collection_name.contains(collection_name_filter)).order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+        scenes_pagination = Scene.query.filter(Scene.collection_name.contains(collection_name_filter.replace('\\', '\\\\'))).order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
     else:
         scenes_pagination = Scene.query.order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
 
@@ -208,7 +212,7 @@ def generate_tasks():
     data = request.get_json()
     collection_name = data['collection_name']
     person_id = data['person_id']
-    person_id_list = f'[{person_id}]'
+    person_id_list = [person_id]
 
     # Filter all scenes with collection_name
     scene_list = Scene.query.filter_by(collection_name=collection_name).all()
@@ -216,7 +220,7 @@ def generate_tasks():
     # Create tasks with person_id and collection_name
     task_id_list = []
     for scene in scene_list:
-        task = Task(scene_id=scene.scene_id, person_id_list=person_id_list)
+        task = Task(scene_id=scene.scene_id, person_id_list=person_id_list, status='wait')
         db.session.add(task)
         db.session.flush()
         task_id_list.append(task.id)
@@ -299,12 +303,58 @@ def list_sources():
 
 @app.route('/get_all_user', methods=['GET'])
 def get_all_user():
-    users = User.query.all()
+    users = User.query.order_by(User.id.desc()).all()
     user_ids = [user.user_id for user in users]
     return jsonify({"data": {"user_ids": user_ids}})
 
 # Other endpoints remain the same...
 
+####################
+### Create Scene Tab
+@app.route('/api/create_scene', methods=['POST'])
+def create_scene():
+    form_data = request.form
+    img_file: FileStorage = request.files.get('base_img_key')
+
+    if img_file:
+        img = Image.open(BytesIO(img_file.read()))
+        img_key = 'path/to/oss/folder/' + form_data['collection_name'] + '/' + img_file.filename
+        img_key = img_key.split('.')[0] + '.png'
+        write_PILimg(img, img_key)
+
+        scene = Scene(
+            base_img_key=img_key,
+            prompt=form_data['prompt'],
+            action_type=form_data['action_type'],
+            img_type=form_data['img_type'],
+            negative_prompt=form_data['negative_prompt'],
+            params=json.loads(form_data['params']) if form_data['params'] else None,
+            collection_name=form_data['collection_name'],
+            setup_status="wait",
+        )
+
+        db.session.add(scene)
+        db.session.commit()
+
+        return jsonify({'scene_id': scene.scene_id})
+    else:
+        return jsonify({'error': 'No image file provided'}), 400
+    
+@app.route('/api/get_scene', methods=['GET'])
+def get_scene():
+    scene_id = request.args.get('scene_id', type=int)
+    if not scene_id:
+        return jsonify({'error': 'No scene ID provided'}), 400
+
+    scene = Scene.query.filter_by(scene_id=scene_id).first()
+
+    if scene:
+        return jsonify(scene.to_dict())
+    else:
+        return jsonify({'error': 'Scene not found'}), 404
+
+
+
 if __name__ == '__main__':
     # app.run(debug=True)
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=5000)

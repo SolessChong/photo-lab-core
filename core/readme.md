@@ -108,8 +108,20 @@ chord(celery_worker.task_train_lora.s(3, ['source/yi/2/d5010894d2fd8cbd3518e39c7
 - 185 8p 胖姐, 20 epoch * (2500+1500) -> 80k iter
 - 204 10p 小妹妹
 - 206 10p qian ge 
+- 226 10p 努力妞
+- 233 10p 冯二妹妹 原始
 - 263 10p 冯一妹妹 10 epoch * (2500+1500) -> 40k iter
 - 264 25p 网红2 10 epoch * (2500+1500) -> 40k iter
 - 265 25p 网红2 10 epoch * (2500+1500) -> 40k iter
 - 216 10p 韬哥妹妹 
+- 293 20p Ins姐 
+- 299 20p Ins姐 Train v0.2.0
 - 301 10p 韬哥妹妹 color, flip aug.
+- 340 10p 冯一妹妹 color, flip aug, rot aug, rembg
+- 344 10p 台湾发型师 color, flip aug, rot aug, rembg
+- 346 10p 冯一妹妹 color, flip aug, rot aug, enlarge aug, no rembg
+- 348 10p 努力妞 color, flip aug, rot aug, enlarge aug, no rembg
+- 354 10p Diana, Train v0.2.0
+- 358 30p 网红2, Train v0.2.0
+- 366 20p 杨幂 Train v0.2.0
+- 384 50p Taylor Swift Train v0.2.0

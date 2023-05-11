@@ -45,3 +45,14 @@ Dataset Quality
                 "num_score": 0
             }
             ···
+
+## 0509
+Train v0.2.0:
+效果对比：
+- 台湾发型师
+    - 原图 ![img](https://photolab-test.oss-cn-shenzhen.aliyuncs.com/result/render/24585.png)
+    - v0.2.0 ![img](https://photolab-test.oss-cn-shenzhen.aliyuncs.com/result/render/23116.png)
+    - v0.2.0 ![img](https://photolab-test.oss-cn-shenzhen.aliyuncs.com/result/render/23104.png)
+
+- State-of-the-art
+  - ![img](https://photolab-test.oss-cn-shenzhen.aliyuncs.com/result/render/24487.png) Taylor Swif
