@@ -39,3 +39,4 @@ import
 
 # log
 *.log
+nohup.out
