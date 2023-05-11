@@ -14,7 +14,7 @@ class Example(db.Model):
 
 class BdClick(db.Model):
     __tablename__ = 'bd_clicks'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ip = db.Column(db.String(255), nullable=True)
     ua = db.Column(db.String(255), nullable=True)
     callback = db.Column(db.String(255), nullable=True)
@@ -168,6 +168,7 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(45), nullable=True)
     payment_amount = db.Column(db.Integer, nullable=True)
-    receipt = db.Column(db.String(45), nullable=True)
+    # receipt 类型是mysql text
+    receipt = db.Column(db.Text, nullable=True)
     pack_id = db.Column(db.Integer, nullable=True)
     product_id = db.Column(db.String(45), nullable=True)
