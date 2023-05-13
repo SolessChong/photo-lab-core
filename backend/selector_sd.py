@@ -1,11 +1,12 @@
 # 这是推荐照片算法的核心模块，故单独抽取出一个文件 
 # v0.1 
-#     输入category和person_id_list，在本文件规定好collection的顺序，按照collection加入结果队列，直到照片得到50张为止。
+#     输入category和person_id_list，根据scene的rate排序，将没有生成过的task加入collection加入结果队列，直到照片得到50张为止。
 # v0.2
 #     用户可以选择自己喜欢的collection，根据用户选择以及相似的tag排序得到前50张有效照片
 
 import logging
 from . import models
+from sqlalchemy import and_, cast, String
 from .extensions import db
 
 def generate_sd_task(category, person_id_list, user_id, pack_id, limit=20, wait_status='wait'):
@@ -21,8 +22,16 @@ def generate_sd_task(category, person_id_list, user_id, pack_id, limit=20, wait_
     # 2. Check for existing tasks and calculate new combinations
     new_combinations = []
     for scene in scenes:
-        if not models.Task.query.filter_by(scene_id=scene.scene_id, person_id_list=person_id_list, user_id=user_id).first():
+        # filtered_tasks = models.Task.query.filter_by(scene_id=scene.scene_id, user_id=user_id)
+        # if not filtered_tasks.filter(
+        #     cast(models.Task.person_id_list, String) == str(person_id_list)
+        # ).first():
+        
+        # 修改为按照user_id过滤scene
+        # 下一版本为为按照用户风格选择
+        if not models.Task.query.filter_by(scene_id=scene.scene_id, user_id=user_id).first():
             new_combinations.append((scene.scene_id, person_id_list))
+            
         if (len(new_combinations) >= limit):
             break
     new_combinations = new_combinations[:limit]

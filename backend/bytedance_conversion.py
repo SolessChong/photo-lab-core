@@ -43,6 +43,7 @@ def bd_click():
 
         db.session.add(new_click)
         db.session.commit()
+        logging.info('New click saved: {}'.format(new_click))
 
         response = {
             'status': 'success',
@@ -50,6 +51,7 @@ def bd_click():
         }
         return jsonify(response), 200
     else:
+        logging.error('Missing required parameters.')
         response = {
             'status': 'error',
             'message': 'Missing required parameters.'

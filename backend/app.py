@@ -8,6 +8,8 @@ from celery import group, Celery, chain, chord
 import logging
 import argparse
 import ast
+import requests
+from .config import wait_status
 
 from backend.extensions import  app, db
 from . import aliyun_face_detector
@@ -41,8 +43,8 @@ def create_user():
     logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
 
     # Create a new user with the generated user_id
-    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = 1, min_img_num =15, max_img_num = 100)
-    if random.random() < 0.75:
+    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = 1, min_img_num = 15, max_img_num = 30)
+    if random.random() < 0.01:
         new_user.group = 2
         new_user.min_img_num = 2
         new_user.max_img_num = 5
@@ -50,6 +52,21 @@ def create_user():
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
     db.session.commit()
+
+    # send active request to toutiao
+    click = models.BdClick.query.filter(models.BdClick.ip == user_ip, models.BdClick.con_status==0).order_by(models.BdClick.id.desc()).first()
+    if click:
+        try:
+            requests.get(click.callback)
+            click.con_status = 1
+            click.user_id = user_id
+            db.session.add(click)
+            db.session.commit()
+            logging.info(f'update click {click.id} to user {user_id}')
+        except Exception as e:
+            logging.error(f'update click {click.id} to user {user_id} error: {e}')
+    else:
+        logging.error(f'no click for ip {user_ip}')
 
     # Create the response object with the specified format
     response = {
@@ -115,9 +132,11 @@ def get_user():
 
 @app.route('/api/upload_payment', methods=['GET'])
 def upload_payment():
+    logger.info(f'upload_payment request args is {request.args}')
     missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id'] 
                       if request.args.get(param) is None]
     if missing_params:
+        logger.error(f'upload_payment missing params {missing_params}')
         return jsonify({"error": f"Missing parameters: {', '.join(missing_params)}"}), 400
 
     user_id = request.args.get('user_id')
@@ -311,7 +330,26 @@ def upload_multiple_sources():
         "data": {
             "person_id": person_id,
             "person_name": person_name,
-            "success_count": success_count
+            "success_count": success_count,
+            "checklist": [
+            {
+                "title": "背景多样性",
+                "hint": "上传更多背景不同的照片",
+                "score": 87,
+                "is_ok": 1
+            },
+            {
+                "title": "人物照片清晰度",
+                "hint": "上传清晰的人物照片",
+                "score": 43,
+                "is_ok": 0
+            },
+            {
+                "title": "人物角度多样性",
+                "hint": "上传更多不同角度的人物照片",
+                "score": 40,
+                "is_ok": 0
+            }]
         }
     }
     
@@ -334,7 +372,6 @@ def start_sd_generate():
     person_id_list.sort()
     category = request.form['category']
     limit = request.form.get('limit', 50, type=int)
-    wait_status = request.form.get('wait_status', 'wait')
     
     pack = models.Pack(user_id=user_id, total_img_num=0, start_time= datetime.utcnow(), description='合集')
     db.session.add(pack)
