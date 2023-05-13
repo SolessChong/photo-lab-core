@@ -110,22 +110,35 @@ def remove_scene_logo(scene_id, location, length=None, width=None):
 
 if __name__ == "__main__":
     from backend.extensions import app, db
+    app.app_context().push()
     
     # take scene from argparser
     argparser = argparse.ArgumentParser()
     # read scenes, list of int
-    argparser.add_argument("--scene", type=int, nargs='+', required=True, help="scene id")
+    argparser.add_argument("--scene", type=int, nargs='+', help="scene id")
+    argparser.add_argument("--collection_name", type=str, nargs='+', help="scene collection name")
     argparser.add_argument("--location", type=int, required=True, help="logo location, range from 1 to 6, 1: left top; 2: right top; 3: left bottom; 4: right bottom; 5: middle top; 6: middle bottom")
     # read length and width from argparser
     argparser.add_argument("--length", type=int, help="logo length", default=600)
     argparser.add_argument("--width", type=int, help="logo width", default=100)
 
     args = argparser.parse_args()
+
+    # collection name or scene is required arg.
+    assert args.scene or args.collection_name, "scene or collection_name is required"
     scene = args.scene
+    collection_name = args.collection_name
     location = args.location
 
-    print(f"scene_id: {scene}, location: {location}, length: {args.length}, width: {args.width}")
-    for scene_id in scene:
-        remove_scene_logo(scene_id, location, length=args.length, width=args.width)
+    if scene:
+        print(f"scene_id: {scene}, location: {location}, length: {args.length}, width: {args.width}")
+        for scene_id in scene:
+            remove_scene_logo(scene_id, location, length=args.length, width=args.width)
+    if collection_name:
+        print(f"collection_name: {collection_name}, location: {location}, length: {args.length}, width: {args.width}")
+        for cn in collection_name:
+            scenes = models.Scene.query.filter_by(collection_name=cn).all()
+            for scene in scenes:
+                remove_scene_logo(scene.id, location, length=args.length, width=args.width)
 
     db.session.close()
