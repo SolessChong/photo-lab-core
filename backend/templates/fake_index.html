@@ -116,6 +116,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Payment Stats
+                            </div>
+                            <div class="card-body" id="payment-stats">
+                                <!-- Scene stats will be populated here -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -307,6 +317,15 @@
                 .catch(error => {
                     console.error('Error fetching scene stats:', error);
                 });
+
+            fetch('/get_payment_stats')
+                .then(response => response.json())
+                .then(paymentStats => {
+                    displayPaymentStats(paymentStats);
+                })
+                .catch(error => {
+                    console.error('Error fetching payment stats:', error);
+                });
         }
 
         function displayTaskStats(taskStats) {
@@ -325,6 +344,24 @@
                 <p>Finish: ${sceneStats.finish}</p>
                 <p>Fail: ${sceneStats.fail}</p>
             `;
+        }
+
+        function displayPaymentStats(paymentStats) {
+            const paymentStatsElem = document.getElementById('payment-stats');
+            let innerHTML = '<div class="card"><div class="card-header">Recent Payments</div><div class="card-body"><table class="table table-striped"><thead><tr><th>ID</th><th>User ID</th><th>Amount</th><th>Receipt</th><th>Pack ID</th><th>Product ID</th></tr></thead><tbody>';
+            
+            for(let i = 0; i < paymentStats.length; i++) {
+                innerHTML += `<tr>
+                                <td>${paymentStats[i].id}</td>
+                                <td>${paymentStats[i].user_id}</td>
+                                <td>${paymentStats[i].payment_amount}</td>
+                                <td>${paymentStats[i].pack_id}</td>
+                                <td>${paymentStats[i].product_id}</td>
+                            </tr>`;
+            }
+
+            innerHTML += '</tbody></table></div></div>';
+            paymentStatsElem.innerHTML = innerHTML;
         }
 
         // Fetch stats when the dashboard tab is shown

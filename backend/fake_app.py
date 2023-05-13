@@ -8,7 +8,7 @@ from flask_cors import CORS
 import json
 from PIL import Image
 from core.resource_manager import *
-from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task
+from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task, Payment
 from celery import Celery, chain, chord, group, signature
 from backend.config import CELERY_CONFIG
 from sqlalchemy import func
@@ -283,6 +283,20 @@ def scene_stats():
     for status in setup_statuses:
         scene_counts[status] = Scene.query.filter(Scene.setup_status == status).count()
     return jsonify(scene_counts)
+
+@app.route('/get_payment_stats', methods=['GET'])
+def payment_stats():
+    payments = Payment.query.order_by((Payment.id.desc())).limit(10).all()
+    payment_stats = []
+    for payment in payments:
+        payment_stats.append({
+            'id': payment.id,
+            'user_id': payment.user_id,
+            'payment_amount': payment.payment_amount,
+            'pack_id': payment.pack_id,
+            'product_id': payment.product_id
+        })
+    return jsonify(payment_stats)
 
 ####################
 ### Person Tab
