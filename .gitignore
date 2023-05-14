@@ -28,6 +28,7 @@ data/
 
 # env
 **/venv/**
+.python-version
 
 # Local
 input.txt
