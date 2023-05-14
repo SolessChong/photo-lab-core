@@ -344,7 +344,7 @@ UPSCALER_ANIME = {
 }
 
 PROMPT_PARAMS = {
-    'CHAR_ATTENTION': 0.4,
+    'CHAR_ATTENTION': 1,
 }
 
 def make_params(template, lut, **kwargs):
