@@ -348,7 +348,7 @@
 
         function displayPaymentStats(paymentStats) {
             const paymentStatsElem = document.getElementById('payment-stats');
-            let innerHTML = '<div class="card"><div class="card-header">Recent Payments</div><div class="card-body"><table class="table table-striped"><thead><tr><th>ID</th><th>User ID</th><th>Amount</th><th>Receipt</th><th>Pack ID</th><th>Product ID</th></tr></thead><tbody>';
+            let innerHTML = '<div class="card"><div class="card-header">Recent Payments</div><div class="card-body"><table class="table table-striped"><thead><tr><th>ID</th><th>User ID</th><th>Amount</th><th>Pack ID</th><th>Product ID</th></tr></thead><tbody>';
             
             for(let i = 0; i < paymentStats.length; i++) {
                 innerHTML += `<tr>
@@ -686,70 +686,86 @@
                     container.innerHTML = '';
 
                     scenes.forEach(scene => {
-                        // Create scene row
-                        const sceneRow = document.createElement('div');
-                        sceneRow.className = 'row scene-row';
-                        container.appendChild(sceneRow);
+                        // Create card
+                        const card = document.createElement('div');
+                        card.className = 'card mb-3';
+                        container.appendChild(card);
+
+                        // Create card body
+                        const cardBody = document.createElement('div');
+                        cardBody.className = 'card-body';
+                        card.appendChild(cardBody);
+
+                        // Add base_img and hint_img in card body
+                        const imgRow = document.createElement('div');
+                        imgRow.className = 'row';
+                        cardBody.appendChild(imgRow);
 
                         // Add base_img
                         const baseImgCol = document.createElement('div');
-                        baseImgCol.className = 'col-2';
-                        const baseImg = document.createElement('img');
-                        baseImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.base_img_key}`;
-                        baseImg.className = 'img-thumbnail';
+                        baseImgCol.className = 'col-md-6';
+                        const baseImg = document.createElement('a');
+                        baseImg.setAttribute('href', `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.base_img_key}`);
+                        baseImg.setAttribute('data-fancybox', `gallery-${scene.scene_id}`);
+                        baseImg.innerHTML = `<img src="https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.base_img_key}?x-oss-process=image/resize,w_400" class="img-fluid img-thumbnail">`;
                         baseImgCol.appendChild(baseImg);
-                        sceneRow.appendChild(baseImgCol);
+                        imgRow.appendChild(baseImgCol);
 
                         // Add hint_img if exists
                         if (scene.hint_img_list && scene.hint_img_list.length > 0) {
                             const hintImgCol = document.createElement('div');
-                            hintImgCol.className = 'col-2';
-                            const hintImg = document.createElement('img');
-                            hintImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.hint_img_list[0]}`;
-                            hintImg.className = 'img-thumbnail';
+                            hintImgCol.className = 'col-md-6';
+                            const hintImg = document.createElement('a');
+                            hintImg.setAttribute('href', `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.hint_img_list[0]}`);
+                            hintImg.setAttribute('data-fancybox', `gallery-${scene.scene_id}`);
+                            hintImg.innerHTML = `<img src="https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.hint_img_list[0]}?x-oss-process=image/resize,w_400" class="img-fluid img-thumbnail">`;
                             hintImgCol.appendChild(hintImg);
-                            sceneRow.appendChild(hintImgCol);
+                            imgRow.appendChild(hintImgCol);
                         }
 
                         // Fetch tasks for this scene
                         fetch(`/list_tasks/${scene.scene_id}`)
                             .then(response => response.json())
                             .then(tasks => {
-                                const tasksCol = document.createElement('div');
-                                tasksCol.className = 'col';
-                                sceneRow.appendChild(tasksCol);
+                                const tasksRow = document.createElement('div');
+                                tasksRow.className = 'row mt-3';
+                                cardBody.appendChild(tasksRow);
+
                                 tasks.forEach(task => {
+                                    const taskCol = document.createElement('div');
+                                    taskCol.className = 'col-md-4';
+                                    tasksRow.appendChild(taskCol);
+
                                     const taskImgLink = document.createElement('a');
                                     taskImgLink.href = task.result_img_key; // Original size for FancyBox
                                     taskImgLink.setAttribute('data-fancybox', `gallery-${scene.scene_id}`);
-                                    tasksCol.appendChild(taskImgLink);
-
-                                    const taskImg = document.createElement('img');
-                                    taskImg.src = `${task.result_img_key}?x-oss-process=image/resize,w_400`; // Preview with width 400px
-                                    taskImg.className = 'task-img';
-                                    taskImgLink.appendChild(taskImg);
+                                    taskImgLink.innerHTML = `<img src="${task.result_img_key}?x-oss-process=image/resize,w_400" class="img-fluid img-thumbnail">`; // Preview with width 400px
+                                    taskCol.appendChild(taskImgLink);
                                 });
                             });
 
                         // Add additional scene info and editable fields
                         const sceneInfo = document.createElement('div');
+                        sceneInfo.className = 'card-footer text-muted';
                         sceneInfo.innerHTML = `
                             <p><strong>Scene ID:</strong> ${scene.scene_id}</p>
                             <p><strong>Collection Name:</strong> ${scene.collection_name}</p>
                             <p><strong>Prompt:</strong></p>
-                            <textarea id="prompt-${scene.scene_id}" rows="4" style="width: 100%;">${scene.prompt}</textarea>
-                            <button onclick="updateScenePrompt(${scene.scene_id});">Save Prompt</button>
+                            <textarea id="prompt-${scene.scene_id}" rows="4" class="form-control">${scene.prompt}</textarea>
+                            <button class="btn btn-primary mt-2" onclick="updateScenePrompt(${scene.scene_id});">Save Prompt</button>
                             <p><strong>Params:</strong></p>
-                            <textarea id="params-${scene.scene_id}" rows="4" style="width: 100%;">${JSON.stringify(scene.params, null, 2)}</textarea>
-                            <button onclick="updateSceneParams(${scene.scene_id});">Save Params</button>
+                            <textarea id="params-${scene.scene_id}" rows="4" class="form-control">${JSON.stringify(scene.params, null, 2)}</textarea>
+                            <button class="btn btn-primary mt-2" onclick="updateSceneParams(${scene.scene_id});">Save Params</button>
                             <p><strong>Rate:</strong> ${scene.rate}</p>
-                            <button onclick="updateSceneRate(${scene.scene_id}, 'add');">Add</button>
-                            <button onclick="updateSceneRate(${scene.scene_id}, 'minus');">Minus</button>
+                            <button class="btn btn-success mt-2" onclick="updateSceneRate(${scene.scene_id}, 'add');">Add</button>
+                            <button class="btn btn-danger mt-2" onclick="updateSceneRate(${scene.scene_id}, 'minus');">Minus</button>
                         `;
-                        sceneRow.appendChild(sceneInfo);
+                        card.appendChild(sceneInfo);
                     });
+
                     // If there are no more scenes to load, hide the "Load More" button
                     if (currentScenePage >= total_pages) {
+                        console.log('No more scenes to load. currentScenePage:', currentScenePage, 'total_pages:', total_pages);
                         document.getElementById('load-more-scenes').style.display = 'none';
                     }
                 })

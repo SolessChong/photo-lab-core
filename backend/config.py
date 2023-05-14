@@ -18,7 +18,7 @@ CELERY_CONFIG = {
 mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab_dev?charset=utf8'
 
 wait_status = 'wait'
-dev_mode = True
+dev_mode = False
 
 if dev_mode:
     mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab_dev?charset=utf8'

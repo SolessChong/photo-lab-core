@@ -49,9 +49,7 @@ def prepare_task(task):
 def generate_prompt_with_lora(prompt, lora, params=None):
     if not prompt:
         prompt = ''
-    char_attention = 1
-    if params and 'char_attention' in params:
-        char_attention = params['char_attention']
+    char_attention = params.get('char_attention', templates.CHAR_ATTENTION)
     prompt_with_lora = prompt + f",<lora:{lora}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:{char_attention})"
     logging.info(f"prompt_with_lora: {prompt_with_lora}")
     # replace person with subject name using regex
@@ -139,7 +137,7 @@ def render_lora_on_base_img(task) -> Image:
         raise Exception("Lora and Human count mismatch!")
     
     for i in range(len(mask_list)):
-        prompt_with_lora =  generate_prompt_with_lora(prompt, lora_list[i])
+        prompt_with_lora =  generate_prompt_with_lora(prompt, lora_list[i], scene.params)
         upper_body_landmarks = [0, 1, 14, 15, 16, 17]  # Landmark indices for upper body
         upper_body_coords = [(candidates[int(subset[i][k])][0], candidates[int(subset[i][k])][1]) for k in upper_body_landmarks if subset[i][k] != -1]
         # calculate foread

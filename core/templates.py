@@ -343,6 +343,10 @@ UPSCALER_ANIME = {
     "extras_upscaler_2_visibility": 0.5
 }
 
+PROMPT_PARAMS = {
+    'CHAR_ATTENTION': 0.4,
+}
+
 def make_params(template, lut, **kwargs):
     for k, v in kwargs.items():
         if k in lut:
