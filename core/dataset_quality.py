@@ -2,6 +2,7 @@ from core.face_mask import get_face_mask, crop_face_img
 import os
 import cv2
 import logging
+import concurrent.futures
 import json
 import numpy as np
 from scipy.stats import entropy
@@ -74,13 +75,19 @@ def optimal_num_clusters(feature_vectors, max_clusters=10):
 
 def analyze_background_variety(images: List[Image.Image]) -> float:
     # Extract backgrounds and convert them to feature vectors
-    feature_vectors = []
-    for image in images:
+    def process_image(image):
         face_masks = get_face_mask(image)
+        features = []
         for face_mask in face_masks:
             background = extract_background(image, face_mask)
-            features = image_to_feature_vector(background, get_model())
-            feature_vectors.append(features)
+            features.append(image_to_feature_vector(background, get_model()))
+        return features
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = executor.map(process_image, images)
+
+    # Flatten the results into a single list of feature vectors
+    feature_vectors = [feature for sublist in results for feature in sublist]
 
     # Ensure all feature vectors have the same shape
     feature_vectors = np.stack(feature_vectors)
@@ -103,13 +110,18 @@ def analyze_background_variety(images: List[Image.Image]) -> float:
 def analyze_face_pose_variety(images: List[Image.Image]) -> float:
     pose_vectors = []
 
-    for image in images:
+    def process_image(image):
         img = pil_to_cv2(image)
         rst = get_face_analysis().get(img)
-        
         if len(rst) > 0:
             pose = rst[0].pose
-            pose_vectors.append(pose)
+            return pose
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        pose_vectors = list(executor.map(process_image, images))
+
+    # Remove None values in case some images didn't return a pose
+    pose_vectors = [pose for pose in pose_vectors if pose is not None]
 
     pose_vectors = np.array(pose_vectors)
 
@@ -163,19 +175,28 @@ def analyze_image_quality(images: List[Image.Image]) -> dict:
     background_variety_score = analyze_background_variety(images)
     face_pose_variety_score = analyze_face_pose_variety(images)
     
-    jpeg_compression_scores = []
-    blurriness_scores = []
-    lighting_scores = []
-
-    for image in images:
+    def process_image(image):
         try:
             img_np = np.array(image.convert("RGB"))[:, :, ::-1].copy()
 
-            jpeg_compression_scores.append(estimate_jpeg_compression(img_np))
-            blurriness_scores.append(estimate_blurriness(img_np))
-            lighting_scores.append(estimate_lighting_conditions(img_np))
+            jpeg_compression_score = estimate_jpeg_compression(img_np)
+            blurriness_score = estimate_blurriness(img_np)
+            lighting_score = estimate_lighting_conditions(img_np)
+            return (jpeg_compression_score, blurriness_score, lighting_score)
         except Exception as e:
             logging.exception(f"Error: {e}")
+            return (None, None, None)
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        scores = list(executor.map(process_image, images))
+
+    # Unpack the scores
+    jpeg_compression_scores, blurriness_scores, lighting_scores = zip(*scores)
+
+    # Filter out the None values
+    jpeg_compression_scores = [score for score in jpeg_compression_scores if score is not None]
+    blurriness_scores = [score for score in blurriness_scores if score is not None]
+    lighting_scores = [score for score in lighting_scores if score is not None]
                 
     avg_jpeg_compression = np.mean(jpeg_compression_scores)
     avg_blurriness = np.mean(blurriness_scores)
@@ -210,8 +231,10 @@ def analyze_person(person_id: int) -> Tuple[Dict, str]:
         print("No sources found.")
         return
     images = []
-    for source in sources:
-        images.append(read_PILimg(source.base_img_key))
+    def read_image(source):
+        return read_PILimg(source.base_img_key)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        images = list(executor.map(read_image, sources))
     quality_report, comment_string = analyze_image_quality(images)
     print("===== Person {} =====".format(person_id))
     person =  models.Person.query.get(person_id)

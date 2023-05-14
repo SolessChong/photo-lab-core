@@ -12,59 +12,56 @@ async function loadUserResults(userIds) {
                 const packCard = document.createElement('div');
                 packCard.className = 'card mb-3';
                 container.appendChild(packCard);
-
+            
                 // Create pack card body
                 const cardBody = document.createElement('div');
                 cardBody.className = 'card-body';
                 packCard.appendChild(cardBody);
-
+            
                 // Add user ID, pack ID and pack description
                 const infoRow = document.createElement('div');
                 infoRow.className = 'row';
                 cardBody.appendChild(infoRow);
-
+            
                 const userIdElement = document.createElement('div');
                 userIdElement.className = 'col-md-4 mb-2';
                 userIdElement.innerHTML = `<h5 class="card-title mb-0">User ID: ${userId}</h5>`;
                 infoRow.appendChild(userIdElement);
-
+            
                 const packId = document.createElement('div');
                 packId.className = 'col-md-4 mb-2';
                 packId.innerHTML = `<h5 class="card-title mb-0">Pack ID: ${pack.pack_id}</h5>`;
                 infoRow.appendChild(packId);
-
+            
                 const packDescription = document.createElement('div');
                 packDescription.className = 'col-md-4 mb-2';
                 packDescription.innerHTML = `<h5 class="card-title mb-0">Description: ${pack.description}</h5>`;
                 infoRow.appendChild(packDescription);
-
+            
                 // Add pack photos container
                 const photosContainer = document.createElement('div');
-                photosContainer.className = 'd-flex flex-row flex-wrap';
+                photosContainer.className = 'row';
                 cardBody.appendChild(photosContainer);
-
+            
                 pack.imgs.forEach((imgUrl, index) => {
                     const photo = document.createElement('img');
                     const photoSrc = imgUrl;
-
+            
+                    // Create a column for each image
+                    const photoCol = document.createElement('div');
+                    photoCol.className = 'col-xl-2 col-lg-3 col-md-4 mb-2';
+                    photosContainer.appendChild(photoCol);
+            
                     // Add FancyBox functionality
                     const lightboxLink = document.createElement('a');
                     lightboxLink.href = photoSrc;
                     lightboxLink.setAttribute('data-fancybox', `gallery-${pack.pack_id}`);
-                    photosContainer.appendChild(lightboxLink);
-
+                    photoCol.appendChild(lightboxLink);
+            
                     // Configure the thumbnail image
                     photo.src = photoSrc;
-                    photo.className = 'img-thumbnail me-2 mb-2';
-                    photo.style.width = 'calc(100% / 3 - 10px)';
+                    photo.className = 'img-thumbnail w-100';
                     lightboxLink.appendChild(photo);
-
-                    // Add clearfix after every third image
-                    if ((index + 1) % 3 === 0) {
-                        const clearfix = document.createElement('div');
-                        clearfix.className = 'w-100';
-                        photosContainer.appendChild(clearfix);
-                    }
                 });
             }
         } catch (error) {

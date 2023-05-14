@@ -8,17 +8,18 @@ from core.resource_manager import *
 
 app.app_context().push()
 
-file_path = '/home/chong/downloads/zh-scene/girl2/'
+file_path = '/home/chong/downloads/chong_2d_girl_cyberpunk_0511'
 
-collection_name = 'zh_movie_girl2_CM_0508'
-prompt = """a girl, (8k, RAW photo, best quality, masterpiece:1.2), (realistic, photo-realistic:1), film, cinematic lighting, 
- <lora:epi_noiseoffset2:0.8>,
+collection_name = 'chong_2d_girl_cyberpunk_0511'
+prompt = """
+a girl, masterpiece, best quality,best quality,official art,extremely detailed CG unity 8k wallpaper, light particles,illustration, dreamy, realistic, intricate details, studio photography, cinematic light, chromatic aberration, RAW, ultra high res, high saturation, cowboy shot, (in the cyberpunk city:1.2),luminous eyes,shiny hair,red china dress,Two side up,Beige hair, white hair,
 """
 
-params_Anime = {
-    "model": "chilloutmix_NiPrunedFp16Fix", 
+params = {
+    "model": "dreamshaper_4BakedVaeFp16", 
     "i2i_params": {
-        "sampler_name": "Euler a"
+        "sampler_name": "DPM++ 2M Karras",
+        "denoising_strength": 0.7,
     },
     "lora_upscaler_params": {
         "extras_upscaler_2_visibility": 0.7,
@@ -27,7 +28,7 @@ params_Anime = {
     },
 }
 
-params = {
+params_photo = {
     "model": "chilloutmix_NiPrunedFp16Fix", 
     "i2i_params": {
         "sampler_name": "DPM++ SDE Karras"
@@ -38,8 +39,7 @@ params = {
         "upscaler_2": "R-ESRGAN 4x+"
     },
 }
-negative_prompt = 'nsfw, EasyNegative, badhandv4, (bad anatomy, worst quality, low quality:2), watermark, signature, username, patreon, monochrome, zombie, large breasts, cleavage, logo, earrings, long hair,'
-
+negative_prompt = '(nsfw),(simple background),(ugly), (duplicate), (morbid), (mutilated), [out of frame], extra fingers, mutated hands, (poorly drawn hands), (poorly drawn face), (mutation), (deformed), (ugly), blurry, (bad anatomy), (bad proportions), (extra limbs), cloned face, (disfigured). out of frame, ugly, extra limbs, (bad anatomy), gross proportions, (malformed limbs), (missing arms), (missing legs), (extra arms), (extra legs), mutated hands, (fused fingers), (too many fingers), (long neck), signature, (bad face), (ugly face)'
 # iterate over all files in file_path
 # create scene
 oss_path = 'scenes/sd_collection/'
@@ -63,6 +63,7 @@ def upload_new_scene(fn):
         params=params,
         collection_name=collection_name,
         setup_status="wait",
+        rate=1,
     )
 
     db.session.add(scene)
