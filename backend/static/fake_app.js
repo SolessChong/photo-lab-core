@@ -117,7 +117,8 @@ function loadSceneEditData(page, collection_name_filter='') {
                  const baseImgCol = document.createElement('div');
                  baseImgCol.className = 'col-2';
                  const baseImg = document.createElement('img');
-                 baseImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.base_img_key}`;
+                 console.log(scene.base_img_key)
+                 baseImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${encodeURIComponent(scene.base_img_key)}`;
                  baseImg.className = 'img-thumbnail';
                  baseImgCol.appendChild(baseImg);
                  sceneRow.appendChild(baseImgCol);
@@ -127,7 +128,7 @@ function loadSceneEditData(page, collection_name_filter='') {
                      const hintImgCol = document.createElement('div');
                      hintImgCol.className = 'col-2';
                      const hintImg = document.createElement('img');
-                     hintImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.hint_img_list[0]}`;
+                     hintImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${encodeURIComponent(scene.hint_img_list[0])}`;
                      hintImg.className = 'img-thumbnail';
                      hintImgCol.appendChild(hintImg);
                      sceneRow.appendChild(hintImgCol);
@@ -147,6 +148,7 @@ function loadSceneEditData(page, collection_name_filter='') {
                              tasksCol.appendChild(taskImgLink);
 
                              const taskImg = document.createElement('img');
+                            //  console.log(task.result_img_key)
                              taskImg.src = `${task.result_img_key}?x-oss-process=image/resize,w_400`; // Preview with width 400px
                              taskImg.className = 'task-img';
                              taskImgLink.appendChild(taskImg);
