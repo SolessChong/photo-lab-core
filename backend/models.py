@@ -54,6 +54,7 @@ class Person(db.Model):
     head_img_key = db.Column(db.String(255), nullable=True)
     train_note = db.Column(db.String(255), nullable=True)
     dataset_quality = db.Column(db.JSON, nullable=True)
+    update_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
     def update_model_file(self, modek_file_key):
         self.model_file_key = modek_file_key
@@ -172,3 +173,18 @@ class Payment(db.Model):
     receipt = db.Column(db.Text, nullable=True)
     pack_id = db.Column(db.Integer, nullable=True)
     product_id = db.Column(db.String(45), nullable=True)
+
+
+class Tag(db.Model):
+    __tablename__ = 'tags'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    tag_name = db.Column(db.String(255), nullable=True)
+    rate = db.Column(db.Integer, nullable=True, default=0)
+
+class TagScene(db.Model):
+    __tablename__ = 'tag_scene'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    scene_id = db.Column(db.Integer, nullable=True)
+    tag_id = db.Column(db.Integer, nullable=True)
+    is_delete = db.Column(db.SmallInteger, nullable=True, default=0)
+    

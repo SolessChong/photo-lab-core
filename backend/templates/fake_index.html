@@ -16,6 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 
     <script src="{{ url_for('static', filename='fake_app.js') }}" ></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_fake.css') }}">
         
     <style>
         .task-panel {
@@ -636,88 +637,6 @@
         document.getElementById('scene-edit-tab').addEventListener('shown.bs.tab', loadSceneEditData);
 
         let currentScenePage = 1;
-
-        function loadSceneEditData(page, collection_name_filter='') {
-            // Fetch the scenes
-            const url = `/list_scenes?page=${page}&collection_name_filter=${encodeURIComponent(collection_name_filter)}`; 
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const scenes = data.scenes;
-                    const total_pages = data.total_pages;
-                    const container = document.querySelector('#scene-edit-data');
-                    container.innerHTML = '';
-
-                    scenes.forEach(scene => {
-                        // Create scene row
-                        const sceneRow = document.createElement('div');
-                        sceneRow.className = 'row scene-row';
-                        container.appendChild(sceneRow);
-
-                        // Add base_img
-                        const baseImgCol = document.createElement('div');
-                        baseImgCol.className = 'col-2';
-                        const baseImg = document.createElement('img');
-                        baseImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.base_img_key}`;
-                        baseImg.className = 'img-thumbnail';
-                        baseImgCol.appendChild(baseImg);
-                        sceneRow.appendChild(baseImgCol);
-
-                        // Add hint_img if exists
-                        if (scene.hint_img_list && scene.hint_img_list.length > 0) {
-                            const hintImgCol = document.createElement('div');
-                            hintImgCol.className = 'col-2';
-                            const hintImg = document.createElement('img');
-                            hintImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${scene.hint_img_list[0]}`;
-                            hintImg.className = 'img-thumbnail';
-                            hintImgCol.appendChild(hintImg);
-                            sceneRow.appendChild(hintImgCol);
-                        }
-
-                        // Fetch tasks for this scene
-                        fetch(`/list_tasks/${scene.scene_id}`)
-                            .then(response => response.json())
-                            .then(tasks => {
-                                const tasksCol = document.createElement('div');
-                                tasksCol.className = 'col';
-                                sceneRow.appendChild(tasksCol);
-                                tasks.forEach(task => {
-                                    const taskImgLink = document.createElement('a');
-                                    taskImgLink.href = task.result_img_key; // Original size for FancyBox
-                                    taskImgLink.setAttribute('data-fancybox', `gallery-${scene.scene_id}`);
-                                    tasksCol.appendChild(taskImgLink);
-
-                                    const taskImg = document.createElement('img');
-                                    taskImg.src = `${task.result_img_key}?x-oss-process=image/resize,w_400`; // Preview with width 400px
-                                    taskImg.className = 'task-img';
-                                    taskImgLink.appendChild(taskImg);
-                                });
-                            });
-
-                        // Add additional scene info and editable fields
-                        const sceneInfo = document.createElement('div');
-                        sceneInfo.innerHTML = `
-                            <p><strong>Scene ID:</strong> ${scene.scene_id}</p>
-                            <p><strong>Collection Name:</strong> ${scene.collection_name}</p>
-                            <p><strong>Prompt:</strong></p>
-                            <textarea id="prompt-${scene.scene_id}" rows="4" style="width: 100%;">${scene.prompt}</textarea>
-                            <button onclick="updateScenePrompt(${scene.scene_id});">Save Prompt</button>
-                            <p><strong>Params:</strong></p>
-                            <textarea id="params-${scene.scene_id}" rows="4" style="width: 100%;">${JSON.stringify(scene.params, null, 2)}</textarea>
-                            <button onclick="updateSceneParams(${scene.scene_id});">Save Params</button>
-                            <p><strong>Rate:</strong> ${scene.rate}</p>
-                            <button onclick="updateSceneRate(${scene.scene_id}, 'add');">Add</button>
-                            <button onclick="updateSceneRate(${scene.scene_id}, 'minus');">Minus</button>
-                        `;
-                        sceneRow.appendChild(sceneInfo);
-                    });
-                    // If there are no more scenes to load, hide the "Load More" button
-                    if (currentScenePage >= total_pages) {
-                        document.getElementById('load-more-scenes').style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error fetching scenes:', error));
-        }
 
         function loadMoreScenes() {
             currentScenePage += 1;
