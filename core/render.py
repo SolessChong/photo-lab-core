@@ -49,7 +49,7 @@ def prepare_task(task):
 def generate_prompt_with_lora(prompt, lora, params=None):
     if not prompt:
         prompt = ''
-    char_attention = params.get('char_attention', templates.CHAR_ATTENTION)
+    char_attention = params.get('char_attention', templates.PROMPT_PARAMS['CHAR_ATTENTION'])
     prompt_with_lora = prompt + f",<lora:{lora}:1>, (a close-up photo of a {conf.SUBJECT_PLACEHOLDER} person:{char_attention})"
     logging.info(f"prompt_with_lora: {prompt_with_lora}")
     # replace person with subject name using regex
