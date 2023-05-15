@@ -2,6 +2,7 @@
 
 # Define the prefix path
 prefix_path="/home/chong/photolab/stable-diffusion-webui"
+cd $prefix_path
 
 # Define an array of ports
 ports=(7890 7891 7892 7893)
