@@ -50,9 +50,12 @@ def train(Session):
         sources = models.Source.query.filter(models.Source.person_id == person_id, models.Source.base_img_key != None).all()
         worker.task_train_lora(person_id, [source.base_img_key for source in sources], epoch=10)
 
-def render(Session):
+def render(Session, port):
     session = Session()
     session.begin()
+
+    # Inject render port
+    worker.render.get_api_instance = lambda : worker.render.get_api_instance(port=port)
 
     # 查询并按照 id 降序排列，只返回第一个结果
     max_task = session.query(models.Task).order_by(models.Task.id.desc()).first()
@@ -148,7 +151,7 @@ def setup_scene(Session):
             scene.setup_status = 'fail'
             a_c_c(scene, db)
 
-def process(cmd):
+def process(cmd, port):
     app.app_context().push()
     Session = sessionmaker(bind=extensions.engine)
 
@@ -160,7 +163,7 @@ def process(cmd):
     elif cmd == 'render':
         logger.info(f"======= Worker Manager: Start RENDERING workers ========")
         while True:
-            render(Session)
+            render(Session, port=port)
             rabbit_head_animation(10)
     elif cmd == 'set_up':
         logger.info(f"======= Worker Manager: Start SCENE SETUP workers ========")
@@ -183,8 +186,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('cmd', type=str, help='Jobs to run. Available jobs: train, render, set_up, all')
-    parser.add_argument('-p', type=int, default=1, help='Process number')
+    parser.add_argument('-p', type=int, default=7890, help='Port')
     args = parser.parse_args()
 
-    process(args.cmd)
+    process(args.cmd, port=args.p)
 
