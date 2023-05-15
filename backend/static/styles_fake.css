@@ -6,3 +6,42 @@
     margin: 10px;
   }
   
+  button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    padding: 10px 24px;
+    transition-duration: 0.4s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+input[type='text'], textarea {
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px 0;
+  width: 10%;
+  box-sizing: border-box;
+}
+
+.row.scene-row {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+img {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

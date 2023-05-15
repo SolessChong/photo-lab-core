@@ -1,8 +1,7 @@
 # Author: ChatGPT v4.0. Prompter: the humble Solesschong
-import os
+import argparse
 import oss2
 from flask import Flask, request, jsonify, render_template
-from flask_sqlalchemy import SQLAlchemy
 from backend.extensions import  app, db
 from flask_cors import CORS
 import json
@@ -14,6 +13,7 @@ from backend.config import CELERY_CONFIG
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 from werkzeug.datastructures import FileStorage
+from . import models
 from io import BytesIO
 
 app.app_context().push()
@@ -106,28 +106,6 @@ def update_scene_params(scene_id):
 
     db.session.commit()
     return jsonify({"success": True, "params": scene.params})
-
-@app.route('/update_scene_rate', methods=['POST'])
-def update_scene_rate():
-    scene_id = request.json.get('scene_id')
-    action = request.json.get('action')
-
-    scene = Scene.query.get(scene_id)
-
-    if not scene:
-        return jsonify({'error': 'Scene not found'}), 404
-
-    if scene.rate is None:
-        scene.rate = 0
-    if action == 'add':
-        scene.rate += 1
-    elif action == 'minus':
-        scene.rate -= 1
-    else:
-        return jsonify({'error': 'Invalid action'}), 400
-
-    db.session.commit()
-    return jsonify({'success': True, 'rate': scene.rate})
 
 @app.route('/api/scene/<int:scene_id>/update_prompt', methods=['POST'])
 def update_scene_prompt(scene_id):
@@ -367,8 +345,100 @@ def get_scene():
     else:
         return jsonify({'error': 'Scene not found'}), 404
 
+@app.route('/get_scene_tag_list/<int:scene_id>', methods=['GET'])
+def get_scene_tag_list(scene_id):
+    # Get all tag_scene entries for the given scene
+    tag_scenes = models.TagScene.query.filter(models.TagScene.scene_id==scene_id, models.TagScene.is_delete==0 ).all()
 
+    # Initialize empty list to hold tags
+    tag_list = []
+
+    # For each tag_scene entry, get the corresponding tag
+    for tag_scene in tag_scenes:
+        tag = models.Tag.query.get(tag_scene.tag_id)
+        if tag:  # Check if tag exists
+            tag_list.append(tag.tag_name)
+
+    # Return the list of tags as JSON
+    return jsonify(tag_list=tag_list)
+
+@app.route('/update_scene_collection_name', methods=['GET'])
+def update_scene_collection_name():
+    scene_id = request.args.get('scene_id', type=int)
+    new_collection_name = request.args.get('collection_name')
+
+    # 参数检查
+    if not scene_id or not new_collection_name:
+        return jsonify({'error': 'Invalid scene_id or collection_name'}), 400
+
+    # 查询并更新场景
+    scene = Scene.query.get(scene_id)
+    if not scene:
+        return jsonify({'error': 'Scene not found'}), 404
+
+    scene.collection_name = new_collection_name
+    db.session.commit()
+
+    return jsonify({'message': 'Collection name updated successfully'}), 200
+
+# 对于tag_list中的每个tag，首先检查tags表中是否存在相应的tag_name, 如果不存在则创建一个新的tag
+# 然后在scene_tag表中查找是否存在(scene_id， tag_id）对，如果不存在就新建, 
+@app.route('/update_tag/<int:scene_id>', methods=['POST'])
+def update_tag(scene_id):
+    tags = request.args.get('tags')
+    is_collection = request.args.get('is_collection') == 'true'
+    tag_list = tags.split(',')
+
+    # 这里是你的逻辑，例如更新数据库...
+    scenes = Scene.query.filter_by(scene_id=scene_id).all()
+    if is_collection:
+        scenes = Scene.query.filter_by(collection_name=scenes[0].collection_name).all()
+    tag_id_list = []
+    for scene in scenes:
+        for tag in tag_list:
+            if models.Tag.query.filter_by(tag_name=tag).first() is None:
+                new_tag = models.Tag(tag_name=tag)
+                db.session.add(new_tag)
+                db.session.commit()
+                tag_id = new_tag.id
+            else:
+                tag_id = models.Tag.query.filter_by(tag_name=tag).first().id
+            tag_id_list.append(tag_id)
+            if models.TagScene.query.filter_by(scene_id=scene.scene_id, tag_id=tag_id).first() is None:
+                new_tag_scene = models.TagScene(scene_id=scene.scene_id, tag_id=tag_id)
+                db.session.add(new_tag_scene)
+                db.session.commit()
+        # delete old tag for the scene
+        old_stag = models.TagScene.query.filter_by(scene_id=scene.scene_id, is_delete=0).all()
+        for stag in old_stag:
+            if stag.tag_id not in tag_id_list:
+                stag.is_delete = 1
+                db.session.commit()
+
+    # 返回成功或失败的消息
+    return jsonify({'message': 'Updated successfully'})
+
+@app.route('/update_scene_rate', methods=['GET'])
+def update_scene_rate():
+    scene_id = request.args.get('scene_id', type=int)
+    rate = request.args.get('rate', type=float)
+
+    # retrieve the scene from the database
+    scene = Scene.query.get(scene_id)
+    if not scene:
+        return jsonify({'error': 'Scene not found'}), 404
+
+    # update the scene's rate
+    scene.rate = rate
+    db.session.commit()
+
+    return jsonify({'success': 'Scene rate updated successfully'}), 200
 
 if __name__ == '__main__':
+    # Add argument parser: -p: port
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', type=int, default=8000, help='port to listen on')
+    args = parser.parse_args()
+
+    app.run(host='0.0.0.0', port=args.port)
     # app.run(debug=True)
-    app.run(host='0.0.0.0', port=5000)

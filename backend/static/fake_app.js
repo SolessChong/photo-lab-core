@@ -96,3 +96,269 @@ async function loadAllUserIds() {
         console.error('Error fetching all user IDs:', error);
     }
 }
+
+
+function loadSceneEditData(page, collection_name_filter='') {
+    const url = `/list_scenes?page=${page}&collection_name_filter=${encodeURIComponent(collection_name_filter)}`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const scenes = data.scenes;
+            const total_pages = data.total_pages;
+            const container = document.querySelector('#scene-edit-data');
+            container.innerHTML = '';
+
+            scenes.forEach(scene => {
+                const sceneRow = document.createElement('div');
+                sceneRow.className = 'row scene-row';
+                container.appendChild(sceneRow);
+
+                 // Add base_img
+                 const baseImgCol = document.createElement('div');
+                 baseImgCol.className = 'col-2';
+                 const baseImg = document.createElement('img');
+                 console.log(scene.base_img_key)
+                 baseImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${encodeURIComponent(scene.base_img_key)}`;
+                 baseImg.className = 'img-thumbnail';
+                 baseImgCol.appendChild(baseImg);
+                 sceneRow.appendChild(baseImgCol);
+
+                 // Add hint_img if exists
+                 if (scene.hint_img_list && scene.hint_img_list.length > 0) {
+                     const hintImgCol = document.createElement('div');
+                     hintImgCol.className = 'col-2';
+                     const hintImg = document.createElement('img');
+                     hintImg.src = `https://photolab-test.oss-cn-shenzhen.aliyuncs.com/${encodeURIComponent(scene.hint_img_list[0])}`;
+                     hintImg.className = 'img-thumbnail';
+                     hintImgCol.appendChild(hintImg);
+                     sceneRow.appendChild(hintImgCol);
+                 }
+
+                 // Fetch tasks for this scene
+                 fetch(`/list_tasks/${scene.scene_id}`)
+                     .then(response => response.json())
+                     .then(tasks => {
+                         const tasksCol = document.createElement('div');
+                         tasksCol.className = 'col';
+                         sceneRow.appendChild(tasksCol);
+                         tasks.forEach(task => {
+                             const taskImgLink = document.createElement('a');
+                             taskImgLink.href = task.result_img_key; // Original size for FancyBox
+                             taskImgLink.setAttribute('data-fancybox', `gallery-${scene.scene_id}`);
+                             tasksCol.appendChild(taskImgLink);
+
+                             const taskImg = document.createElement('img');
+                            //  console.log(task.result_img_key)
+                             taskImg.src = `${task.result_img_key}?x-oss-process=image/resize,w_400`; // Preview with width 400px
+                             taskImg.className = 'task-img';
+                             taskImgLink.appendChild(taskImg);
+                         });
+                     });
+
+
+                // Add additional scene info and editable fields
+                const sceneInfo = document.createElement('div');
+        
+                // Add collection name
+                const collectionNameRow = document.createElement('div');
+                collectionNameRow.style.display = 'flex';
+                collectionNameRow.style.alignItems = 'center';
+                collectionNameRow.style.justifyContent = 'space-between';
+                collectionNameRow.style.flexWrap = 'nowrap';
+
+                const collectionNameLabel = document.createElement('span');
+                collectionNameLabel.innerHTML = '<strong>Collection Name:</strong>';
+                collectionNameRow.appendChild(collectionNameLabel);
+
+                console.log(scene.collection_name)
+
+                const collectionNameInput = document.createElement('input');
+                collectionNameInput.type = 'text';
+                collectionNameInput.id = `collection-name-${scene.scene_id}`;
+                collectionNameInput.value = scene.collection_name;
+                collectionNameInput.style.width = '80%';
+                collectionNameRow.appendChild(collectionNameInput);
+
+                const saveCollectionNameButton = document.createElement('button');
+                saveCollectionNameButton.innerHTML = 'Save Collection Name';
+                saveCollectionNameButton.style.display = 'none';
+                saveCollectionNameButton.onclick = function() {
+                    const url = `/update_scene_collection_name?scene_id=${scene.scene_id}&collection_name=${encodeURIComponent(collectionNameInput.value)}`;
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {console.log(data);alert('Collection Name updated!');})  // handle the response here
+                        .catch(error => console.error('Error:', error));
+                };
+                collectionNameRow.appendChild(saveCollectionNameButton);
+
+                collectionNameInput.addEventListener('input', function() {
+                    if (this.value !== scene.collection_name) {
+                        saveCollectionNameButton.style.display = 'block';
+                    } else {
+                        saveCollectionNameButton.style.display = 'none';
+                    }
+                });
+
+                sceneInfo.appendChild(collectionNameRow);
+
+                
+                // Fetch tags for this scene
+                fetch(`/get_scene_tag_list/${scene.scene_id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tags = data.tag_list;
+
+                        const tagsRow = document.createElement('div');
+                        tagsRow.style.gap = '10px';
+                        
+                        sceneInfo.appendChild(tagsRow);
+                        tags.forEach(tag => {
+                            const tagInput = document.createElement('input');
+                            tagInput.type = 'text';
+                            tagInput.oninput = function() {
+                                showApplyButtons();
+                            };
+                            tagInput.value = tag;
+                            tagsRow.appendChild(tagInput);
+                        });
+                        const addTagButton = document.createElement('button');
+                        addTagButton.innerHTML = 'Add Tag';
+                        addTagButton.buttonsAdded = false; // Custom property to track whether buttons have been added
+                        addTagButton.onclick = function() {
+                            const newTagInput = document.createElement('input');
+                            newTagInput.type = 'text';
+                            tagsRow.appendChild(newTagInput);
+                            
+                            showApplyButtons();
+                        };
+
+                        function showApplyButtons() {
+                            if (addTagButton.buttonsAdded) return;
+                            addTagButton.buttonsAdded = true;
+                
+                            // Create Apply Scene button
+                            const applySceneButton = document.createElement('button');
+                            applySceneButton.innerHTML = 'Apply Scene';
+                            applySceneButton.onclick = function() {
+                                const newTagList = Array.from(tagsRow.querySelectorAll('input')).map(input => input.value);
+                                updateTag(scene.scene_id, newTagList, false);
+                            };
+                            sceneInfo.appendChild(applySceneButton);
+                
+                            // Create Apply Collection button
+                            const applyCollectionButton = document.createElement('button');
+                            applyCollectionButton.innerHTML = 'Apply Collection';
+                            applyCollectionButton.onclick = function() {
+                                const newTagList = Array.from(tagsRow.querySelectorAll('input')).map(input => input.value);
+                                updateTag(scene.scene_id, newTagList, true);
+                            };
+                            sceneInfo.appendChild(applyCollectionButton);
+                        }
+
+                        tagsRow.appendChild(addTagButton);
+
+                    });
+                
+
+                // Add prompt
+                const promptLabel = document.createElement('p');
+                promptLabel.innerHTML = '<strong>Prompt:</strong>';
+                sceneInfo.appendChild(promptLabel);
+
+                const promptTextarea = document.createElement('textarea');
+                promptTextarea.id = `prompt-${scene.scene_id}`;
+                promptTextarea.rows = '4';
+                promptTextarea.style.width = '100%';
+                promptTextarea.textContent = scene.prompt;
+                sceneInfo.appendChild(promptTextarea);
+
+                const savePromptButton = document.createElement('button');
+                savePromptButton.textContent = 'Save Prompt';
+                savePromptButton.onclick = function() {
+                    updateScenePrompt(scene.scene_id);
+                };
+                sceneInfo.appendChild(savePromptButton);
+
+                // Add params
+                const paramsLabel = document.createElement('p');
+                paramsLabel.innerHTML = '<strong>Params:</strong>';
+                sceneInfo.appendChild(paramsLabel);
+
+                const paramsTextarea = document.createElement('textarea');
+                paramsTextarea.id = `params-${scene.scene_id}`;
+                paramsTextarea.rows = '4';
+                paramsTextarea.style.width = '100%';
+                paramsTextarea.textContent = JSON.stringify(scene.params, null, 2);
+                sceneInfo.appendChild(paramsTextarea);
+
+                const saveParamsButton = document.createElement('button');
+                saveParamsButton.textContent = 'Save Params';
+                saveParamsButton.onclick = function() {
+                    updateSceneParams(scene.scene_id);
+                };
+                sceneInfo.appendChild(saveParamsButton);
+
+                // Add rate
+                const rateRow = document.createElement('div');
+                // rateRow.style.display = 'flex';
+                // rateRow.style.alignItems = 'center';
+                // rateRow.style.justifyContent = 'space-between';
+                // rateRow.style.flexWrap = 'nowrap';
+
+                const rateLabel = document.createElement('span');
+                rateLabel.innerHTML = '<strong>Rate:</strong>';
+                rateRow.appendChild(rateLabel);
+
+                const rateInput = document.createElement('input');
+                rateInput.type = 'number';
+                rateInput.id = `rate-${scene.scene_id}`;
+                rateInput.value = scene.rate;
+                // rateInput.style.width = '80%';
+                rateRow.appendChild(rateInput);
+
+                const saveRateButton = document.createElement('button');
+                saveRateButton.innerHTML = 'Save Rate';
+                saveRateButton.style.display = 'none';
+                saveRateButton.onclick = function() {
+                    const url = `/update_scene_rate?scene_id=${scene.scene_id}&rate=${encodeURIComponent(rateInput.value)}`;
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data); 
+                            alert(JSON.stringify(data));
+                        })  // handle the response here
+                        .catch(error => console.error('Error:', error));
+                };
+                rateRow.appendChild(saveRateButton);
+
+                rateInput.addEventListener('input', function() {
+                    if (this.value !== scene.rate) {
+                        saveRateButton.style.display = 'block';
+                    } else {
+                        saveRateButton.style.display = 'none';
+                    }
+                });
+                sceneInfo.appendChild(rateRow);
+
+                sceneRow.appendChild(sceneInfo);
+            });
+
+            if (currentScenePage >= total_pages) {
+                document.getElementById('load-more-scenes').style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Error fetching scenes:', error));
+}
+
+
+function updateTag(sceneId, newTagList, isCollection) {
+    const url = `/update_tag/${sceneId}?tags=${encodeURIComponent(newTagList.join(','))}&is_collection=${isCollection}`;
+    fetch(url, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            alert('Tag updated!');
+            // Handle data or errors here...
+        })
+        .catch(error => console.error('Error updating tag:', error));
+}
