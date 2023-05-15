@@ -191,8 +191,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('cmd', type=str, help='Jobs to run. Available jobs: train, render, set_up, all')
-    parser.add_argument('-p', '--port', type=int, default=7890, help='Port')
+    parser.add_argument('--port', type=int, default=7890, help='Port')
     args = parser.parse_args()
 
-    process(args.cmd, port=args.p)
+    process(args.cmd, port=args.port)
 

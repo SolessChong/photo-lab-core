@@ -18,7 +18,7 @@ for i in ${!ports[@]}; do
   export COMMANDLINE_ARGS="--port $port --device-id $device_id --api --theme dark --xformers --lora-dir /home/chong/photolab/photo-lab-core/core/train/models/lora"
 
   # Run the startup script in the background, redirect both stdout and stderr to a log file
-  $prefix_path/webui.sh > "$prefix_path/service_${port}.log" 2>&1 &
+  $prefix_path/webui.sh > "$prefix_path/log/service_${port}.log" 2>&1 &
 
   # Sleep for a few seconds to allow the previous service to start
   sleep 5
