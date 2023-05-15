@@ -9,6 +9,11 @@ import sys
 import argparse
 import multiprocessing as mp
 from core.utils import rabbit_head_animation
+import webuiapi
+from functools import partial
+
+def change_default_args(func, **kwargs):
+    return partial(func, **kwargs)
 
 from core import worker
 
@@ -55,8 +60,8 @@ def render(Session, port):
     session.begin()
 
     # Inject render port
-    worker.render.get_api_instance = lambda : worker.render.get_api_instance(port=port)
-
+    worker.render.get_api_instance = change_default_args(worker.render.get_api_instance, port=port)
+    
     # 查询并按照 id 降序排列，只返回第一个结果
     max_task = session.query(models.Task).order_by(models.Task.id.desc()).first()
     # 获取最大的 task id
