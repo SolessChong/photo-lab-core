@@ -98,8 +98,18 @@ async function loadAllUserIds() {
 }
 
 
-function loadSceneEditData(page, collection_name_filter='') {
-    const url = `/list_scenes?page=${page}&collection_name_filter=${encodeURIComponent(collection_name_filter)}`;
+function loadSceneEditData(page, collection_name_filter='', non_tag=false) {
+    let allTags = [];
+
+    // Fetch all tags from the server
+    fetch('/get_all_tags')
+        .then(response => response.json())
+        .then(data => {
+            allTags = data;
+        });
+
+
+    const url = `/list_scenes?page=${page}&collection_name_filter=${encodeURIComponent(collection_name_filter)}&non_tag=${non_tag}`;
     fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -212,30 +222,60 @@ function loadSceneEditData(page, collection_name_filter='') {
                         tagsRow.style.gap = '10px';
                         
                         sceneInfo.appendChild(tagsRow);
-                        tags.forEach(tag => {
-                            const tagInput = document.createElement('input');
-                            tagInput.type = 'text';
-                            tagInput.oninput = function() {
-                                showApplyButtons();
+                        tags.forEach(tagData => {
+                            const tagButton = document.createElement('button');
+                            tagButton.innerHTML = tagData.tag_name;
+                            tagButton.onclick = function() {
+                                const tagActionRow = document.createElement('div');
+                                const deleteTagLabel = document.createElement('span');
+                                deleteTagLabel.innerHTML = 'Delete Tag: ';
+
+                                tagActionRow.appendChild(deleteTagLabel);
+                                
+                                const applySceneButton = document.createElement('button');
+                                applySceneButton.innerHTML = 'Apply Scene';
+                                applySceneButton.onclick = function() {
+                                    deleteTag(scene.scene_id, tagData.tag_id, false);
+                                };
+
+                                const applyCollectionButton = document.createElement('button');
+                                applyCollectionButton.innerHTML = 'Apply Collection';
+                                applyCollectionButton.onclick = function() {
+                                    deleteTag(scene.scene_id, tagData.tag_id, true);
+                                };
+
+                                tagActionRow.appendChild(applySceneButton);
+                                tagActionRow.appendChild(applyCollectionButton);
+
+                                sceneInfo.appendChild(tagActionRow);
                             };
-                            tagInput.value = tag;
-                            tagsRow.appendChild(tagInput);
+                            tagsRow.appendChild(tagButton);
                         });
+
                         const addTagButton = document.createElement('button');
                         addTagButton.innerHTML = 'Add Tag';
-                        addTagButton.buttonsAdded = false; // Custom property to track whether buttons have been added
                         addTagButton.onclick = function() {
                             const newTagInput = document.createElement('input');
-                            newTagInput.type = 'text';
+                            newTagInput.setAttribute('list', 'tag-list');
+
+                            const dataList = document.createElement('datalist');
+                            dataList.id = 'tag-list';
+
+                            allTags.forEach(tag => {
+                                const option = document.createElement('option');
+                                option.value = tag;
+                                dataList.appendChild(option);
+                            });
+
+                            newTagInput.appendChild(dataList);
                             tagsRow.appendChild(newTagInput);
-                            
+
                             showApplyButtons();
                         };
 
                         function showApplyButtons() {
                             if (addTagButton.buttonsAdded) return;
                             addTagButton.buttonsAdded = true;
-                
                             // Create Apply Scene button
                             const applySceneButton = document.createElement('button');
                             applySceneButton.innerHTML = 'Apply Scene';
@@ -244,7 +284,6 @@ function loadSceneEditData(page, collection_name_filter='') {
                                 updateTag(scene.scene_id, newTagList, false);
                             };
                             sceneInfo.appendChild(applySceneButton);
-                
                             // Create Apply Collection button
                             const applyCollectionButton = document.createElement('button');
                             applyCollectionButton.innerHTML = 'Apply Collection';
@@ -254,8 +293,66 @@ function loadSceneEditData(page, collection_name_filter='') {
                             };
                             sceneInfo.appendChild(applyCollectionButton);
                         }
-
                         tagsRow.appendChild(addTagButton);
+
+                        /*
+                         // New code: Create and display all tags
+                        const allTagsRow = document.createElement('div');
+                        allTagsRow.style.gap = '10px';
+                        sceneInfo.appendChild(allTagsRow);
+                        selectedTags = [];
+                        is_add = false;
+
+                        allTags.forEach(tagData => {
+                            const tagButton = document.createElement('button');
+                            tagButton.innerHTML = tagData;
+                            if (tags.some(tag => tag.tag_name === tagData)) {
+                                tagButton.style.backgroundColor = 'blue'; // Highlight color
+                            } else {
+                                tagButton.style.backgroundColor = 'lightgray'; // Normal color
+                            }
+                        
+                            tagButton.onclick = function() {
+                                // Add tag_id to selectedTags if not already selected, else remove it
+                                const index = selectedTags.indexOf(tagData);
+                                if (index > -1) {
+                                    selectedTags.splice(index, 1);
+                                    tagButton.style.backgroundColor = 'lightgray'; // Set color back to normal
+                                } else {
+                                    selectedTags.push(tagData);
+                                    tagButton.style.backgroundColor = 'blue'; // Highlight color
+                                }
+                                if (is_add) return;
+                                is_add = true;
+
+                                const tagActionRow = document.createElement('div');
+                                const addTagLabel = document.createElement('span');
+                                addTagLabel.innerHTML = 'Add Tag: ';
+                                tagActionRow.appendChild(addTagLabel);
+                        
+                                const applySceneButton = document.createElement('button');
+                                applySceneButton.innerHTML = 'Apply Scene';
+                                applySceneButton.onclick = function() {
+                                    updateTag(scene.scene_id, selectedTags, false);
+                                    selectedTags = [];  // Clear selected tags after applying
+                                };
+                        
+                                const applyCollectionButton = document.createElement('button');
+                                applyCollectionButton.innerHTML = 'Apply Collection';
+                                applyCollectionButton.onclick = function() {
+                                    updateTag(scene.scene_id, selectedTags, true);
+                                    selectedTags = [];  // Clear selected tags after applying
+                                };
+                        
+                                tagActionRow.appendChild(applySceneButton);
+                                tagActionRow.appendChild(applyCollectionButton);
+                        
+                                sceneInfo.appendChild(tagActionRow);
+                                
+                            };
+                            allTagsRow.appendChild(tagButton);
+                            
+                        }); */
 
                     });
                 
@@ -361,4 +458,20 @@ function updateTag(sceneId, newTagList, isCollection) {
             // Handle data or errors here...
         })
         .catch(error => console.error('Error updating tag:', error));
+}
+
+function deleteTag(scene_id, tag_id, is_apply_collection) {
+    fetch(`/delete_tag/${scene_id}/${tag_id}/${is_apply_collection}`, {
+        method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Tag deleted successfully');
+        alert(JSON.stringify(data));
+        return data;
+        // You may want to refresh your tags or handle the response in some other way here
+    })
+    .catch(e => {
+        console.log('There was a problem with the request.');
+    });
 }

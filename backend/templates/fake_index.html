@@ -188,6 +188,8 @@
                     <div class="col">
                         <label for="collection-name-filter">Filter by Collection Name:</label>
                         <input type="text" id="collection-name-filter" placeholder="Enter collection name">
+                        <label for="non-tag-filter">Non-Tag:</label>
+                        <input type="checkbox" id="non-tag-filter">
                         <button class="btn btn-primary" onclick="applyFilter()">Apply Filter</button>
                         <select id="collection-name-dropdown" onchange="selectFilterFromDropdown()">
                             <option value="">Select a collection</option>
@@ -626,8 +628,10 @@
 
         function applyFilter() {
             const collection_name_filter = document.getElementById('collection-name-filter').value;
+            const nonTagFilter = document.getElementById('non-tag-filter').checked;
+
             currentCollectionFilter = collection_name_filter;
-            loadSceneEditData(1, collection_name_filter);
+            loadSceneEditData(1, collection_name_filter, nonTagFilter);
         }
 
         function updateSceneParams(scene_id) {

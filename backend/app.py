@@ -44,7 +44,7 @@ def create_user():
 
     # Create a new user with the generated user_id
     new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = 1, min_img_num = 15, max_img_num = 30)
-    if random.random() < 0.01:
+    if random.random() < 0.99:
         new_user.group = 2
         new_user.min_img_num = 2
         new_user.max_img_num = 5
@@ -68,6 +68,7 @@ def create_user():
     else:
         logging.error(f'no click for ip {user_ip}')
 
+
     # Create the response object with the specified format
     response = {
         "code": 0,
@@ -75,7 +76,10 @@ def create_user():
         "data": {
             "user_id": user_id,
             "min_img_num": new_user.min_img_num,
-            "max_img_num": new_user.max_img_num
+            "max_img_num": new_user.max_img_num,
+            "pay_group": random.randint(1,3),
+            "shot_num": 10,
+            "shot_seconds:" : 10
         }
     }
 
@@ -174,18 +178,19 @@ def get_example_2():
     result = {
         'before': [],
         'after': [],
-        'bad': []
+        'bad': [],
+        'styles': []
     }
 
     for example in examples:
         img_height, img_width = utils.get_oss_image_size(example.img_key)
 
         rs = {
-            'img_url': utils.get_signed_url(example.img_key),
+            'img_url': utils.get_signed_url(example.img_key, is_yasuo=True),
             'img_height': img_height,
             'img_width': img_width,
             'style': example.style,
-            'id': example.id
+            'id': example.id,
         }
         if example.type == 0:
             result['before'].append(rs)
@@ -193,6 +198,19 @@ def get_example_2():
             result['after'].append(rs)
         elif example.type == 2:
             result['bad'].append(rs)
+    
+    tags = models.Tag.query.filter(models.Tag.img_key != None).all()
+    for tag in tags:
+        img_height, img_width = utils.get_oss_image_size(tag.img_key)
+        rs = {
+            'img_url': utils.get_signed_url(tag.img_key, is_yasuo=True),
+            'img_height': img_height,
+            'img_width': img_width,
+            'style': tag.tag_name,
+            'id': tag.id,
+            'tag_id': tag.id
+        }
+        result['styles'].append(rs)
 
     response = {
         'data': result,
@@ -297,8 +315,9 @@ def upload_multiple_sources():
     user_id = request.form['user_id']
     person_name = request.form['person_name']
     source_type = request.form.get('type', None)
+    not_filtration= request.form.get('not_filtration', type=int, default=0)
     
-    logging.info(f'upload_multiple_sources request {user_id}')
+    logging.info(f'upload_multiple_sources request {user_id}, not_filtration {not_filtration}, source_type {source_type}')
 
     # 查找 persons 表中是否存在相应的记录
     person = models.Person.query.filter_by(user_id=user_id, name=person_name).first()
@@ -317,7 +336,7 @@ def upload_multiple_sources():
     keys = json.loads(img_oss_keys)
     for key in keys:
         data = utils.oss_source_get(key)
-        if aliyun_face_detector.one_face(data):
+        if (not_filtration==1) or aliyun_face_detector.one_face(data):
             utils.oss_put(key, data)
             source = models.Source(base_img_key=key, user_id=user_id, type=source_type, person_id=person_id)
             db.session.add(source)
