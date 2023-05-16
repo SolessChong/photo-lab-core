@@ -25,10 +25,10 @@ from core.resource_manager import ResourceMgr, ResourceType, oss2buf, str2oss, r
 # create API client with custom host, port
 
 api = None
-def get_api_instance():
+def get_api_instance(port=7890):
     global api
     if api is None:
-        api = webuiapi.WebUIApi(host='127.0.0.1', port=7890)
+        api = webuiapi.WebUIApi(host='127.0.0.1', port=port)
     return api
 
 body_estimate = Body()
