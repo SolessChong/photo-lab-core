@@ -320,7 +320,7 @@ def create_scene():
 
     if img_file:
         img = Image.open(BytesIO(img_file.read()))
-        img_key = 'path/to/oss/folder/' + form_data['collection_name'] + '/' + img_file.filename
+        img_key = 'scenes/sd_collection/' + form_data['collection_name'] + '/' + img_file.filename
         img_key = img_key.split('.')[0] + '.png'
         write_PILimg(img, img_key)
 
