@@ -41,8 +41,8 @@ def prepare_task(task):
     # download base_img
     base_img_url = ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task.scene_id)
     pose_img_url = ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task.scene_id)
-    base_img = read_cv2img(base_img_url)
-    pose_map = read_cv2img(pose_img_url)
+    base_img = read_PILimg(base_img_url)
+    pose_map = read_PILimg(pose_img_url)
 
     return base_img, pose_map
 
@@ -104,76 +104,45 @@ def render_lora_on_base_img(task) -> Image:
     logging.info(f"Running task {task.id}, scene: {task.scene_id}, lora: {task.person_id_list}")
     scene = models.Scene.query.get(task.scene_id)
     base_img, pose_img = prepare_task(task)
-    # load base_img
-    base_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.BASE_IMG, task.scene_id))
-    pose_img = read_PILimg(ResourceMgr.get_resource_oss_url(ResourceType.POSE_IMG, task.scene_id))
+
     # e.g. lora_list[0] = 'user_1', --> <lora:user_1:1> in prompt.
     lora_list = [ResourceMgr.get_lora_name_by_person_id(person_id) for person_id in task.person_id_list]
     prompt = scene.prompt
+
     # Extract config
-    # - Extract lora_upscaler. If not specified, use default.
     lora_upscaler_params = scene.params.get("lora_upscaler_params", templates.UPSCALER_DEFAULT)
-    
     i2i_params = templates.LORA_INPAINT_PARAMS
     if scene.params and scene.params.get("i2i_params"):
         i2i_params.update(scene.params.get("i2i_params"))
 
-    options = {}
-    options['sd_model_checkpoint'] = scene.params.get('model')
+    options = {'sd_model_checkpoint': scene.params.get('model')}
     get_api_instance().set_options(options)
     logging.info(f"    ---- 🔄 Switching to model: {options['sd_model_checkpoint']}")
 
     scene_id = task.scene_id
-
     image = base_img.copy()
-    # detect face and draw mask
-    mask_list = face_mask.get_face_mask(base_img, expand_face=1.5)
-    if len(mask_list) != len(lora_list):
-        raise Exception("Lora and Face mask count mismatch!")
-    # detect human and crop img
-    cv2_base_image = cv2.cvtColor(np.array(base_img), cv2.COLOR_RGB2BGR)
-    [candidates, subset] = body_estimate(cv2_base_image)
-    if len(subset) != len(lora_list):
-        raise Exception("Lora and Human count mismatch!")
-    
-    for i in range(len(mask_list)):
-        prompt_with_lora =  generate_prompt_with_lora(prompt, lora_list[i], scene.params)
-        upper_body_landmarks = [0, 1, 14, 15, 16, 17]  # Landmark indices for upper body
-        upper_body_coords = [(candidates[int(subset[i][k])][0], candidates[int(subset[i][k])][1]) for k in upper_body_landmarks if subset[i][k] != -1]
-        # calculate foread
-        nose_x, nose_y = candidates[int(subset[i][0])][0], candidates[int(subset[i][0])][1]
-        left_eye_x, left_eye_y = candidates[int(subset[i][15])][0], candidates[int(subset[i][15])][1]
-        right_eye_x, right_eye_y = candidates[int(subset[i][16])][0], candidates[int(subset[i][16])][1]
-        # Calculate the midpoint between the eyes
-        # Calculate the vectors from the nose to the left eye and from the nose to the right eye
-        nose_to_left_eye = (left_eye_x - nose_x, left_eye_y - nose_y)
-        nose_to_right_eye = (right_eye_x - nose_x, right_eye_y - nose_y)
 
-        # Calculate the linear combination of the vectors
-        combination_factor = 2.5
-        forehead_x = nose_x + (nose_to_left_eye[0] + nose_to_right_eye[0]) / 2 * combination_factor
-        forehead_y = nose_y + (nose_to_left_eye[1] + nose_to_right_eye[1]) / 2 * combination_factor
+    for i, person_id in enumerate(task.person_id_list):
+        # Get the bounding box for the current person from the Scene model
+        bb = scene.roi_list[i]
 
-        upper_body_coords.append((forehead_x, forehead_y))
-
-        char_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2.6)
-        ######## save char_base_img
-        if conf.DEBUG:
-            char_base_path = ResourceMgr.get_resource_local_path(ResourceType.TMP_OUTPUT, f"{scene_id}_char_base_img_{i}")
-            if not os.path.exists(os.path.dirname(char_base_path)):
-                os.makedirs(os.path.dirname(char_base_path))
-            cv2.imwrite(char_base_path, char_base_img)
-
+        prompt_with_lora = generate_prompt_with_lora(prompt, lora_list[i], scene.params)
+        
+        char_base_img = image.crop((bb[0], bb[1], bb[0] + bb[2], bb[1] + bb[3]))
         char_pose_img = pose_img.copy().crop((bb[0], bb[1], bb[0] + bb[2], bb[1] + bb[3]))
-        char_mask_img = mask_list[i].copy().crop((bb[0], bb[1], bb[0] + bb[2], bb[1] + bb[3]))
 
-        logging.debug(f"bb(x, y, width, height): {bb}")
+        # detect face and draw mask on cropped image
+        char_base_cv_img = cv2.cvtColor(np.array(char_base_img), cv2.COLOR_RGB2BGR)
+        mask_list = face_mask.get_face_mask(char_base_cv_img, expand_face=1.5)
+        if len(mask_list) != 1:
+            raise Exception("Face mask count mismatch!")
+        char_mask_img = mask_list[0]
 
         # Resize PIL.Image char_base_img, char_pose_img, char_mask_img to 512x512
         render_size = (512, 512)
-        char_base_img = Image.fromarray(cv2.cvtColor(char_base_img, cv2.COLOR_BGR2RGB)).resize(render_size, resample=Image.LANCZOS) 
+        char_base_img = char_base_img.resize(render_size, resample=Image.LANCZOS) 
         char_pose_img = char_pose_img.resize(render_size, resample=Image.LANCZOS)
-        char_mask_img = char_mask_img.resize(render_size, resample=Image.NEAREST)        # to ensure binary
+        char_mask_img = char_mask_img.resize(render_size, resample=Image.NEAREST)  # to ensure binary
 
         ### Save tmp image for debug
         if conf.DEBUG:
@@ -235,17 +204,17 @@ if __name__ == "__main__":
     # Argument 'task'
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", help="task id")
-    # Argument 'person‘
-    parser.add_argument("--person", help="person id")
+    # Argument 'person', list of int
+    parser.add_argument("--person", nargs='+', type=int, help="person id list")
     # Argument 'scene'
     parser.add_argument("--scene", help="scene id")
 
     args = parser.parse_args()
     task_id = args.task
-    person_id = args.person
+    person_id_list = args.person
     scene_id = args.scene
     # Should have task, or (person and scene)
-    assert task_id or (person_id and scene_id), "  -- ❌ Task id or (person id and scene id) is required."
+    assert task_id or (person_id_list and scene_id), "  -- ❌ Task id or (person id and scene id) is required."
 
     if task_id:
         task = models.Task.query.get(task_id)
@@ -253,11 +222,10 @@ if __name__ == "__main__":
         write_PILimg(img, ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id))
         db.session.add(task)
         db.session.commit()
-
-    elif person_id and scene_id:
+    elif person_id_list and scene_id:
         from backend.extensions import db, app
         app.app_context().push()
-        task = models.Task(scene_id=scene_id, person_id_list=[person_id])
+        task = models.Task(scene_id=scene_id, person_id_list=person_id_list)
         db.session.add(task)
         img = render_lora_on_base_img(task)
         task.result_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)

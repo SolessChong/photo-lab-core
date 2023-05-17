@@ -31,13 +31,10 @@ def prepare_scene(scene_id):
     base_img_url = models.Scene.query.get(scene_id).base_img_key
     if base_img_url is None:
         raise Exception(f"Base image not found! Scene: {scene_id}")
-    # raise if base doesn't exist
-    # if not os.path.exists(base_img_path):
-    #     raise Exception(f"Base image not found! {base_img_path}")
 
     # generate pose_img if not exist
     pose_img_url = models.Scene.query.get(scene_id).get_pose_img()
-        
+
     ## Use pose_img_url as flag for raw scene.
     # if file doesn't exist, generate it using openpose.body.Body
     if pose_img_url is None:
@@ -68,7 +65,50 @@ def prepare_scene(scene_id):
     else:
         logging.info(f"Pose map already exists, skip generating.")
 
+    # Generate ROI list
+    prepare_scene_roi_list(scene_id)
+
     return True
+
+def prepare_scene_roi_list(scene_id):
+    scene = models.Scene.query.get(scene_id)
+    base_img_url = scene.base_img_key
+    base_img = read_PILimg(base_img_url)
+    cv2_base_image = cv2.cvtColor(np.array(base_img), cv2.COLOR_RGB2BGR)
+
+    # detect face and human
+    mask_list = face_mask.get_face_mask(base_img, expand_face=1.5)
+    [candidates, subset] = body_estimate(cv2_base_image)
+
+    if len(mask_list) != len(subset):
+        raise Exception("Face mask and Human count mismatch!")
+
+    roi_list = []  # List to store bounding boxes
+    for i in range(len(mask_list)):
+        upper_body_landmarks = [0, 1, 14, 15, 16, 17]  # Landmark indices for upper body
+        upper_body_coords = [(candidates[int(subset[i][k])][0], candidates[int(subset[i][k])][1]) for k in upper_body_landmarks if subset[i][k] != -1]
+        # calculate foread
+        nose_x, nose_y = candidates[int(subset[i][0])][0], candidates[int(subset[i][0])][1]
+        left_eye_x, left_eye_y = candidates[int(subset[i][15])][0], candidates[int(subset[i][15])][1]
+        right_eye_x, right_eye_y = candidates[int(subset[i][16])][0], candidates[int(subset[i][16])][1]
+        # Calculate the midpoint between the eyes
+        # Calculate the vectors from the nose to the left eye and from the nose to the right eye
+        nose_to_left_eye = (left_eye_x - nose_x, left_eye_y - nose_y)
+        nose_to_right_eye = (right_eye_x - nose_x, right_eye_y - nose_y)
+
+        # Calculate the linear combination of the vectors
+        combination_factor = 2.5
+        forehead_x = nose_x + (nose_to_left_eye[0] + nose_to_right_eye[0]) / 2 * combination_factor
+        forehead_y = nose_y + (nose_to_left_eye[1] + nose_to_right_eye[1]) / 2 * combination_factor
+
+        upper_body_coords.append((forehead_x, forehead_y))
+
+        _, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2.6)
+        roi_list.append(bb)
+
+    # Store the roi_list in the Scene model
+    scene.roi_list = roi_list
+    db.session.commit()
 
 
 def main():
