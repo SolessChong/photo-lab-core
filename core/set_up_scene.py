@@ -9,6 +9,7 @@ from core import conf
 import re
 import math
 import shutil
+from insightface.app import FaceAnalysis
 from pathlib import Path
 from core import templates
 import webuiapi
@@ -25,6 +26,14 @@ from core.resource_manager import *
 
 api = webuiapi.WebUIApi(host='127.0.0.1', port=7890)
 body_estimate = Body()
+
+face_analysis = None
+def get_face_analysis() -> FaceAnalysis:
+    global face_analysis
+    if face_analysis is None:
+        face_analysis = FaceAnalysis(allowed_modules=['buffalo_l'])
+        face_analysis.prepare(ctx_id=0, det_size=(640, 640))
+    return face_analysis
 
 def prepare_scene(scene_id):
     # download base_img
@@ -104,7 +113,9 @@ def prepare_scene_roi_list(scene_id):
         upper_body_coords.append((forehead_x, forehead_y))
 
         _, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2.6)
-        roi_list.append(bb)
+        rst = get_face_analysis().get(cv2_base_image[bb[1]:bb[3], bb[0]:bb[2]])
+        person_gender = 'girl' if rst[0]['gender'] == 0 else 'boy'
+        roi_list.append({'bb': bb, 'sex': person_gender})
 
     # Store the roi_list in the Scene model
     scene.roi_list = roi_list
