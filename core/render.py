@@ -15,6 +15,7 @@ import webuiapi
 from core import face_mask
 from core.libs.openpose.body import Body
 from core import pose_detect
+from core import set_up_scene
 import numpy as np
 import typing
 import argparse
@@ -105,6 +106,10 @@ def render_lora_on_base_img(task) -> Image:
     scene = models.Scene.query.get(task.scene_id)
     base_img, pose_img = prepare_task(task)
 
+    # For legacy scenes, calculate roi_list if not exist
+    if not scene.roi_list or len(scene.roi_list) == 0:
+        set_up_scene.prepare_scene_roi_list(scene.id)
+
     # e.g. lora_list[0] = 'user_1', --> <lora:user_1:1> in prompt.
     lora_list = [ResourceMgr.get_lora_name_by_person_id(person_id) for person_id in task.person_id_list]
     prompt = scene.prompt
@@ -124,7 +129,7 @@ def render_lora_on_base_img(task) -> Image:
 
     for i, person_id in enumerate(task.person_id_list):
         # Get the bounding box for the current person from the Scene model
-        bb = scene.roi_list[i]
+        bb = scene.roi_list[i].get('bb')
 
         prompt_with_lora = generate_prompt_with_lora(prompt, lora_list[i], scene.params)
         
