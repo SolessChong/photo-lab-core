@@ -47,12 +47,14 @@ def db_get(query, values):
     cursor.execute(query, values)
     return cursor.fetchall()
 
-def get_signed_url(img_key, is_shuiyin = False):
+def get_signed_url(img_key, is_shuiyin = False, is_yasuo = False):
      # 获取图片signed URL
     params = {'x-oss-process': 'image/auto-orient,1/quality,q_90/format,jpg'}
     bucket = oss2.Bucket(create_oss_client(), OSS_ENDPOINT, OSS_BUCKET_NAME, )
     if is_shuiyin:
         params = {'x-oss-process': 'image/auto-orient,1/quality,q_95/format,jpg/watermark,text_UGljIE1hZ2ljICAgICAgIA,color_c4c3c3,size_150,rotate_30,fill_1,shadow_20,g_se,t_20,x_30,y_30'}
+    if is_yasuo:
+        params = {'x-oss-process': 'image/auto-orient,1/resize,p_46/quality,q_50/format,jpg'}
     return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
 
 

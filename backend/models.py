@@ -11,6 +11,7 @@ class Example(db.Model):
     type = db.Column(db.Integer, nullable=True)
     img_key = db.Column(db.String(255), nullable=True)
     style = db.Column(db.String(255), nullable=True)
+    tag_id = db.Column(db.Integer, nullable=True)
 
 class BdClick(db.Model):
     __tablename__ = 'bd_clicks'
@@ -180,6 +181,7 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tag_name = db.Column(db.String(255), nullable=True)
     rate = db.Column(db.Integer, nullable=True, default=0)
+    img_key = db.Column(db.String(255), nullable=True)
 
 class TagScene(db.Model):
     __tablename__ = 'tag_scene'

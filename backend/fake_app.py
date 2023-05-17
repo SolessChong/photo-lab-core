@@ -71,6 +71,7 @@ def list_scenes():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 20, type=int)
     collection_name_filter = request.args.get('collection_name_filter', '', type=str)
+    non_tag = request.args.get('non_tag', 'false', type=str) == 'true'
 
     # Filter scenes based on the collection_name_filter if it's not empty
     if collection_name_filter:
@@ -80,6 +81,15 @@ def list_scenes():
 
     scenes = scenes_pagination.items
     total_pages = scenes_pagination.pages
+
+    # Filter scenes that have tags if non_tag is true
+    if non_tag:
+        tmp_scenes = []
+        for scene in scenes:
+            if not models.TagScene.query.filter(models.TagScene.scene_id==scene.scene_id, models.TagScene.is_delete == 0).first():
+                tmp_scenes.append(scene)
+        scenes = tmp_scenes
+
 
     scene_list = [scene.to_dict() for scene in scenes]
 
@@ -357,10 +367,11 @@ def get_scene_tag_list(scene_id):
     for tag_scene in tag_scenes:
         tag = models.Tag.query.get(tag_scene.tag_id)
         if tag:  # Check if tag exists
-            tag_list.append(tag.tag_name)
+            tag_list.append({'tag_id': tag.id, 'tag_name': tag.tag_name})
 
     # Return the list of tags as JSON
     return jsonify(tag_list=tag_list)
+
 
 @app.route('/update_scene_collection_name', methods=['GET'])
 def update_scene_collection_name():
@@ -403,20 +414,46 @@ def update_tag(scene_id):
                 tag_id = new_tag.id
             else:
                 tag_id = models.Tag.query.filter_by(tag_name=tag).first().id
+            
             tag_id_list.append(tag_id)
-            if models.TagScene.query.filter_by(scene_id=scene.scene_id, tag_id=tag_id).first() is None:
+            tag_scene = models.TagScene.query.filter_by(scene_id=scene.scene_id, tag_id=tag_id).first()
+            if tag_scene is None:
                 new_tag_scene = models.TagScene(scene_id=scene.scene_id, tag_id=tag_id)
                 db.session.add(new_tag_scene)
                 db.session.commit()
-        # delete old tag for the scene
-        old_stag = models.TagScene.query.filter_by(scene_id=scene.scene_id, is_delete=0).all()
-        for stag in old_stag:
-            if stag.tag_id not in tag_id_list:
-                stag.is_delete = 1
+            else:
+                tag_scene.is_delete = 0
                 db.session.commit()
 
     # 返回成功或失败的消息
     return jsonify({'message': 'Updated successfully'})
+
+
+@app.route('/delete_tag/<scene_id>/<tag_id>/<is_apply_collection>', methods=['DELETE'])
+def delete_tag(scene_id, tag_id, is_apply_collection):
+    # Convert is_apply_collection to boolean
+    is_apply_collection = is_apply_collection.lower() == 'true'
+    
+    # 这里是你的逻辑，例如更新数据库...
+    scenes = Scene.query.filter_by(scene_id=scene_id).all()
+    if is_apply_collection:
+        scenes = Scene.query.filter_by(collection_name=scenes[0].collection_name).all()
+
+    num = 0
+    for scene in scenes:
+        tag_scene = models.TagScene.query.filter_by(scene_id=scene.scene_id, tag_id=tag_id).first()
+        if tag_scene is not None:
+            if tag_scene.is_delete == 0:
+                num += 1
+                tag_scene.is_delete = 1
+                db.session.commit()
+    
+    # Here, you would delete the tag from your database or wherever you're storing your data
+    # I'm going to pretend I deleted the tag and return a success message
+    return jsonify({
+        'status': 'success',
+        'message': f'Tag {tag_id} from scene {scene_id} has been deleted. is_apply_collection: {is_apply_collection}, total: {num}'
+    })
 
 @app.route('/update_scene_rate', methods=['GET'])
 def update_scene_rate():
@@ -433,6 +470,17 @@ def update_scene_rate():
     db.session.commit()
 
     return jsonify({'success': 'Scene rate updated successfully'}), 200
+
+@app.route('/get_all_tags', methods=['GET'])
+def get_all_tags():
+    # Get all tags
+    tags = models.Tag.query.all()
+
+    # Convert the list of Tag objects to a list of tag names
+    tag_names = [tag.tag_name for tag in tags]
+
+    # Return the list of tag names as JSON
+    return jsonify(tag_names)
 
 if __name__ == '__main__':
     # Add argument parser: -p: port
