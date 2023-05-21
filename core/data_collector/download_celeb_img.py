@@ -2,7 +2,7 @@ import os
 import requests
 import json
 import shutil
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed, wait
 
 # Replace with your Bing Image Search API key
 API_KEY = "50b4fa16370d400fadb079dd7389aaba"
