@@ -5,15 +5,15 @@ import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Replace with your Bing Image Search API key
-API_KEY = "87eaa95062ba42399cd23525e4de48c1"
+API_KEY = "50b4fa16370d400fadb079dd7389aaba"
 
 # Define the search query and parameters
-person_name = "Rihanna"
-offset = 0
+person_name = "jisoo"
+offset = 100
 search_query = person_name
 search_url = "https://api.bing.microsoft.com/v7.0/images/search"
 headers = {"Ocp-Apim-Subscription-Key": API_KEY}
-params = {"q": search_query, "count": 200, "offset": offset}  # Adjust the count to get more or fewer images
+params = {"q": search_query, "count": 150, "offset": offset}  # Adjust the count to get more or fewer images
 
 # Make the API request
 response = requests.get(search_url, headers=headers, params=params)
@@ -45,11 +45,14 @@ def download_image(idx, image_url, person_dir, offset):
 
 
 # Download the images using multiple threads
-with ThreadPoolExecutor(max_workers=10) as executor:
+with ThreadPoolExecutor(max_workers=20) as executor:
     futures = [
         executor.submit(download_image, idx, image["contentUrl"], person_dir, offset)
         for idx, image in enumerate(results["value"])
     ]
+
+    # Wait for all tasks to complete before moving on
+    wait(futures)
 
     for future in as_completed(futures):
         try:
