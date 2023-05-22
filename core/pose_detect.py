@@ -94,6 +94,28 @@ if __name__ == "__main__":
       canvas = draw_openpose(canvas, keypoints, OPENPOSE_CONNECTIONS)
       cv2.imwrite('d:/sd/pipeline/tmp/annotated_image_canvas' + str(idx) + '.png', canvas)
 
+def pad_crop_image(image: np.ndarray, x_min_sq: int, y_min_sq: int, x_max_sq: int, y_max_sq: int) -> typing.Tuple[np.ndarray, typing.Tuple[int, int, int, int]]:
+    image_height, image_width, _ = image.shape
+
+    # Pad the image if the bounding box is beyond the image boundaries
+    pad_top, pad_bottom, pad_left, pad_right = 0, 0, 0, 0
+    if x_min_sq < 0:
+        pad_left = abs(x_min_sq)
+        x_max_sq += abs(x_min_sq)
+        x_min_sq = 0
+    if x_max_sq > image_width:
+        pad_right = x_max_sq - image_width
+    if y_min_sq < 0:
+        pad_top = abs(y_min_sq)
+        y_max_sq += abs(y_min_sq)
+        y_min_sq = 0
+    if y_max_sq > image_height:
+        pad_bottom = y_max_sq - image_height
+
+    image = cv2.copyMakeBorder(image, pad_top, pad_bottom, pad_left, pad_right, cv2.BORDER_CONSTANT, value=(255, 255, 255, 255))
+
+    # Return the padded image and bounding box coordinates
+    return image[y_min_sq:y_max_sq, x_min_sq:x_max_sq]
 
 def crop_image(image: np.ndarray, landmark_points, enlarge=1.2) -> typing.Tuple[np.ndarray, typing.Tuple[int, int, int, int]]:
     x_coords, y_coords = zip(*landmark_points)
@@ -115,28 +137,9 @@ def crop_image(image: np.ndarray, landmark_points, enlarge=1.2) -> typing.Tuple[
     x_min_sq, x_max_sq = bb_center_x - bb_size // 2, bb_center_x + bb_size // 2
     y_min_sq, y_max_sq = bb_center_y - bb_size // 2, bb_center_y + bb_size // 2
 
-    # Pad the image if the bounding box is beyond the image boundaries
-    pad_top, pad_bottom, pad_left, pad_right = 0, 0, 0, 0
-    if x_min_sq < 0:
-        pad_left = abs(x_min_sq)
-        x_max_sq += abs(x_min_sq)
-        x_min_sq = 0
-    if x_max_sq > image_width:
-        pad_right = x_max_sq - image_width
-    if y_min_sq < 0:
-        pad_top = abs(y_min_sq)
-        y_max_sq += abs(y_min_sq)
-        y_min_sq = 0
-    if y_max_sq > image_height:
-        pad_bottom = y_max_sq - image_height
+    image = pad_crop_image(image, x_min_sq, y_min_sq, x_max_sq, y_max_sq)
 
-    image = cv2.copyMakeBorder(image, pad_top, pad_bottom, pad_left, pad_right, cv2.BORDER_CONSTANT, value=(255, 255, 255, 255))
-
-    # Crop the image to the bounding box
-    image = image[y_min_sq:y_max_sq, x_min_sq:x_max_sq]
-    # Return the cropped image and bounding box coordinates
-    # Return BB without padding. -25px possible.
-    bb = (x_min_sq - pad_left, y_min_sq - pad_top, (x_max_sq - x_min_sq), (y_max_sq - y_min_sq))
+    bb = (x_min_sq, y_min_sq, (x_max_sq - x_min_sq), (y_max_sq - y_min_sq))
     logging.debug(f"bounding box: (x_min, x_max), (y_min, y_max) = (({x_min_sq}, {x_max_sq}), ({y_min_sq}, {y_max_sq}))")
     logging.debug(f"Width and height: {x_max_sq - x_min_sq}, {y_max_sq - y_min_sq}")
     
