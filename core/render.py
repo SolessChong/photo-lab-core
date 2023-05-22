@@ -108,7 +108,7 @@ def render_lora_on_base_img(task) -> Image:
 
     # For legacy scenes, calculate roi_list if not exist
     if not scene.roi_list or len(scene.roi_list) == 0:
-        set_up_scene.prepare_scene_roi_list(scene.id)
+        set_up_scene.prepare_scene_roi_list(scene.scene_id)
 
     # e.g. lora_list[0] = 'user_1', --> <lora:user_1:1> in prompt.
     lora_list = [ResourceMgr.get_lora_name_by_person_id(person_id) for person_id in task.person_id_list]
@@ -206,6 +206,8 @@ def render_lora_on_base_img(task) -> Image:
 
 # main program
 if __name__ == "__main__":
+    from backend.extensions import db, app
+    app.app_context().push()
     # Argument 'task'
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", help="task id")
@@ -224,12 +226,11 @@ if __name__ == "__main__":
     if task_id:
         task = models.Task.query.get(task_id)
         img = render_lora_on_base_img(task)
-        write_PILimg(img, ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id))
+        task.result_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
+        write_PILimg(img, task.result_img_key)
         db.session.add(task)
         db.session.commit()
     elif person_id_list and scene_id:
-        from backend.extensions import db, app
-        app.app_context().push()
         task = models.Task(scene_id=scene_id, person_id_list=person_id_list)
         db.session.add(task)
         img = render_lora_on_base_img(task)
