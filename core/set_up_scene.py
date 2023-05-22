@@ -1,14 +1,8 @@
 from PIL import Image
-import os
-import io
-import rembg
+import argparse
 import cv2
-import subprocess
 import logging
 from core import conf
-import re
-import math
-import shutil
 from insightface.app import FaceAnalysis
 from pathlib import Path
 from core import templates
@@ -31,7 +25,7 @@ face_analysis = None
 def get_face_analysis() -> FaceAnalysis:
     global face_analysis
     if face_analysis is None:
-        face_analysis = FaceAnalysis(allowed_modules=['buffalo_l'])
+        face_analysis = FaceAnalysis(name='buffalo_l')
         face_analysis.prepare(ctx_id=0, det_size=(640, 640))
     return face_analysis
 
@@ -50,7 +44,7 @@ def prepare_scene(scene_id):
         base_img = read_PILimg(base_img_url)
         # super res if base img too small
         if base_img.width < 1500 or base_img.height < 1500:
-            resize = 2048 / base_img.width
+            resize = 1500 / base_img.width
             if resize > 1.2:
                 rst = api.extra_single_image(base_img, upscaler_1=webuiapi.Upscaler.ESRGAN_4x, upscaling_resize=resize)
                 base_img = rst.image
@@ -75,7 +69,10 @@ def prepare_scene(scene_id):
         logging.info(f"Pose map already exists, skip generating.")
 
     # Generate ROI list
-    prepare_scene_roi_list(scene_id)
+    if models.Scene.query.get(scene_id).roi_list:
+        logging.info(f"ROI list already exists, skip generating.")
+    else:
+        prepare_scene_roi_list(scene_id)
 
     return True
 
@@ -112,8 +109,9 @@ def prepare_scene_roi_list(scene_id):
 
         upper_body_coords.append((forehead_x, forehead_y))
 
-        _, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2.6)
-        rst = get_face_analysis().get(cv2_base_image[bb[1]:bb[3], bb[0]:bb[2]])
+        cropped_base_img, bb = pose_detect.crop_image(cv2_base_image, upper_body_coords, enlarge=2.6)
+        # bb = (x_min, y_min, width, height)
+        rst = get_face_analysis().get(cropped_base_img)
         person_gender = 'girl' if rst[0]['gender'] == 0 else 'boy'
         roi_list.append({'bb': bb, 'sex': person_gender})
 
@@ -122,10 +120,29 @@ def prepare_scene_roi_list(scene_id):
     db.session.commit()
 
 
-def main():
-    app.app_context().push()
-    for i in range(557, 569):
-        prepare_scene(i)
-
 if __name__ == "__main__":
-    main()
+    # args:
+    # --scene, list of multiple scene id
+    # --collection
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument('--scene', nargs='+', help='scene id')
+    argparser.add_argument('--collection', help='collection id')
+    # must have one of scene or collection
+    args = argparser.parse_args()
+    assert args.scene or args.collection, "Must have one of arguments: scene or collection"
+
+    app.app_context().push()
+    if args.scene:
+        scene_id_list = args.scene
+    elif args.collection:
+        scene_id_list = [scene.scene_id for scene in models.Scene.query.filter(models.Scene.collection_name == args.collection).all()]
+
+    logging.info(f"Start preparing scene: {scene_id_list}")
+
+    for scene_id in scene_id_list:
+        try:
+            prepare_scene(scene_id)
+            models.Scene.query.get(scene_id).update_setup_status('finish')
+        except Exception as e:
+            logging.exception(f"Error processing scene [{scene_id}]: {e}")
+
