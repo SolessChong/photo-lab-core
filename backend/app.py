@@ -199,7 +199,7 @@ def get_example_2():
         elif example.type == 2:
             result['bad'].append(rs)
     
-    tags = models.Tag.query.filter(models.Tag.img_key != None).all()
+    tags = models.Tag.query.filter(models.Tag.img_key != None).filter(models.Tag.rate > 0).all()
     for tag in tags:
         img_height, img_width = utils.get_oss_image_size(tag.img_key)
         rs = {
