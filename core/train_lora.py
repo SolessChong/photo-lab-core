@@ -188,8 +188,10 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
 
 # main function
 def main():
-    args = argparse.ArgumentParser()
-    args.add_argument('--dataset_path', type=str, default='dataset')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset_path', type=str, default='/Users/zhengyuanbo/Downloads/zhengyuanbo')
+    args = parser.parse_args()
+    
     ## Flags
     remove_bg = False
     enlarge_face = 2
