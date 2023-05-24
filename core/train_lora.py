@@ -190,8 +190,9 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_path', type=str, default='/Users/zhengyuanbo/Downloads/zhengyuanbo')
+    parser.add_argument('--epoch', type=int, default=5)
     args = parser.parse_args()
-    
+
     ## Flags
     remove_bg = False
     enlarge_face = 2
@@ -216,7 +217,7 @@ def main():
     ## 3. Train LORA model
     #
     logging.info("=== start training LORA model")
-    train_lora(args.dataset_path, conf.SUBJECT_PLACEHOLDER, 'girl')
+    train_lora(args.dataset_path, conf.SUBJECT_PLACEHOLDER, 'girl', epoch=args.epoch)
 
 # main program
 if __name__ == "__main__":
