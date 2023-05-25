@@ -14,11 +14,15 @@ CELERY_CONFIG = {
     'CELERY_RESULT_BACKEND': 'redis://:Yzkj8888!@r-wz9d9mt4zsofl3s0pnpd.redis.rds.aliyuncs.com/0'
 }
 
+import os
 
 mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab_dev?charset=utf8'
 
 wait_status = 'wait'
-dev_mode = True
+dev_mode = os.environ.get('DEV_MODE') == 'true'
+is_industry = False
+user_group = 1  # 3 for is_inudstry
+min_image_num = 15
 
 if dev_mode:
     mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab_dev?charset=utf8'
@@ -27,3 +31,4 @@ else:
     mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab?charset=utf8'
     wait_status = 'wait'
 
+print(f'config: ', mysql_uri)
