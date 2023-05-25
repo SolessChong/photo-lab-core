@@ -169,7 +169,9 @@ def get_tasks():
             "id": task.id,
             "scene_id": task.scene_id,
             "result_img_key": task.result_img_key,
-            "person_id_list": task.get_person_id_list()
+            "person_id_list": task.get_person_id_list(),
+            "pack_id": task.pack_id,
+            "user_id": task.user_id,
         }
         for task in tasks
     ]

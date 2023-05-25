@@ -252,7 +252,7 @@ def is_qualified(quality_report, suggestions):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--person_id", type=int, help="person id")    
+    parser.add_argument("-p", "--person_id", type=int, help="person id")    
 
     app.app_context().push()
 

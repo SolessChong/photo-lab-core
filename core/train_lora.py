@@ -14,22 +14,7 @@ from core import face_mask
 from core import pose_detect
 from core.resource_manager import ResourceMgr, ResourceType
 from core.augment import aug_folder
-
-import sys
-import io
-
-# read command line arguments
 import argparse
-parser = argparse.ArgumentParser(
-    prog="train lora", 
-    description="train lora model"
-)
-parser.add_argument("dataset_path", help="path to the folder containing the dataset")
-parser.add_argument("subject_name", help="subject name")
-parser.add_argument("class_name", help="subject id")
-
-# parse cli arguments
-
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -203,7 +188,11 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
 
 # main function
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset_path', type=str, default='/Users/zhengyuanbo/Downloads/zhengyuanbo')
+    parser.add_argument('--epoch', type=int, default=5)
     args = parser.parse_args()
+
     ## Flags
     remove_bg = False
     enlarge_face = 2
@@ -228,7 +217,7 @@ def main():
     ## 3. Train LORA model
     #
     logging.info("=== start training LORA model")
-    train_lora(args.dataset_path, conf.SUBJECT_PLACEHOLDER, 'girl')
+    train_lora(args.dataset_path, conf.SUBJECT_PLACEHOLDER, 'girl', epoch=args.epoch)
 
 # main program
 if __name__ == "__main__":
