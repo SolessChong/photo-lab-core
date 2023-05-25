@@ -382,7 +382,8 @@
             const taskContainer = document.getElementById('task-container');
 
             const column = document.createElement('div');
-            column.className = 'col-12 col-md-6 col-lg-4';
+            column.className = 'col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2';
+
 
             const panel = document.createElement('div');
             panel.className = 'card task-panel';
@@ -404,7 +405,10 @@
             info.className = 'card-body';
             info.innerHTML = '<h5 class="card-title">Task ID: ' + task.id +
                 '</h5><p class="card-text">Person IDs: ' + task.person_id_list.join(', ') +
-                '</p>' + '<p class="card-text">Scene ID: ' + task.scene_id + '</p>';
+                '</p>' + '<p class="card-text">Scene ID: ' + task.scene_id + '</p>' +
+                '<p class="card-text">Pack ID: ' + task.pack_id + '</p>' +
+                '<p class="card-text">User ID: ' + task.user_id + '</p>' +
+
             panel.appendChild(info);
 
             column.appendChild(panel);
