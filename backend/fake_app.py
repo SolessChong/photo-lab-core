@@ -72,12 +72,19 @@ def list_scenes():
     per_page = request.args.get('per_page', 20, type=int)
     collection_name_filter = request.args.get('collection_name_filter', '', type=str)
     non_tag = request.args.get('non_tag', 'false', type=str) == 'true'
+    is_industry = request.args.get('is_industry', 0, type=int)
+    scene_id_filter = request.args.get('scene_id_filter', 0, type=int)
+    
+    print(request.args, '  ', scene_id_filter)
 
     # Filter scenes based on the collection_name_filter if it's not empty
     if collection_name_filter:
-        scenes_pagination = Scene.query.filter(Scene.collection_name.contains(collection_name_filter.replace('\\', '\\\\'))).order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+        scenes_pagination = Scene.query.filter(Scene.is_industry== is_industry, Scene.collection_name.contains(collection_name_filter.replace('\\', '\\\\'))).order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
     else:
-        scenes_pagination = Scene.query.order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+        scenes_pagination = Scene.query.filter(Scene.is_industry==is_industry).order_by(Scene.scene_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+
+    if (scene_id_filter > 0):
+        scenes_pagination = Scene.query.filter(Scene.scene_id==scene_id_filter).paginate(page=page, per_page=per_page, error_out=False)
 
     scenes = scenes_pagination.items
     total_pages = scenes_pagination.pages
@@ -333,6 +340,7 @@ def create_scene():
             params=json.loads(form_data['params']) if form_data['params'] else None,
             collection_name=form_data['collection_name'],
             setup_status="wait",
+            is_industry=form_data['industry'],
         )
 
         db.session.add(scene)
