@@ -190,6 +190,10 @@
                         <input type="text" id="collection-name-filter" placeholder="Enter collection name">
                         <label for="non-tag-filter">Non-Tag:</label>
                         <input type="checkbox" id="non-tag-filter">
+                        <label for="is-industry-filter">Is Industry:</label>  <!-- New label -->
+                        <input type="checkbox" id="is-industry-filter"> <!-- New checkbox -->
+                        <label for="scene-id-filter">Scene ID:</label>
+                        <input type="text" id="scene-id-filter" placeholder="Enter scene ID">
                         <button class="btn btn-primary" onclick="applyFilter()">Apply Filter</button>
                         <select id="collection-name-dropdown" onchange="selectFilterFromDropdown()">
                             <option value="">Select a collection</option>
@@ -277,26 +281,32 @@
                     <label for="collection-name" class="form-label">Collection Name</label>
                     <input type="text" class="form-control" id="collection-name">
                 </div>
-                <div class="mb-3">
-                    <label for="action-type" class="form-label">Action Type</label>
-                    <select class="form-select" id="action-type">
-                        <option value="sd">SD</option>
-                        <option value="mj">MJ</option>
-                        <option value="reface">Reface</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="img-type" class="form-label">Image Type</label>
-                    <select class="form-select" id="img-type">
-                        <option value="girl">Girl</option>
-                        <option value="boy">Boy</option>
-                    </select>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="action-type" class="form-label">Action Type</label>
+                        <select class="form-select" id="action-type">
+                            <option value="sd">SD</option>
+                            <option value="mj">MJ</option>
+                            <option value="reface">Reface</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="img-type" class="form-label">Image Type</label>
+                        <select class="form-select" id="img-type">
+                            <option value="girl">Girl</option>
+                            <option value="boy">Boy</option>
+                            <option value="couple"> Couple </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="industry-check">
+                        <label class="form-check-label" for="industry-check">Industry</label>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Scene</button>
             </form>
             <div id="scene-creation-result"></div>            
         </div>
-        
     </div>
 
     <script>
@@ -629,9 +639,10 @@
         function applyFilter() {
             const collection_name_filter = document.getElementById('collection-name-filter').value;
             const nonTagFilter = document.getElementById('non-tag-filter').checked;
-
+            const isIndustryFilter = Number(document.getElementById('is-industry-filter').checked); // New line
+            const scene_id_filter = document.getElementById('scene-id-filter').value;
             currentCollectionFilter = collection_name_filter;
-            loadSceneEditData(1, collection_name_filter, nonTagFilter);
+            loadSceneEditData(1, collection_name_filter, nonTagFilter, isIndustryFilter, scene_id_filter);
         }
 
         function updateSceneParams(scene_id) {
@@ -833,6 +844,10 @@
             const imgTypeInput = document.getElementById('img-type');
             const fileInput = document.getElementById('base-img-key'); // Added this line
 
+            const industryInput = document.getElementById('industry-check'); // Added this line
+            const industryValue = industryInput.checked ? 1 : 0; // Convert the boolean value to 1 or 0
+
+
             const formData = new FormData();
             formData.append('base_img_key', fileInput.files[0]);
             formData.append('prompt', promptInput.value);
@@ -841,6 +856,7 @@
             formData.append('collection_name', collectionNameInput.value);
             formData.append('action_type', actionTypeInput.value);
             formData.append('img_type', imgTypeInput.value);
+            formData.append('industry', industryValue); // Added this line
 
 
             fetch('/api/create_scene', {
