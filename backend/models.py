@@ -87,6 +87,7 @@ class Pack(db.Model):
     is_unlock = db.Column(db.Integer, nullable=True, default=0, comment='0代表上锁，1代表已经付费解锁')
     banner_img_key = db.Column(db.String(2000), nullable=True)
     total_seconds = db.Column(db.Integer, nullable=True)
+    unlock_num = db.Column(db.Integer, nullable=True, default=5)
 
 
 class Scene(db.Model):
@@ -109,6 +110,8 @@ class Scene(db.Model):
     params = db.Column(db.JSON, nullable=True)  # usually dict
     collection_name = db.Column(db.String(255), nullable=True)
     tags = db.Column(db.String(255), nullable=True)
+
+    is_industry = db.Column(db.Integer, nullable=True, default=0, comment='是否是行业包，0代表不是，1代表是')
     
     def update_pose_img(self, pose_img_url):
         if self.hint_img_list is None:

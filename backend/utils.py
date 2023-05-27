@@ -1,6 +1,7 @@
 import pymysql
 import oss2
 import requests
+import urllib
 import time
 from io import BytesIO
 from PIL import Image
@@ -17,10 +18,7 @@ OSS_BUCKET_NAME = 'photolab-test'
 OSS_ENDPOINT = 'oss-cn-shenzhen.aliyuncs.com'
 
 AKOOL_URL = 'https://faceswap.akool.com/api/v1/faceswap/highquality/specifyimage'
-# AKOOL_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjZiNDU3NzczNTM2MDE2MDU1Nzk0NCIsInVpZCI6MTcwNTk1LCJ0eXBlIjoidXNlciIsImlhdCI6MTY4MDY1ODgyNywiZXhwIjoxNjgzMjUwODI3fQ.a50zmoaKgdqZvVzyItTBesnnQBGZ6umJPsE5sY03Apc'
-
-AKOOL_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjZiNDU3NzczNTM2MDE2MDU1Nzk0NCIsInVpZCI6MTcwNTk1LCJ0eXBlIjoidXNlciIsImlhdCI6MTY4MTE1MTM0NCwiZXhwIjoxNjgzNzQzMzQ0fQ.CzSgtcI1crGm7NOnUvcQdMEBHaTeASgDsJXVHZH04L8'
-
+AKOOL_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjZiNDU3NzczNTM2MDE2MDU1Nzk0NCIsInVpZCI6MTcwNTk1LCJ0eXBlIjoidXNlciIsImlhdCI6MTY4NDcyMjEwOSwiZXhwIjoxNjg3MzE0MTA5fQ.k0P3W4ejFjDr5cLCWsuz3CEMcrDOevV1N6lv0RgYJzY'
 # 创建数据库连接
 def create_db_conn():
     return pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, db=DB_NAME)
@@ -47,16 +45,29 @@ def db_get(query, values):
     cursor.execute(query, values)
     return cursor.fetchall()
 
-def get_signed_url(img_key, is_shuiyin = False, is_yasuo = False):
-     # 获取图片signed URL
-    params = {'x-oss-process': 'image/auto-orient,1/quality,q_90/format,jpg'}
-    bucket = oss2.Bucket(create_oss_client(), OSS_ENDPOINT, OSS_BUCKET_NAME, )
-    if is_shuiyin:
-        params = {'x-oss-process': 'image/auto-orient,1/quality,q_95/format,jpg/watermark,text_UGljIE1hZ2ljICAgICAgIA,color_c4c3c3,size_150,rotate_30,fill_1,shadow_20,g_se,t_20,x_30,y_30'}
-    if is_yasuo:
-        params = {'x-oss-process': 'image/auto-orient,1/resize,p_46/quality,q_50/format,jpg'}
-    return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
+# deprecated, explore time validation in the future
+# def get_signed_url(img_key, is_shuiyin = False, is_yasuo = False):
+#      # 获取图片signed URL
+#     params = {'x-oss-process': 'image/auto-orient,1/quality,q_90/format,jpg'}
+#     bucket = oss2.Bucket(create_oss_client(), OSS_ENDPOINT, OSS_BUCKET_NAME, )
+#     if is_shuiyin:
+#         params = {'x-oss-process': 'image/auto-orient,1/quality,q_95/format,jpg/watermark,text_UGljIE1hZ2ljICAgICAgIA,color_c4c3c3,size_150,rotate_30,fill_1,shadow_20,g_se,t_20,x_30,y_30'}
+#     if is_yasuo:
+#         params = {'x-oss-process': 'image/auto-orient,1/resize,p_46/quality,q_50/format,jpg'}
+#     return bucket.sign_url('GET', img_key, 3600, params=params) # 设置一个小时的有效期
 
+def get_signed_url(img_key, is_shuiyin = False, is_yasuo = False, is_mohu = False):
+    value = 'image/auto-orient,1/quality,q_90/format,jpg'
+
+    if is_shuiyin:
+        value += '/watermark,text_UGljIE1hZ2ljICAgICAgIA,color_ffffff,size_250,rotate_30,fill_1,shadow_100,g_se,t_78,x_30,y_30'
+    if is_yasuo:
+        value += '/resize,m_lfit,w_400'
+    if is_mohu:
+        value += '/blur,r_20,s_20'
+    oss_domain = f"http://{OSS_BUCKET_NAME}.{OSS_ENDPOINT}"
+
+    return oss_domain + '/' + urllib.parse.quote(img_key.encode('utf-8')) + '?&x-oss-process=' + value
 
 # def download_image(url):
 #     for i in range(20):

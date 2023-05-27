@@ -98,7 +98,7 @@ async function loadAllUserIds() {
 }
 
 
-function loadSceneEditData(page, collection_name_filter='', non_tag=false) {
+function loadSceneEditData(page, collection_name_filter='', non_tag=false, is_industry=0, scene_id_filter='') {
     let allTags = [];
 
     // Fetch all tags from the server
@@ -109,7 +109,7 @@ function loadSceneEditData(page, collection_name_filter='', non_tag=false) {
         });
 
 
-    const url = `/list_scenes?page=${page}&collection_name_filter=${encodeURIComponent(collection_name_filter)}&non_tag=${non_tag}`;
+    const url = `/list_scenes?page=${page}&collection_name_filter=${encodeURIComponent(collection_name_filter)}&non_tag=${non_tag}&is_industry=${is_industry}&scene_id_filter=${encodeURIComponent(scene_id_filter)}`;
     fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -188,6 +188,10 @@ function loadSceneEditData(page, collection_name_filter='', non_tag=false) {
                 collectionNameInput.value = scene.collection_name;
                 collectionNameInput.style.width = '80%';
                 collectionNameRow.appendChild(collectionNameInput);
+
+                const sceneIDLabel = document.createElement('span');
+                sceneIDLabel.innerHTML = `<strong>Scene ID:</strong> ${scene.scene_id}`;
+                collectionNameRow.appendChild(sceneIDLabel);
 
                 const saveCollectionNameButton = document.createElement('button');
                 saveCollectionNameButton.innerHTML = 'Save Collection Name';
