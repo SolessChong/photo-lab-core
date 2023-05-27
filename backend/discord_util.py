@@ -41,10 +41,10 @@ def PassPromptToSelfBot(prompt : str):
 
 import time
 from datetime import datetime, timedelta
-from .models import db, GeneratedImage
-from . import utils
-from . import models
-from .extensions import app
+from backend.models import db, GeneratedImage
+from backend import utils
+from backend import models
+from backend.extensions import app
 # main.py
 
 # GeneratedImage status: init -> processing -> finish

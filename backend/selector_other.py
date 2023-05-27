@@ -8,6 +8,7 @@ import requests
 from . import extensions
 from . import models
 import random
+from . import config
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,8 +25,10 @@ def generate_task(person_id, category, pack_id, user_id, action_type='mj', limit
     sources = models.Source.query.filter(models.Source.person_id==person_id, models.Source.base_img_key != None).all()
 
     if action_type == 'reface':
-        scenes = models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type==action_type, models.Scene.base_img_key != None).order_by(models.Scene.rate.desc()).limit(limit*10).all()
-        scenes.extend(models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type=='sd', models.Scene.base_img_key != None).order_by(models.Scene.rate.desc()).limit(limit*10).all())
+        scenes = models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type==action_type,
+                                           models.Scene.base_img_key != None, models.Scene.is_industry==config.is_industry).order_by(models.Scene.rate.desc()).limit(limit*10).all()
+        scenes.extend(models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type=='sd', 
+                                                models.Scene.base_img_key != None, models.Scene.is_industry==config.is_industry).order_by(models.Scene.rate.desc()).limit(limit*10).all())
     elif action_type == 'mj':
         scenes = models.Scene.query.filter(models.Scene.img_type==category, models.Scene.action_type==action_type).order_by(models.Scene.rate.desc()).limit(limit*10).all()
 

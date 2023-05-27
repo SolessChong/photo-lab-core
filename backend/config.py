@@ -31,4 +31,6 @@ else:
     mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab?charset=utf8'
     wait_status = 'wait'
 
+BD_CONVERSION_POST_URL = 'https://analytics.oceanengine.com/api/v2/conversion'
+
 print(f'config: ', mysql_uri)
