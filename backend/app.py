@@ -1,3 +1,8 @@
+from backend import config
+import argparse
+from backend import bd_conversion_utils
+from urllib.parse import urlparse, parse_qs
+
 from datetime import datetime
 import json
 from flask import Flask, request, jsonify, render_template
@@ -6,10 +11,9 @@ import random
 import string
 from celery import group, Celery, chain, chord
 import logging
-import argparse
-import ast
 import requests
 from .config import wait_status
+from sqlalchemy import desc
 
 from backend.extensions import  app, db
 from . import aliyun_face_detector
@@ -43,11 +47,7 @@ def create_user():
     logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
 
     # Create a new user with the generated user_id
-    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = 1, min_img_num = 15, max_img_num = 30)
-    if random.random() < 0.99:
-        new_user.group = 2
-        new_user.min_img_num = 2
-        new_user.max_img_num = 5
+    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50)
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
@@ -79,7 +79,8 @@ def create_user():
             "max_img_num": new_user.max_img_num,
             "pay_group": random.randint(1,3),
             "shot_num": 10,
-            "shot_seconds:" : 10
+            "shot_seconds:" : 10,
+            "max_styles" : 1
         }
     }
 
@@ -148,6 +149,8 @@ def upload_payment():
     receipt = request.args.get('receipt')
     pack_id = request.args.get('pack_id')
     product_id = request.args.get('product_id')
+    # get unlock_num. If not provided, set to infinite, for backward compatibility
+    unlock_num = request.args.get('unlock_num', 9999)
     
     # Create a new payment
     new_payment = models.Payment(
@@ -162,12 +165,54 @@ def upload_payment():
     # Update is_unlock to 1 for the pack with the given pack_id
     pack = models.Pack.query.get(pack_id)
     if pack:
-        pack.is_unlock = 1
+        pack.unlock_num += int(unlock_num)
+        pack.is_unlock = pack.unlock_num >= pack.total_img_num
     else:
         return jsonify({"msg": "error: Pack not found", 'code': 1}), 404
-
+    
     # Commit the changes
     db.session.commit()
+    
+    ############################
+    # send payment callback request to toutiao
+    user_ip = models.User.query.filter_by(user_id=user_id).first().ip
+    click = models.BdClick.query.filter(models.BdClick.ip == user_ip, models.BdClick.con_status==0).order_by(models.BdClick.id.desc()).first()
+    if click:
+        try:
+            """
+            http://ad.toutiao.com/track/activate/?
+            callback=B.ezpH241vFUgYLNheuhOp1SaTnA3WQSTLKKeSSTy0FvaRlPTV3rgqXBFKtVKr2to9lKmKrJ1JgQKVa4e59f6MrjaifaPsQJbaFIfBPD1PjtgLNs6mTog9Aayd418g7GLTapckqntVHQUlFyVg7LI2y7C
+            &os=1
+            &muid=C25C5AAA-7B24-4E56-9EE0-7FA89267B2FD
+            """
+            # extract callback param from click.callback
+            parsed_url = urlparse(click.callback)
+            params = parse_qs(parsed_url.query)
+            callback_param = params.get('callback', [None])[0]
+            post_data = bd_conversion_utils.generate_post_data("game_addiction", callback_param, float(payment_amount))
+            rst = requests.post(config.BD_CONVERSION_POST_URL, json=post_data, timeout=5)
+            
+            logging.info(f"Report payment conversion of user {user_id} to BD: {rst.content.decode('utf8')}")
+        except Exception as e:
+            logging.error(f'update click {click.id} to user {user_id} error: {e}')
+    else:
+        logging.error(f'no click for ip {user_ip}')
+
+    ###########################
+    # Notify
+    url = 'https://maker.ifttt.com/trigger/PicPayment/json/with/key/kvpqNPLePMIVcUkAuZiGy'
+    payload = {
+        "user_id": user_id,
+        "payment_amount": payment_amount,
+        "user_ip": user_ip,
+        "pack_id": pack_id,
+        "product_id": product_id,
+        "unlock_num": unlock_num
+    }
+    try:
+        requests.post(url, json=payload, timeout=5)
+    except Exception as e:
+        logging.error(f'notify ifttt error: {e}')
 
     return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
 
@@ -199,7 +244,7 @@ def get_example_2():
         elif example.type == 2:
             result['bad'].append(rs)
     
-    tags = models.Tag.query.filter(models.Tag.img_key != None).all()
+    tags = models.Tag.query.filter(models.Tag.img_key != None).filter(models.Tag.rate > 0).order_by(models.Tag.rate.desc()).all()
     for tag in tags:
         img_height, img_width = utils.get_oss_image_size(tag.img_key)
         rs = {
@@ -316,6 +361,7 @@ def upload_multiple_sources():
     person_name = request.form['person_name']
     source_type = request.form.get('type', None)
     not_filtration= request.form.get('not_filtration', type=int, default=0)
+    person_id = request.form.get('person_id', type=str, default=None)
     
     logging.info(f'upload_multiple_sources request {user_id}, not_filtration {not_filtration}, source_type {source_type}')
 
@@ -391,8 +437,15 @@ def start_sd_generate():
     person_id_list.sort()
     category = request.form['category']
     limit = request.form.get('limit', 50, type=int)
+    tag_id_list = request.form.get('tag_id_list', None)
+    if (tag_id_list):
+        tag_id_list = json.loads(tag_id_list)
+        try:
+            tag_id_list = [int(tag_id) for tag_id in tag_id_list]
+        except Exception as e:
+            return {"status": "error", "message": "Invalid tag_id_list"}, 400
     
-    pack = models.Pack(user_id=user_id, total_img_num=0, start_time= datetime.utcnow(), description='合集')
+    pack = models.Pack(user_id=user_id, total_img_num=0, start_time= datetime.utcnow(), unlock_num = 0, description='合集')
     db.session.add(pack)
     db.session.commit()
 
@@ -400,13 +453,18 @@ def start_sd_generate():
     m = 0
     # --------------------------- SD 生成任务 ------------------------------------
     if (models.User.query.filter_by(user_id=user_id).first().group == 1):
-        m += selector_sd.generate_sd_task(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, limit=limit, wait_status=wait_status)
+        if (tag_id_list):
+            logging.info(f'generate_sd_task_with_tag user_id: {user_id},  person_id_list: {person_id_list},  {category},  tag_id_list: {tag_id_list} {limit}')
+            m += selector_sd.generate_sd_task_with_tag(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, tag_ids = tag_id_list, limit=limit, wait_status=wait_status)
+        else:
+            m += selector_sd.generate_sd_task(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, limit=limit, wait_status=wait_status)
+        
         pack.total_seconds = 3*60*60
 
-    # --------------------------- 以下是启动mj的任务 ------------------------------
-    if (models.User.query.filter_by(user_id=user_id).first().group == 2):
-        limit = 10
-        pack.total_seconds = 3*60
+    # --------------------------- 以下是启动mj和reface的任务 ------------------------------
+    else :
+        limit = 5
+        pack.total_seconds = 2*60
         # m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='mj', limit=limit, wait_status=wait_status)
 
         m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='reface', limit=limit, wait_status=wait_status)
@@ -451,6 +509,7 @@ def create_new_pack(pack_dict, pack_id, img_key):
             "total_img_num": pack.total_img_num,
             "is_unlock": pack.is_unlock,
             "imgs": [],
+            "thumb_imgs": [], 
             "finish_seconds_left": pack.total_seconds - int((datetime.utcnow() - pack.start_time).total_seconds()),
             'total_seconds': pack.total_seconds ,
             # 'banner_img_url': utils.get_signed_url('static/test1.png'),
@@ -458,15 +517,34 @@ def create_new_pack(pack_dict, pack_id, img_key):
             'heights': [],
             'widths': [],
             'price': pack.price,
+            'unlock_num': pack.unlock_num,
         }
         if pack.banner_img_key:
             pack_dict[pack_id]['banner_img_url'] = utils.get_signed_url(pack.banner_img_key)
-
+    # 依次添加图片，每次调用这个函数只添加一张照片，
+    # 然后在这个函数里面查之前总共添加了多少张照片进来，再判断每张照片的水印、模糊状态
+    # 前5张：           有水印，不模糊
+    # 前unlock_num张：  无水印，无模糊
+    # 后面的：          有水印，有模糊
     if img_key:
-        img_url = utils.get_signed_url(img_key, is_shuiyin= (not pack_dict[pack_id]['is_unlock']))
+        # is_shuiyin = (not pack_dict[pack_id]['is_unlock'])
+        # if len(pack_dict[pack_id]['imgs']) < pack_dict[pack_id]['unlock_num']:
+        #     is_mohu = False
+        # else:
+        #     is_mohu = True
+        is_shuiyin = is_mohu = True
+        if len(pack_dict[pack_id]['imgs']) < 5:
+            is_mohu = False
+        if len(pack_dict[pack_id]['imgs']) < pack_dict[pack_id]['unlock_num']:
+            is_shuiyin = False
+            is_mohu = False
+
+        img_url = utils.get_signed_url(img_key, is_shuiyin = is_shuiyin, is_yasuo = False, is_mohu=is_mohu)
+        thumb_url = utils.get_signed_url(img_key, is_shuiyin = False, is_yasuo = True, is_mohu=is_mohu)
         # after change to new height, width. 10x faster!
         height, width = utils.get_oss_image_size(img_key)
         pack_dict[pack_id]["imgs"].append(img_url)
+        pack_dict[pack_id]["thumb_imgs"].append(thumb_url)
         pack_dict[pack_id]["heights"].append(height)
         pack_dict[pack_id]["widths"].append(width)
 
@@ -486,9 +564,14 @@ def get_generated_images():
     for image in images:
         create_new_pack(pack_dict, image.pack_id, image.img_oss_key)
 
-    tasks = models.Task.query.filter(models.Task.user_id == user_id, models.Task.result_img_key != None).limit(300).all()
+    tasks = (db.session.query(models.Task, models.Scene)
+                .join(models.Scene, models.Task.scene_id == models.Scene.scene_id)
+                .filter(models.Task.user_id == user_id, models.Task.result_img_key != None)
+                .order_by(desc(models.Scene.rate))
+                .limit(300)
+                .all())
     logging.info(f'adding tasks number: {len(tasks)}')
-    for task in tasks:
+    for task, scene in tasks:
         create_new_pack(pack_dict, task.pack_id, task.result_img_key)
 
     packs = models.Pack.query.filter(models.Pack.user_id == user_id).all()
@@ -500,7 +583,7 @@ def get_generated_images():
         'code': 0,
         'msg': 'success',
         'data': {
-            'packs': list(pack_dict.values())
+            'packs': list([pack for pack in pack_dict.values() if len(pack['imgs']) > 0 or pack['finish_seconds_left'] > 0])
         }
     }
     return jsonify(response), 200
@@ -555,8 +638,13 @@ if __name__ == '__main__':
     # Add argument parser: -p: port
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', type=int, default=8000, help='port to listen on')
+    parser.add_argument('--is_industry', action='store_true', help="Enable industry mode.")
+    parser.add_argument('-i', '--image-num', type=int, default = 15,  help="min image num.")
+    parser.add_argument('-u', '--user-group', type=int, default = 1,  help="user group.")
     args = parser.parse_args()
-
+    config.is_industry = args.is_industry
+    config.min_image_num = args.image_num
+    config.user_group = args.user_group
     app.run(host='0.0.0.0', port=args.port)
 else:
     gunicorn_logger = logging.getLogger('gunicorn.error')
