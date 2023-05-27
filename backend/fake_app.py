@@ -195,14 +195,14 @@ def generate_tasks():
     app.config.update(
         **CELERY_CONFIG
     )
-    celery = make_celery(app)
-    celery.conf.task_routes = {'set_up_scene': {'queue': 'render_queue'}, 'render_scene': {'queue': 'render_queue'}}
+    # celery = make_celery(app)
+    # celery.conf.task_routes = {'set_up_scene': {'queue': 'render_queue'}, 'render_scene': {'queue': 'render_queue'}}
 
 
     data = request.get_json()
     collection_name = data['collection_name']
     person_id = data['person_id']
-    person_id_list = [person_id]
+    person_id_list = [int(person_id)]
 
     # Filter all scenes with collection_name
     scene_list = Scene.query.filter_by(collection_name=collection_name).all()
@@ -217,11 +217,11 @@ def generate_tasks():
     db.session.commit()
 
     # Send out Celery tasks
-    ch = chain(
-        group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
-        group([signature('render_scene', (task_id,), immutable=True) for task_id in task_id_list])
-    )
-    ch.apply_async()
+    # ch = chain(
+    #     group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
+    #     group([signature('render_scene', (task_id,), immutable=True) for task_id in task_id_list])
+    # )
+    # ch.apply_async()
 
     return jsonify({"message": "Tasks generated and sent to the queue."})
 
