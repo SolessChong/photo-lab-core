@@ -38,11 +38,11 @@ def render_person_on_scenes(person_id, scene_list, pack_id=None):
         task_list.append(task)
     db.session.commit()
     
-    ch = chain(
-        group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
-        group([signature('render_scene', (task.id,), immutable=True) for task in task_list])
-    )
-    ch.apply_async()
+    # ch = chain(
+    #     group([signature('set_up_scene', (scene.scene_id,)) for scene in scene_list]),
+    #     group([signature('render_scene', (task.id,), immutable=True) for task in task_list])
+    # )
+    # ch.apply_async()
 
 # main script
 if __name__ == "__main__":
