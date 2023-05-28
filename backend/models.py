@@ -193,3 +193,9 @@ class TagScene(db.Model):
     tag_id = db.Column(db.Integer, nullable=True)
     is_delete = db.Column(db.SmallInteger, nullable=True, default=0)
     
+class GlobalConfig(db.Model):
+    __tablename__ = 'global_config'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    key = db.Column(db.String(255), nullable=True)
+    value = db.Column(db.Text, nullable=True)
+    is_delete = db.Column(db.SmallInteger, nullable=True, default=0)

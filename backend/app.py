@@ -633,7 +633,22 @@ def update_scene():
         return jsonify({'status': 'success'})
     else:
         return jsonify({'status': 'error', 'message': 'Scene not found'}), 404
-    
+
+# Get global config
+@app.route('/api/global_config', methods=['GET'])
+def get_global_config():
+    # get all global models.GlobalConfig. Return in key-value dict. Filter out is_delete=1
+    configs = models.GlobalConfig.query.filter_by(is_delete=False).all()
+    result = {}
+    for config in configs:
+        result[config.key] = config.value
+    response = {
+        'code': 0,
+        'msg': 'success',
+        'data': result
+    }
+    return jsonify(response), 200
+
 if __name__ == '__main__':
     # Add argument parser: -p: port
     parser = argparse.ArgumentParser()
