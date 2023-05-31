@@ -202,12 +202,7 @@ def upload_payment():
     # Notify
     url = 'https://maker.ifttt.com/trigger/PicPayment/json/with/key/kvpqNPLePMIVcUkAuZiGy'
     payload = {
-        "user_id": user_id,
-        "payment_amount": payment_amount,
-        "user_ip": user_ip,
-        "pack_id": pack_id,
-        "product_id": product_id,
-        "unlock_num": unlock_num
+        'msg': f'User {user_id} paid {payment_amount} for pack {pack_id}, at product_id {product_id}, {user_ip}'
     }
     try:
         requests.post(url, json=payload, timeout=5)
@@ -546,7 +541,7 @@ def create_new_pack(pack_dict, pack_id, img_key):
             is_mohu = False
 
         img_url = utils.get_signed_url(img_key, is_shuiyin = is_shuiyin, is_yasuo = False, is_mohu=is_mohu)
-        thumb_url = utils.get_signed_url(img_key, is_shuiyin = False, is_yasuo = True, is_mohu=is_mohu)
+        thumb_url = utils.get_signed_url(img_key, is_shuiyin = True, is_yasuo = True, is_mohu=is_mohu)
         # after change to new height, width. 10x faster!
         height, width = utils.get_oss_image_size(img_key)
         pack_dict[pack_id]["imgs"].append(img_url)
@@ -579,7 +574,10 @@ def get_generated_images():
                 .all())
     logging.info(f'adding tasks number: {len(tasks)}')
     for task, scene in tasks:
-        create_new_pack(pack_dict, task.pack_id, task.result_img_key)
+        try:
+            create_new_pack(pack_dict, task.pack_id, task.result_img_key)
+        except Exception as e:
+            logging.error(f'create_new_pack error on task {task.id}, result_img_key: {task.result_img_key}.\n{e}')
 
     packs = models.Pack.query.filter(models.Pack.user_id == user_id).all()
     for pack in packs:
@@ -655,6 +653,26 @@ def get_global_config():
         'data': result
     }
     return jsonify(response), 200
+
+@app.route('/api/contact', methods=['POST'])
+def submit_contact_form():
+    name = request.form.get('name')
+    user_id = request.form.get('user_id')
+    phone = request.form.get('phone')
+    wechat = request.form.get('wechat')
+    message = request.form.get('message')
+
+    contact = models.Contact(name=name, phone=phone, user_id=user_id, wechat=wechat, message=message)
+    db.session.add(contact)
+    db.session.commit()
+
+    response = {
+        'code': 0,
+        'msg': 'success',
+        'data': {'message': 'Contact form submitted successfully'}
+    }
+    return jsonify(response), 200
+
 
 if __name__ == '__main__':
     # Add argument parser: -p: port

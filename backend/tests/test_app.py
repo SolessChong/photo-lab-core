@@ -56,5 +56,20 @@ class AppTest(unittest.TestCase):
         self.assertTrue(isinstance(response.json(), dict))
         self.assertEqual(response.status_code, 200)
 
+    """
+    @app.route('/api/contact', methods=['POST'])
+    def submit_contact_form():
+        name = request.form.get('name')
+        phone = request.form.get('phone')
+        wechat = request.form.get('wechat')
+        message = request.form.get('message')
+    """
+    def test_submit_contact_form(self):
+        # query with get params: user_id: Dt47AzFi73
+        response = self.client.post('http://photolab.aichatjarvis.com/api/contact', data={'name': 'test_name', 'user_id': 'test_user_id', 'phone': 'test_phone', 'wechat': 'test_wechat', 'message': 'test_msg'})
+        # assert response content can be parsed as a dict (json)
+        self.assertTrue(isinstance(response.json(), dict))
+        self.assertEqual(response.status_code, 200)
+
 if __name__ == '__main__':
     unittest.main()

@@ -199,3 +199,15 @@ class GlobalConfig(db.Model):
     key = db.Column(db.String(255), nullable=True)
     value = db.Column(db.Text, nullable=True)
     is_delete = db.Column(db.SmallInteger, nullable=True, default=0)
+
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    user_id = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
+    wechat = db.Column(db.String(50))
+    message = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Contact {self.id}>"
