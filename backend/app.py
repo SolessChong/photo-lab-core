@@ -138,19 +138,25 @@ def get_user():
 @app.route('/api/upload_payment', methods=['GET'])
 def upload_payment():
     logger.info(f'upload_payment request args is {request.args}')
-    missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id'] 
-                      if request.args.get(param) is None]
+    # Create a mutable copy of request.args
+    args = dict(request.args)
+    # Handle the frontend parameter name mistake
+    if args.get('uxser_id'):
+        args['user_id'] = args['uxser_id']
+        del args['uxser_id']
+    missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id']
+                      if args.get(param) is None]
     if missing_params:
         logger.error(f'upload_payment missing params {missing_params}')
         return jsonify({"error": f"Missing parameters: {', '.join(missing_params)}"}), 400
 
-    user_id = request.args.get('user_id')
-    payment_amount = request.args.get('payment_amount')
-    receipt = request.args.get('receipt')
-    pack_id = request.args.get('pack_id')
-    product_id = request.args.get('product_id')
+    user_id = args.get('user_id')
+    payment_amount = args.get('payment_amount')
+    receipt = args.get('receipt')
+    pack_id = args.get('pack_id')
+    product_id = args.get('product_id')
     # get unlock_num. If not provided, set to infinite, for backward compatibility
-    unlock_num = request.args.get('unlock_num', 9999)
+    unlock_num = args.get('unlock_num', 9999)
     
     # Create a new payment
     new_payment = models.Payment(
@@ -179,12 +185,6 @@ def upload_payment():
     click = models.BdClick.query.filter(models.BdClick.ip == user_ip, models.BdClick.con_status==0).order_by(models.BdClick.id.desc()).first()
     if click:
         try:
-            """
-            http://ad.toutiao.com/track/activate/?
-            callback=B.ezpH241vFUgYLNheuhOp1SaTnA3WQSTLKKeSSTy0FvaRlPTV3rgqXBFKtVKr2to9lKmKrJ1JgQKVa4e59f6MrjaifaPsQJbaFIfBPD1PjtgLNs6mTog9Aayd418g7GLTapckqntVHQUlFyVg7LI2y7C
-            &os=1
-            &muid=C25C5AAA-7B24-4E56-9EE0-7FA89267B2FD
-            """
             # extract callback param from click.callback
             parsed_url = urlparse(click.callback)
             params = parse_qs(parsed_url.query)
@@ -484,6 +484,12 @@ def start_sd_generate():
     db.session.add(pack)
     db.session.commit()
 
+    try:
+        # 认为生成任务就是付了1分钱
+        bd_conversion_utils.report_event(user_id, "game_addiction", 1)
+    except Exception as e:
+        logging.error(f'report_event error: {e}')
+
     return jsonify(response)
 
 # 为pack增加img图片，和单纯增加pack两种情况都会调用此函数
@@ -568,6 +574,7 @@ def get_generated_images():
                 .join(models.Scene, models.Task.scene_id == models.Scene.scene_id)
                 .filter(models.Task.user_id == user_id, models.Task.result_img_key != None)
                 .order_by(desc(models.Scene.rate))
+                .distinct(models.Task.scene_id)
                 .limit(300)
                 .all())
     logging.info(f'adding tasks number: {len(tasks)}')
