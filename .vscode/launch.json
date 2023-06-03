@@ -18,7 +18,8 @@
             "request": "launch",
             "justMyCode": true,
             "module": "backend.app",
+            "args": ["--port", "8111"],
             "cwd":"/root/photo-lab-core"
-        }
+        },
     ]
 }
