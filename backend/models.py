@@ -33,6 +33,8 @@ class User(db.Model):
     min_img_num = db.Column(db.Integer, nullable=True)
     group = db.Column(db.Integer, nullable=True)
     max_img_num = db.Column(db.Integer, nullable=True)
+    subscribe_until = db.Column(db.DateTime, nullable=True)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
 class Source(db.Model):
     __tablename__ = 'source'
@@ -88,6 +90,7 @@ class Pack(db.Model):
     banner_img_key = db.Column(db.String(2000), nullable=True)
     total_seconds = db.Column(db.Integer, nullable=True)
     unlock_num = db.Column(db.Integer, nullable=True, default=5)
+    notify_count = db.Column(db.Integer, nullable=True, default=0)
 
 
 class Scene(db.Model):
