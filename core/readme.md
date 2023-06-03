@@ -126,3 +126,6 @@ chord(celery_worker.task_train_lora.s(3, ['source/yi/2/d5010894d2fd8cbd3518e39c7
 - 366 20p 杨幂 Train v0.2.0
 - 384 50p Taylor Swift Train v0.2.0
 - 400 30p zihan Train v0.2.0
+- 1152 20p shanghai Train v0.2.0
+- 1208 20p 好看的小姐姐 Train v0.2.0    
+- 1337 20p 好看小姐姐 上海 Train v0.2.0
