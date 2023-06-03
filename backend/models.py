@@ -180,6 +180,7 @@ class Payment(db.Model):
     receipt = db.Column(db.Text, nullable=True)
     pack_id = db.Column(db.Integer, nullable=True)
     product_id = db.Column(db.String(45), nullable=True)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
 
 class Tag(db.Model):

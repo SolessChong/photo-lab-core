@@ -4,10 +4,13 @@ import oss2
 from flask import Flask, request, jsonify, render_template
 from backend.extensions import  app, db
 from flask_cors import CORS
+from sqlalchemy import func
+from datetime import datetime, timedelta
+from flask import jsonify
 import json
 from PIL import Image
 from core.resource_manager import *
-from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task, Payment
+from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task, Payment, BdClick
 from celery import Celery, chain, chord, group, signature
 from backend.config import CELERY_CONFIG
 from sqlalchemy import func
@@ -491,6 +494,36 @@ def get_all_tags():
 
     # Return the list of tag names as JSON
     return jsonify(tag_names)
+
+@app.route('/api/aggregated_data', methods=['GET'])
+def aggregate_stats():
+    one_week_ago = datetime.utcnow() - timedelta(days=7)
+
+    hourly_persons = db.session.query(func.date_format(Person.update_time, '%Y-%m-%d %H:00:00').label('hour'), func.count(Person.id).label('value'))\
+        .filter(Person.update_time >= one_week_ago)\
+        .group_by('hour').all()
+
+    hourly_payments = db.session.query(func.date_format(Payment.create_time, '%Y-%m-%d %H:00:00').label('hour'), func.sum(Payment.payment_amount).label('value'))\
+        .filter(Payment.create_time >= one_week_ago)\
+        .group_by('hour').all()
+
+    hourly_bdclicks = db.session.query(func.date_format(BdClick.create_time, '%Y-%m-%d %H:00:00').label('hour'), func.count(BdClick.id).label('value'))\
+        .filter(BdClick.create_time >= one_week_ago)\
+        .group_by('hour').all()
+    
+    hourly_packs = db.session.query(func.date_format(Pack.start_time, '%Y-%m-%d %H:00:00').label('hour'), func.count(Pack.pack_id).label('value'))\
+        .filter(Pack.start_time >= one_week_ago)\
+        .group_by('hour').all()
+
+    response = {
+        'persons': [{"hour": result[0], "value": result[1]} for result in hourly_persons],
+        'payments': [{"hour": result[0], "value": result[1]} for result in hourly_payments],
+        'bdclicks': [{"hour": result[0], "value": result[1]} for result in hourly_bdclicks],
+        'packs': [{"hour": result[0], "value": result[1]} for result in hourly_packs]
+    }
+
+    return jsonify(response)
+
 
 if __name__ == '__main__':
     # Add argument parser: -p: port
