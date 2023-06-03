@@ -50,10 +50,10 @@ def generate_post_data(event_type, callback, pay_amount):
 def report_event(user_id, event_type, payment_amount):
     ############################
     # send payment callback request to toutiao
-    user_ip = models.User.query.filter_by(user_id=user_id).first().ip
-    click = models.BdClick.query.filter(models.BdClick.ip == user_ip, models.BdClick.con_status==0).order_by(models.BdClick.id.desc()).first()
-    if click:
-        try:
+    try:
+        user_ip = models.User.query.filter_by(user_id=user_id).first().ip
+        click = models.BdClick.query.filter(models.BdClick.ip == user_ip, models.BdClick.con_status==0).order_by(models.BdClick.id.desc()).first()
+        if click:
             # extract callback param from click.callback
             parsed_url = urlparse(click.callback)
             params = parse_qs(parsed_url.query)
@@ -62,7 +62,7 @@ def report_event(user_id, event_type, payment_amount):
             rst = requests.post(config.BD_CONVERSION_POST_URL, json=post_data, timeout=5)
             
             logging.info(f"Report {event_type} of user {user_id} to BD: {rst.content.decode('utf8')}")
-        except Exception as e:
-            logging.error(f'update click {click.id} to user {user_id} error: {e}')
-    else:
-        logging.error(f'no click for ip {user_ip}')
+        else:
+            logging.error(f'no click for ip {user_ip}')
+    except Exception as e:
+        logging.error(f'update click to user {user_id} error: {e}')
