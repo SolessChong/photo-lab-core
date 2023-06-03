@@ -1,8 +1,10 @@
 import os
+import time
 import unittest
 import requests
 import json
 from backend import app
+from backend import extensions
 from backend.models import db, Payment, Pack
 
 class AppTest(unittest.TestCase):
@@ -14,28 +16,34 @@ class AppTest(unittest.TestCase):
         pass  # Add code here to delete test data in database if necessary
 
     def test_upload_payment(self):
-        return
         # Read the test data from a JSON file, relative path
-        with open(os.path.join(os.path.dirname(__file__), 'data/payment.json')) as f:
+        with open(os.path.join(os.path.dirname(__file__), 'data/payment2.json')) as f:
             test_data = json.load(f)
-        response = self.client.get('http://photolab.aichatjarvis.com/api/upload_payment', query_string=test_data)
+        test_data['subscribe_until'] = int(time.time()) + 3600 * 24 * 30
+        response = self.client.post('http://photolab.aichatjarvis.com/api/upload_payment', json=test_data)
         self.assertEqual(response.status_code, 200)
 
         # Check the response message
-        data = json.loads(response.data)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(data['msg'], "Payment successful and pack unlocked")
         self.assertEqual(data['code'], 0)
 
         # Verify the payment is recorded in the database
-        payment = Payment.query.filter_by(user_id=self.test_data['user_id']).first()
+        extensions.app.app_context().push()
+        payment = Payment.query.filter_by(user_id=test_data['user_id'], product_id=test_data['product_id']).first()
         self.assertIsNotNone(payment)
-        self.assertEqual(payment.payment_amount, self.test_data['payment_amount'])
+        self.assertEqual(payment.payment_amount, test_data['payment_amount'])
 
         # Verify the pack status is updated
-        pack = Pack.query.get(self.test_data['pack_id'])
+        pack = Pack.query.get(test_data['pack_id'])
         self.assertIsNotNone(pack)
         self.assertEqual(pack.is_unlock, 1)
-        self.assertEqual(pack.unlock_num, self.test_data['unlock_num'])
+        self.assertTrue(pack.unlock_num > int(test_data['unlock_num']))
+
+        # Remove the test data from the database
+        db.session.delete(payment)
+        db.session.commit()
+
 
     def test_global_config(self):
         response = self.client.get('http://photolab.aichatjarvis.com/api/global_config')
