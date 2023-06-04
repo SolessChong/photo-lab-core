@@ -663,11 +663,19 @@ def get_generated_images():
     
     logging.info(f'time used: {int(time.time() - t0)}s')
 
+    rst_packs = []
+    for pack in pack_dict.values():
+        if len(pack['imgs']) > 0 or pack['finish_seconds_left'] > 0:
+            rst_packs.append(pack)
+        else:
+            pack['description'] = '任务超时，请耐心等待或联系客服'
+            rst_packs.append(pack)
+
     response = {
         'code': 0,
         'msg': 'success',
         'data': {
-            'packs': list([pack for pack in pack_dict.values() if len(pack['imgs']) > 0 or pack['finish_seconds_left'] > 0])
+            'packs': rst_packs
         }
     }
     return jsonify(response), 200
