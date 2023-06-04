@@ -130,6 +130,8 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
     # TODO: optimize this step. Too ugly
     # Copy dataset into folder naming format required by training script
     img_count = len([f for f in os.listdir(os.path.join(dataset_path, "img_train")) if f.endswith(".txt")])
+    if img_count == 0:
+        return
     repeats = math.floor(2500 / img_count)
     logging.info(f"{img_count} images found. Repeating dataset {repeats} times.")
     # remove tree if exists

@@ -286,7 +286,7 @@ def scene_stats():
 
 @app.route('/get_payment_stats', methods=['GET'])
 def payment_stats():
-    payments = Payment.query.order_by((Payment.id.desc())).limit(10).all()
+    payments = Payment.query.order_by((Payment.id.desc())).limit(100).all()
     payment_stats = []
     for payment in payments:
         payment_stats.append({
