@@ -34,3 +34,5 @@ else:
 BD_CONVERSION_POST_URL = 'https://analytics.oceanengine.com/api/v2/conversion'
 
 print(f'config: ', mysql_uri)
+
+COMPLETE_PACK_MIN_PICS = 30

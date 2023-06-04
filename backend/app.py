@@ -1,5 +1,6 @@
 from backend import config
 import argparse
+import time
 from backend import bd_conversion_utils
 from urllib.parse import urlparse, parse_qs
 
@@ -92,6 +93,9 @@ def get_user():
     user_id = request.args.get('user_id')
     if not user_id:
         return jsonify({"error": "user_id is required"}), 400
+    user = models.User.query.filter_by(user_id=user_id).first()
+    if not user:
+        return jsonify({"error": "user not found"}), 404
 
     persons = models.Person.query.filter_by(user_id=user_id).all()
 
@@ -123,11 +127,14 @@ def get_user():
             "lora_train_status": person.lora_train_status,
         })
     
+    is_subscribe = user.subscribe_until is not None and user.subscribe_until.timestamp() > int(time.time())
+
     response = {
         "data": {
             "persons": result_persons,
             "min_img_num": 10,
-            "max_img_num": 20
+            "max_img_num": 20,
+            "is_subscribe": is_subscribe,
         },
         "msg": "get user successfully",
         "code": 0
@@ -138,19 +145,25 @@ def get_user():
 @app.route('/api/upload_payment', methods=['GET'])
 def upload_payment():
     logger.info(f'upload_payment request args is {request.args}')
-    missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id'] 
-                      if request.args.get(param) is None]
+    # Create a mutable copy of request.args
+    args = dict(request.args)
+    # Handle the frontend parameter name mistake
+    if args.get('uxser_id'):
+        args['user_id'] = args['uxser_id']
+        del args['uxser_id']
+    missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id']
+                      if args.get(param) is None]
     if missing_params:
         logger.error(f'upload_payment missing params {missing_params}')
         return jsonify({"error": f"Missing parameters: {', '.join(missing_params)}"}), 400
 
-    user_id = request.args.get('user_id')
-    payment_amount = request.args.get('payment_amount')
-    receipt = request.args.get('receipt')
-    pack_id = request.args.get('pack_id')
-    product_id = request.args.get('product_id')
+    user_id = args.get('user_id')
+    payment_amount = args.get('payment_amount')
+    receipt = args.get('receipt')
+    pack_id = args.get('pack_id')
+    product_id = args.get('product_id')
     # get unlock_num. If not provided, set to infinite, for backward compatibility
-    unlock_num = request.args.get('unlock_num', 9999)
+    unlock_num = args.get('unlock_num', 9999)
     
     # Create a new payment
     new_payment = models.Payment(
@@ -175,39 +188,13 @@ def upload_payment():
     
     ############################
     # send payment callback request to toutiao
-    user_ip = models.User.query.filter_by(user_id=user_id).first().ip
-    click = models.BdClick.query.filter(models.BdClick.ip == user_ip, models.BdClick.con_status==0).order_by(models.BdClick.id.desc()).first()
-    if click:
-        try:
-            """
-            http://ad.toutiao.com/track/activate/?
-            callback=B.ezpH241vFUgYLNheuhOp1SaTnA3WQSTLKKeSSTy0FvaRlPTV3rgqXBFKtVKr2to9lKmKrJ1JgQKVa4e59f6MrjaifaPsQJbaFIfBPD1PjtgLNs6mTog9Aayd418g7GLTapckqntVHQUlFyVg7LI2y7C
-            &os=1
-            &muid=C25C5AAA-7B24-4E56-9EE0-7FA89267B2FD
-            """
-            # extract callback param from click.callback
-            parsed_url = urlparse(click.callback)
-            params = parse_qs(parsed_url.query)
-            callback_param = params.get('callback', [None])[0]
-            post_data = bd_conversion_utils.generate_post_data("game_addiction", callback_param, float(payment_amount))
-            rst = requests.post(config.BD_CONVERSION_POST_URL, json=post_data, timeout=5)
-            
-            logging.info(f"Report payment conversion of user {user_id} to BD: {rst.content.decode('utf8')}")
-        except Exception as e:
-            logging.error(f'update click {click.id} to user {user_id} error: {e}')
-    else:
-        logging.error(f'no click for ip {user_ip}')
+    bd_conversion_utils.report_event(user_id, 'active_pay', payment_amount)
 
     ###########################
     # Notify
     url = 'https://maker.ifttt.com/trigger/PicPayment/json/with/key/kvpqNPLePMIVcUkAuZiGy'
     payload = {
-        "user_id": user_id,
-        "payment_amount": payment_amount,
-        "user_ip": user_ip,
-        "pack_id": pack_id,
-        "product_id": product_id,
-        "unlock_num": unlock_num
+        'msg': f'User {user_id} paid {payment_amount} for pack {pack_id}, at product_id {product_id}'
     }
     try:
         requests.post(url, json=payload, timeout=5)
@@ -215,6 +202,89 @@ def upload_payment():
         logging.error(f'notify ifttt error: {e}')
 
     return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
+
+
+# Post request for upload_payment
+@app.route('/api/upload_payment', methods=['POST'])
+def upload_payment_post():
+    logger.info(f'upload_payment request args is {request.json}')
+    # Get args from request post data
+    args = dict(request.json)
+    # Handle the frontend parameter name mistake
+    if args.get('uxser_id'):
+        args['user_id'] = args['uxser_id']
+        del args['uxser_id']
+    missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id']
+                      if args.get(param) is None]
+    if missing_params:
+        logger.error(f'upload_payment missing params {missing_params}')
+        return jsonify({"error": f"Missing parameters: {', '.join(missing_params)}"}), 400
+
+    user_id = args.get('user_id')
+    payment_amount = args.get('payment_amount')
+    receipt = args.get('receipt')
+    pack_id = args.get('pack_id')
+    product_id = args.get('product_id')
+    # get unlock_num. If not provided, set to infinite, for backward compatibility
+    unlock_num = args.get('unlock_num', 9999)
+    subscribe_until = args.get('subscribe_until', None)
+
+    # Validate payment
+    # 1. check receipt doesn't exist in payments
+    payment = models.Payment.query.filter_by(receipt=receipt).first()
+    if payment:
+        logger.error(f'upload_payment receipt {receipt} already exists')
+        return jsonify({"error": f"receipt {receipt} already exists"}), 400
+    # 2. check receipt is valid
+    if not utils.validate_IAP_receipt(receipt):
+        logger.error(f'upload_payment receipt {receipt} is invalid')
+        return jsonify({"error": f"receipt {receipt} is invalid"}), 400
+
+    # Create a new payment
+    new_payment = models.Payment(
+        user_id=user_id, 
+        payment_amount=int(payment_amount) if payment_amount else None, 
+        receipt=receipt, 
+        pack_id=int(pack_id) if pack_id else None, 
+        product_id=product_id
+    )
+    db.session.add(new_payment)
+
+    # Update is_unlock to 1 for the pack with the given pack_id
+    pack = models.Pack.query.get(pack_id)
+    if pack:
+        pack.unlock_num += int(unlock_num)
+        pack.is_unlock = pack.unlock_num >= pack.total_img_num
+    else:
+        return jsonify({"msg": "error: Pack not found", 'code': 1}), 404
+    
+    # Handle subscribe logics
+    if subscribe_until:
+        user = models.User.query.filter_by(user_id=user_id).first()
+        # store subscribe_until (timestamp) in user table 
+        user.subscribe_until = datetime.fromtimestamp(int(subscribe_until))
+    
+    # Commit the changes
+    db.session.commit()
+    
+    ############################
+    # send payment callback request to toutiao
+    bd_conversion_utils.report_event(user_id, 'active_pay', payment_amount)
+
+    ###########################
+    # Notify
+    url = 'https://maker.ifttt.com/trigger/PicPayment/json/with/key/kvpqNPLePMIVcUkAuZiGy'
+    payload = {
+        'msg': f'User {user_id} paid {payment_amount} for pack {pack_id}, at product_id {product_id}'
+    }
+    try:
+        requests.post(url, json=payload, timeout=5)
+    except Exception as e:
+        logging.error(f'notify ifttt error: {e}')
+
+    return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
+
+
 
 @app.route('/api/get_example_2', methods=['GET'])
 def get_example_2():
@@ -484,6 +554,12 @@ def start_sd_generate():
     db.session.add(pack)
     db.session.commit()
 
+    try:
+        # 认为生成任务就是付了1分钱
+        bd_conversion_utils.report_event(user_id, "game_addiction", 1)
+    except Exception as e:
+        logging.error(f'report_event error: {e}')
+
     return jsonify(response)
 
 # 为pack增加img图片，和单纯增加pack两种情况都会调用此函数
@@ -533,14 +609,16 @@ def create_new_pack(pack_dict, pack_id, img_key):
         # else:
         #     is_mohu = True
         is_shuiyin = is_mohu = True
+        is_thumb_shuiyin = True
         if len(pack_dict[pack_id]['imgs']) < 5:
             is_mohu = False
         if len(pack_dict[pack_id]['imgs']) < pack_dict[pack_id]['unlock_num']:
             is_shuiyin = False
             is_mohu = False
+            is_thumb_shuiyin = False
 
         img_url = utils.get_signed_url(img_key, is_shuiyin = is_shuiyin, is_yasuo = False, is_mohu=is_mohu)
-        thumb_url = utils.get_signed_url(img_key, is_shuiyin = False, is_yasuo = True, is_mohu=is_mohu)
+        thumb_url = utils.get_signed_url(img_key, is_shuiyin = is_thumb_shuiyin, is_yasuo = True, is_mohu=is_mohu)
         # after change to new height, width. 10x faster!
         height, width = utils.get_oss_image_size(img_key)
         pack_dict[pack_id]["imgs"].append(img_url)
@@ -554,6 +632,7 @@ def create_new_pack(pack_dict, pack_id, img_key):
 # 其中pack_id,  description, total_img_num可以直接从数据库packs表中直接得到，finish_time_left计算公式为当前时间减去pack的start_time， imgs则为所有列对应img_url生成的oss可访问地址。
 @app.route('/api/get_generated_images', methods=['GET'])
 def get_generated_images():
+    t0 = time.time()
     user_id = request.args.get('user_id', None)
     if user_id is None:
         return jsonify({"error": "user_id is required"}), 400
@@ -568,16 +647,21 @@ def get_generated_images():
                 .join(models.Scene, models.Task.scene_id == models.Scene.scene_id)
                 .filter(models.Task.user_id == user_id, models.Task.result_img_key != None)
                 .order_by(desc(models.Scene.rate))
+                .distinct(models.Task.scene_id)
                 .limit(300)
                 .all())
     logging.info(f'adding tasks number: {len(tasks)}')
     for task, scene in tasks:
-        create_new_pack(pack_dict, task.pack_id, task.result_img_key)
+        try:
+            create_new_pack(pack_dict, task.pack_id, task.result_img_key)
+        except Exception as e:
+            logging.error(f'create_new_pack error on task {task.id}, result_img_key: {task.result_img_key}.\n{e}')
 
     packs = models.Pack.query.filter(models.Pack.user_id == user_id).all()
     for pack in packs:
         create_new_pack(pack_dict, pack.pack_id, None)
     
+    logging.info(f'time used: {int(time.time() - t0)}s')
 
     response = {
         'code': 0,
@@ -633,7 +717,42 @@ def update_scene():
         return jsonify({'status': 'success'})
     else:
         return jsonify({'status': 'error', 'message': 'Scene not found'}), 404
-    
+
+# Get global config
+@app.route('/api/global_config', methods=['GET'])
+def get_global_config():
+    # get all global models.GlobalConfig. Return in key-value dict. Filter out is_delete=1
+    configs = models.GlobalConfig.query.filter_by(is_delete=False).all()
+    result = {}
+    for config in configs:
+        result[config.key] = config.value
+    response = {
+        'code': 0,
+        'msg': 'success',
+        'data': result
+    }
+    return jsonify(response), 200
+
+@app.route('/api/contact', methods=['POST'])
+def submit_contact_form():
+    name = request.form.get('name')
+    user_id = request.form.get('user_id')
+    phone = request.form.get('phone')
+    wechat = request.form.get('wechat')
+    message = request.form.get('message')
+
+    contact = models.Contact(name=name, phone=phone, user_id=user_id, wechat=wechat, message=message)
+    db.session.add(contact)
+    db.session.commit()
+
+    response = {
+        'code': 0,
+        'msg': 'success',
+        'data': {'message': 'Contact form submitted successfully'}
+    }
+    return jsonify(response), 200
+
+
 if __name__ == '__main__':
     # Add argument parser: -p: port
     parser = argparse.ArgumentParser()

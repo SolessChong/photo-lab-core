@@ -159,3 +159,15 @@ def get_oss_image_size(img_key):
     response = requests.get(url)
     img_info = response.json()
     return img_info['ImageHeight']['value'], img_info['ImageWidth']['value']
+
+# Validate IAP receipt
+def validate_IAP_receipt(receipt):
+    url = 'https://buy.itunes.apple.com/verifyReceipt'
+    data = {'receipt-data': receipt}
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        rst = response.json()
+        return len(rst['receipt']['in_app']) > 0 and rst['status'] == 0
+    else:
+        print(f"Error validating IAP receipt: {response.status_code}")
+        return False

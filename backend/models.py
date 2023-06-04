@@ -33,6 +33,8 @@ class User(db.Model):
     min_img_num = db.Column(db.Integer, nullable=True)
     group = db.Column(db.Integer, nullable=True)
     max_img_num = db.Column(db.Integer, nullable=True)
+    subscribe_until = db.Column(db.DateTime, nullable=True)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
 class Source(db.Model):
     __tablename__ = 'source'
@@ -88,6 +90,7 @@ class Pack(db.Model):
     banner_img_key = db.Column(db.String(2000), nullable=True)
     total_seconds = db.Column(db.Integer, nullable=True)
     unlock_num = db.Column(db.Integer, nullable=True, default=5)
+    notify_count = db.Column(db.Integer, nullable=True, default=0)
 
 
 class Scene(db.Model):
@@ -194,3 +197,21 @@ class TagScene(db.Model):
     tag_id = db.Column(db.Integer, nullable=True)
     is_delete = db.Column(db.SmallInteger, nullable=True, default=0)
     
+class GlobalConfig(db.Model):
+    __tablename__ = 'global_config'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    key = db.Column(db.String(255), nullable=True)
+    value = db.Column(db.Text, nullable=True)
+    is_delete = db.Column(db.SmallInteger, nullable=True, default=0)
+
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    user_id = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
+    wechat = db.Column(db.String(50))
+    message = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Contact {self.id}>"
