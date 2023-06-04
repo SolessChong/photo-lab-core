@@ -162,7 +162,7 @@ def train_lora(dataset_path, subject_name, class_name, epoch=5):
         --lr_scheduler_num_cycles="10" --learning_rate="0.001" --lr_scheduler="cosine" \
         --lr_warmup_steps="100" --train_batch_size="4" \
         --max_train_epochs="{epoch}" \
-        --save_every_n_epochs="1" --mixed_precision="fp16" --save_precision="fp16" \
+        --save_every_n_epochs="5" --mixed_precision="fp16" --save_precision="fp16" \
         --optimizer_type="AdamW8bit" --max_data_loader_n_workers="0" --bucket_reso_steps=64 \
         --xformers --bucket_no_upscale --random_crop \
         {"--color_aug --flip_aug" if img_count < 20 else ""} \
