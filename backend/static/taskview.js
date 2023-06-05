@@ -5,7 +5,7 @@ function addTaskPanel(task) {
     const taskContainer = document.getElementById('task-container');
 
     const column = document.createElement('div');
-    column.className = 'col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2';
+    column.className = 'col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-1';
 
 
     const panel = document.createElement('div');
@@ -30,7 +30,9 @@ function addTaskPanel(task) {
         '</h5><p class="card-text">Person IDs: ' + task.person_id_list.join(', ') +
         '</p>' + '<p class="card-text">Scene ID: ' + task.scene_id + '</p>' +
         '<p class="card-text">Pack ID: ' + task.pack_id + '</p>' +
-        '<p class="card-text">User ID: ' + task.user_id + '</p>';
+        '<p class="card-text">User ID: ' + task.user_id + '</p>' + 
+        '<p class="card-text">Scene Rate: ' + task.scene_rate + '</p>' +
+        '<p class="card-text">Task Rate: ' + task.task_rate + '</p>';
 
     panel.appendChild(info);
 

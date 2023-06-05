@@ -170,6 +170,20 @@ def get_tasks():
     if person_id_filter:
         tasks_query = tasks_query.filter(func.JSON_CONTAINS(Task.person_id_list, str(person_id_filter)))
 
+    # Add the scene rate and task rate to the query
+    tasks_query = tasks_query.join(Scene, Task.scene_id == Scene.scene_id)
+
+    tasks_query = tasks_query.with_entities(
+        Task.id,
+        Task.scene_id,
+        Task.result_img_key,
+        Task.person_id_list,
+        Task.pack_id,
+        Task.user_id,
+        Scene.rate.label('scene_rate'),  # Include the scene rate in the query
+        Task.rate.label('task_rate')  # Include the task rate in the query
+    )
+
     tasks_pagination = tasks_query.order_by(Task.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
     tasks = tasks_pagination.items
     total_pages = tasks_pagination.pages
@@ -179,14 +193,17 @@ def get_tasks():
             "id": task.id,
             "scene_id": task.scene_id,
             "result_img_key": task.result_img_key,
-            "person_id_list": task.get_person_id_list(),
+            "person_id_list": task.person_id_list,  # Access the person_id_list directly
             "pack_id": task.pack_id,
             "user_id": task.user_id,
+            "scene_rate": task.scene_rate,  # Include the scene rate in the response
+            "task_rate": task.task_rate  # Include the task rate in the response
         }
         for task in tasks
     ]
 
     return jsonify({"tasks": tasks_data, "total_pages": total_pages})
+
 
 
 @app.route('/get_collections', methods=['GET'])
@@ -286,7 +303,7 @@ def scene_stats():
 
 @app.route('/get_payment_stats', methods=['GET'])
 def payment_stats():
-    payments = Payment.query.order_by((Payment.id.desc())).limit(10).all()
+    payments = Payment.query.order_by((Payment.id.desc())).limit(100).all()
     payment_stats = []
     for payment in payments:
         payment_stats.append({
