@@ -21,6 +21,7 @@
     <script src="{{ url_for('static', filename='fake_app.js') }}" ></script>
     <script src="{{ url_for('static', filename='dashboard.js') }}" ></script>
     <script src="{{ url_for('static', filename='taskview.js') }}" ></script>
+    <script src="{{ url_for('static', filename='notes.js') }}" ></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles_fake.css') }}">
         
     <style>
@@ -95,6 +96,10 @@
         <li class="nav-item" role="presentation">
             <a class="nav-link" id="create-scene-tab" data-bs-toggle="tab" href="#create-scene" role="tab"
                aria-controls="create-scene" aria-selected="false">Create Scene</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="notes-tab" data-bs-toggle="tab" href="#notes" role="tab" 
+                aria-controls="notes" aria-selected="false">Notes</a>
         </li>
     </ul>
     <div class="tab-content" id="mainTabsContent">
@@ -326,6 +331,17 @@
             </form>
             <div id="scene-creation-result"></div>            
         </div>
+
+        <!-- Notes Tab -->
+        <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+            <!-- Notes Tab Content Here -->
+            <div id="notes-container" class="container">
+                <div class="row" id="notes-row">
+                    <!-- Notes will be appended here -->
+                </div>
+                <button id="load-more-notes" class="btn btn-primary">Load More</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -401,33 +417,33 @@
             fetchStats();
         });
 
-        ////////////////////////////////////////////////
-        // Scene tab
-        function updateSceneRate(sceneId, action) {
-            fetch('/update_scene_rate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    scene_id: sceneId,
-                    action: action
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update rate value in the DOM
-                    const rateElem = document.querySelector(`.scene-info[data-scene-id="${sceneId}"] .rate-value`);
-                    if (rateElem) {
-                        rateElem.textContent = data.rate;
-                    }
-                } else {
-                    console.error("Error updating rate:", data.error);
-                }
-            })
-            .catch((error) => console.error("Error:", error));
-        }
+        // ////////////////////////////////////////////////
+        // // Scene tab
+        // function updateSceneRate(sceneId, action) {
+        //     fetch('/update_scene_rate', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({
+        //             scene_id: sceneId,
+        //             action: action
+        //         })
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             // Update rate value in the DOM
+        //             const rateElem = document.querySelector(`.scene-info[data-scene-id="${sceneId}"] .rate-value`);
+        //             if (rateElem) {
+        //                 rateElem.textContent = data.rate;
+        //             }
+        //         } else {
+        //             console.error("Error updating rate:", data.error);
+        //         }
+        //     })
+        //     .catch((error) => console.error("Error:", error));
+        // }
 
         // Helper functions
         function createImageElement(src, className) {
