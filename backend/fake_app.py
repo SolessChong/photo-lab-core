@@ -18,6 +18,7 @@ from sqlalchemy.orm import joinedload
 from werkzeug.datastructures import FileStorage
 from . import models
 from io import BytesIO
+from backend.app_community import app_community
 
 app.app_context().push()
 
@@ -28,6 +29,8 @@ OSS_ENDPOINT = 'oss-cn-shenzhen.aliyuncs.com'
 
 auth = oss2.Auth(OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET)
 bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
+
+app.register_blueprint(app_community)
 
 def make_celery(app):
     celery = Celery('pipeline.core.celery_worker', broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'])
@@ -203,7 +206,6 @@ def get_tasks():
     ]
 
     return jsonify({"tasks": tasks_data, "total_pages": total_pages})
-
 
 
 @app.route('/get_collections', methods=['GET'])
