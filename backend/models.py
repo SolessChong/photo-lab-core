@@ -232,7 +232,7 @@ class Note(db.Model):
     text = db.Column(db.String(512))
     scene_id = db.Column(db.Integer)
     scene_tag_id_list = db.Column(db.JSON)
-    rate = db.Column(db.Integer)
+    rate = db.Column(db.Integer, default=0)
     create_time = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):

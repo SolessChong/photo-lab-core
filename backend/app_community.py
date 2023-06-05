@@ -62,7 +62,9 @@ def get_all_notes():
     '''
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 50))
+    rate = int(request.args.get('rate', 5))
     sort_type = request.args.get('sort_type', 'create_time')
+    logging.info(f'page: {page}, per_page: {per_page}, rate: {rate}, sort_type: {sort_type}')
 
     if sort_type == 'rate':
         sort_field = Note.rate
@@ -72,7 +74,8 @@ def get_all_notes():
         return jsonify({'error': 'Invalid sort_type'}), 400
 
     # return empty list if wrong page number
-    notes = Note.query.order_by(sort_field.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    # filter by Note.rate > rate
+    notes = Note.query.filter(Note.rate >= rate).order_by(sort_field.desc()).paginate(page=page, per_page=per_page, error_out=False)
 
     note_data = [note.to_dict() for note in notes.items]
     response_data = []
@@ -118,3 +121,17 @@ def add_note_from_task():
     }
 
     return jsonify(response), 201
+
+@app.route('/api/update_note_rate', methods=['POST'])
+def update_note_rate():
+    note_id = request.form.get('note_id')
+    new_rate = request.form.get('new_rate')
+
+    note = Note.query.get(note_id)
+    if note is None:
+        return jsonify({'error': 'Note not found'}), 404
+
+    note.rate = new_rate
+    db.session.commit()
+
+    return jsonify({'success': True}), 200
