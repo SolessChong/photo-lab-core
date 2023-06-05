@@ -5,6 +5,7 @@ import urllib
 import time
 from io import BytesIO
 from PIL import Image
+from concurrent.futures import ThreadPoolExecutor
 
 # 阿里云MySQL和OSS相关配置
 DB_HOST = 'rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com'
@@ -159,6 +160,23 @@ def get_oss_image_size(img_key):
     response = requests.get(url)
     img_info = response.json()
     return img_info['ImageHeight']['value'], img_info['ImageWidth']['value']
+
+def get_oss_image_size_mt(img_key):
+    params = {'x-oss-process': 'image/info'}
+    bucket = oss2.Bucket(create_oss_client(), OSS_ENDPOINT, OSS_BUCKET_NAME, )
+    url = bucket.sign_url('GET', img_key, 3600, params=params)
+    response = requests.get(url)
+    try:
+        img_info = response.json()
+    except:
+        print(f"Error getting image info: {response.status_code}")
+        return img_key, 0, 0
+    return img_key, img_info['ImageHeight']['value'], img_info['ImageWidth']['value']
+
+def get_image_sizes(img_keys):
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [executor.submit(get_oss_image_size_mt, img_key) for img_key in img_keys]
+        return {f.result()[0]: (f.result()[1], f.result()[2]) for f in futures}
 
 # Validate IAP receipt
 def validate_IAP_receipt(receipt):

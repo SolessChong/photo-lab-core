@@ -1,9 +1,10 @@
 import hashlib
 import json
+import argparse
 import requests
 import time
 import logging
-from backend.models import Pack, Task
+from backend.models import *
 from backend.extensions import app, db
 from backend import config
 
@@ -83,9 +84,46 @@ def notify_complete_packs(notify_count=0, user_id=None):
     
     # filter packs used_up 
     
+    logging.info(f'notify_complete_packs: {len(filtered_packs)}')
     for pack in filtered_packs:
         notify_pack(pack)
     
+
+if __name__ == "__main__":
+    argparse = argparse.ArgumentParser()
+    # args: cmd, --pack, --user,
+    argparse.add_argument('cmd', type=str, help='CMD')
+    argparse.add_argument('--pack', type=int, help='Pack ID')
+    argparse.add_argument('--user', type=str, help='User ID')
+    argparse.add_argument('--notify_count', type=int, default=0, help='Notify Count')
+    argparse.add_argument('--user_since', type=str, help='All new users since')
+
+    args = argparse.parse_args()
+    if args.pack:
+        notify_pack(args.pack)
+    elif args.user:
+        notify_complete_packs(args.notify_count, args.user)
+    elif args.user_since:
+        users = User.query.filter(User.create_time >= args.user_since).all()
+        notify_count = args.notify_count
+        subquery = db.session.query(Task.pack_id).\
+            filter(Task.status == 'finish').\
+            group_by(Task.pack_id).\
+            having(db.func.count(Task.id) >= config.COMPLETE_PACK_MIN_PICS).\
+            correlate(Pack)
+        
+        filtered_packs = db.session.query(Pack).\
+            filter(~db.exists().where(db.and_(Task.pack_id == Pack.pack_id, Task.status == 'wait'))).\
+            filter(Pack.notify_count <= notify_count).\
+            filter(Pack.pack_id.in_(subquery)).\
+            all()
+
+        for u in users:
+            for p in filtered_packs:
+                if p.user_id == u.user_id:
+                    notify_pack(p)
+                    break
+
 """
     "payload":{    // 必填，JSON格式，具体消息内容(iOS最大为2012B)
         "aps":{    // 必填，严格按照APNs定义来填写

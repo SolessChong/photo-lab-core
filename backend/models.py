@@ -215,3 +215,33 @@ class Contact(db.Model):
 
     def __repr__(self):
         return f"<Contact {self.id}>"
+    
+
+class Note(db.Model):
+    __tablename__ = 'notes'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    user_id = db.Column(db.String(255))
+    '''
+    images: {
+        'img_url': 'https://xxx.jpg',
+        'img_size': [100, 200]  # (width, height)
+    }
+    '''
+    images = db.Column(db.JSON)
+    text = db.Column(db.String(512))
+    scene_id = db.Column(db.Integer)
+    scene_tag_id_list = db.Column(db.JSON)
+    rate = db.Column(db.Integer)
+    create_time = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'user_id': self.user_id,
+            'images': self.images,
+            'text': self.text,
+            'rate': self.rate,
+            'create_time': self.create_time
+        }

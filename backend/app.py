@@ -14,7 +14,9 @@ from celery import group, Celery, chain, chord
 import logging
 import requests
 from .config import wait_status
-from sqlalchemy import desc
+from sqlalchemy import Table, select, and_, desc
+from sqlalchemy.orm import joinedload, aliased
+from collections import defaultdict
 
 from backend.extensions import  app, db
 from . import aliyun_face_detector
@@ -22,6 +24,8 @@ from . import web_function
 from . import utils
 from . import models
 from . import selector_other, selector_sd
+
+from backend.app_community import upload_note, get_all_notes, add_note_from_task, app_community
 
 celery_app = Celery('myapp',
                     broker='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0',
@@ -33,6 +37,11 @@ task_render_scene_str = 'render_scene'
 
 
 logger = logging.getLogger(__name__)
+
+#############################################
+## App Modules
+#############################################
+app.register_blueprint(app_community)
 
 
 @app.route('/api/create_user', methods=['GET'])
@@ -164,6 +173,13 @@ def upload_payment():
     product_id = args.get('product_id')
     # get unlock_num. If not provided, set to infinite, for backward compatibility
     unlock_num = args.get('unlock_num', 9999)
+
+    # Validate payment
+    # 1. check receipt doesn't exist in payments
+    payment = models.Payment.query.filter_by(receipt=receipt).first()
+    if payment:
+        logger.error(f'upload_payment receipt {receipt} already exists')
+        return jsonify({"error": f"receipt {receipt} already exists"}), 400
     
     # Create a new payment
     new_payment = models.Payment(
@@ -235,10 +251,10 @@ def upload_payment_post():
     if payment:
         logger.error(f'upload_payment receipt {receipt} already exists')
         return jsonify({"error": f"receipt {receipt} already exists"}), 400
-    # 2. check receipt is valid
-    if not utils.validate_IAP_receipt(receipt):
-        logger.error(f'upload_payment receipt {receipt} is invalid')
-        return jsonify({"error": f"receipt {receipt} is invalid"}), 400
+    # # 2. check receipt is valid
+    # if not utils.validate_IAP_receipt(receipt):
+    #     logger.error(f'upload_payment receipt {receipt} is invalid')
+    #     return jsonify({"error": f"receipt {receipt} is invalid"}), 400
 
     # Create a new payment
     new_payment = models.Payment(
@@ -314,18 +330,29 @@ def get_example_2():
         elif example.type == 2:
             result['bad'].append(rs)
     
+    # Query the tags and filter out the ones you need
     tags = models.Tag.query.filter(models.Tag.img_key != None).filter(models.Tag.rate > 0).order_by(models.Tag.rate.desc()).all()
+
+    # Extract all img_keys
+    img_keys = [tag.img_key for tag in tags]
+
+    # Fetch all image sizes concurrently
+    image_sizes = utils.get_image_sizes(img_keys)
+
+    # Iterate over the tags and create the result dictionary using pre-fetched image sizes
     for tag in tags:
-        img_height, img_width = utils.get_oss_image_size(tag.img_key)
-        rs = {
-            'img_url': utils.get_signed_url(tag.img_key, is_yasuo=True),
-            'img_height': img_height,
-            'img_width': img_width,
-            'style': tag.tag_name,
-            'id': tag.id,
-            'tag_id': tag.id
-        }
-        result['styles'].append(rs)
+        img_key = tag.img_key
+        if img_key and img_key in image_sizes:  # check if the key exists in the image_sizes dictionary
+            img_height, img_width = image_sizes[img_key]
+            rs = {
+                'img_url': utils.get_signed_url(tag.img_key, is_yasuo=True),
+                'img_height': img_height,
+                'img_width': img_width,
+                'style': tag.tag_name,
+                'id': tag.id,
+                'tag_id': tag.id
+            }
+            result['styles'].append(rs)
 
     response = {
         'data': result,
@@ -445,6 +472,7 @@ def upload_multiple_sources():
         person_id = new_person.id
     else:
         person_id = person.id
+        person.lora_train_status = None
 
     print(img_oss_keys, type(img_oss_keys))
 
@@ -561,75 +589,6 @@ def start_sd_generate():
         logging.error(f'report_event error: {e}')
 
     return jsonify(response)
-
-# 为pack增加img图片，和单纯增加pack两种情况都会调用此函数
-def create_new_pack(pack_dict, pack_id, img_key):
-    if not pack_id in pack_dict:
-        pack = models.Pack.query.filter_by(pack_id=pack_id).first()
-        if img_key and (not pack.banner_img_key):
-            image_data = utils.oss_get(img_key)
-            face_coordinates = None
-            try:
-                face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
-            except Exception as e:
-                logging.error(f'get_face_coordinates error: {e}')
-                        
-            banner_img = aliyun_face_detector.crop_16_9_pil(image_data, face_coordinates)
-            pack.banner_img_key = f'banner_img/{pack_id}.jpg'
-            utils.oss_put(pack.banner_img_key , banner_img)
-            db.session.commit()
-            
-        pack_dict[pack_id] = {
-            "pack_id": pack.pack_id,
-            "description": pack.description,
-            "total_img_num": pack.total_img_num,
-            "is_unlock": pack.is_unlock,
-            "imgs": [],
-            "thumb_imgs": [], 
-            "finish_seconds_left": pack.total_seconds - int((datetime.utcnow() - pack.start_time).total_seconds()),
-            'total_seconds': pack.total_seconds ,
-            # 'banner_img_url': utils.get_signed_url('static/test1.png'),
-            'banner_img_url': None,
-            'heights': [],
-            'widths': [],
-            'price': pack.price,
-            'unlock_num': pack.unlock_num,
-        }
-        if pack.banner_img_key:
-            pack_dict[pack_id]['banner_img_url'] = utils.get_signed_url(pack.banner_img_key)
-    # 依次添加图片，每次调用这个函数只添加一张照片，
-    # 然后在这个函数里面查之前总共添加了多少张照片进来，再判断每张照片的水印、模糊状态
-    # 前5张：           有水印，不模糊
-    # 前unlock_num张：  无水印，无模糊
-    # 后面的：          有水印，有模糊
-    if img_key:
-        # is_shuiyin = (not pack_dict[pack_id]['is_unlock'])
-        # if len(pack_dict[pack_id]['imgs']) < pack_dict[pack_id]['unlock_num']:
-        #     is_mohu = False
-        # else:
-        #     is_mohu = True
-        is_shuiyin = is_mohu = True
-        is_thumb_shuiyin = True
-        if len(pack_dict[pack_id]['imgs']) < 5:
-            is_mohu = False
-        if len(pack_dict[pack_id]['imgs']) < pack_dict[pack_id]['unlock_num']:
-            is_shuiyin = False
-            is_mohu = False
-            is_thumb_shuiyin = False
-
-        img_url = utils.get_signed_url(img_key, is_shuiyin = is_shuiyin, is_yasuo = False, is_mohu=is_mohu)
-        thumb_url = utils.get_signed_url(img_key, is_shuiyin = is_thumb_shuiyin, is_yasuo = True, is_mohu=is_mohu)
-        # after change to new height, width. 10x faster!
-        height, width = utils.get_oss_image_size(img_key)
-        pack_dict[pack_id]["imgs"].append(img_url)
-        pack_dict[pack_id]["thumb_imgs"].append(thumb_url)
-        pack_dict[pack_id]["heights"].append(height)
-        pack_dict[pack_id]["widths"].append(width)
-
-# 获取某个用户的所有已经生成的图片，返回结果一个packs数组，
-# python后端程序获取所有generated_images表中，符合user_id 的列。然后将获得的列，把相同的pack_id合并在一个pack项。pack项的值还包括
-# pack_id,  description, total_img_num, finish_time_left和imgs.
-# 其中pack_id,  description, total_img_num可以直接从数据库packs表中直接得到，finish_time_left计算公式为当前时间减去pack的start_time， imgs则为所有列对应img_url生成的oss可访问地址。
 @app.route('/api/get_generated_images', methods=['GET'])
 def get_generated_images():
     t0 = time.time()
@@ -638,39 +597,95 @@ def get_generated_images():
         return jsonify({"error": "user_id is required"}), 400
 
     logging.info(f'get_generated_images user_id: {user_id}')
+
+    # Explicitly joining Task and Pack tables
+    Task = aliased(models.Task)
+    Pack = aliased(models.Pack)
+
+    join_condition = and_(Pack.user_id == user_id, Pack.pack_id == Task.pack_id)
+    query = db.session.query(Pack, Task).filter(join_condition).order_by(desc(Task.rate)).limit(3000)
+    result = query.all()
+
+    # Accelerate getting image size using multi-threading
+    img_keys = [task.result_img_key for _, task in result if task.result_img_key]
+    image_sizes = utils.get_image_sizes(img_keys)
+
+    logging.info(f'Number of records returned: {len(result)}')
+
     pack_dict = {}
-    images = models.GeneratedImage.query.filter(models.GeneratedImage.user_id == user_id, models.GeneratedImage.img_oss_key != None).all()
-    for image in images:
-        create_new_pack(pack_dict, image.pack_id, image.img_oss_key)
 
-    tasks = (db.session.query(models.Task, models.Scene)
-                .join(models.Scene, models.Task.scene_id == models.Scene.scene_id)
-                .filter(models.Task.user_id == user_id, models.Task.result_img_key != None)
-                .order_by(desc(models.Scene.rate))
-                .distinct(models.Task.scene_id)
-                .limit(300)
-                .all())
-    logging.info(f'adding tasks number: {len(tasks)}')
-    for task, scene in tasks:
-        try:
-            create_new_pack(pack_dict, task.pack_id, task.result_img_key)
-        except Exception as e:
-            logging.error(f'create_new_pack error on task {task.id}, result_img_key: {task.result_img_key}.\n{e}')
+    for pack, task in result:
+        # logging.info(f'Processing pack_id: {pack.pack_id}')
 
-    packs = models.Pack.query.filter(models.Pack.user_id == user_id).all()
-    for pack in packs:
-        create_new_pack(pack_dict, pack.pack_id, None)
-    
+        if not pack.pack_id in pack_dict:
+            if pack.banner_img_key is None and task.result_img_key:
+                logging.info(f'Generating banner for pack_id: {pack.pack_id}')
+                image_data = utils.oss_get(task.result_img_key)
+
+                # Generate a dummy face_coordinate
+                face_coordinates = (0, 0)  # this needs to be actual coordinates
+
+                banner_img = aliyun_face_detector.crop_16_9_pil(image_data, face_coordinates)
+                pack.banner_img_key = f'banner_img/{pack.pack_id}.jpg'
+                utils.oss_put(pack.banner_img_key , banner_img)
+                db.session.commit()
+
+            pack_dict[pack.pack_id] = {
+                "pack_id": pack.pack_id,
+                "description": pack.description,
+                "total_img_num": pack.total_img_num,
+                "is_unlock": pack.is_unlock,
+                "imgs": [],
+                "thumb_imgs": [], 
+                "finish_seconds_left": pack.total_seconds - int((datetime.utcnow() - pack.start_time).total_seconds()),
+                'total_seconds': pack.total_seconds ,
+                'banner_img_url': utils.get_signed_url(pack.banner_img_key) if pack.banner_img_key else None,
+                'heights': [],
+                'widths': [],
+                'price': pack.price,
+                'unlock_num': pack.unlock_num,
+            }
+
+        img_key = task.result_img_key
+        if img_key:
+            is_shuiyin = is_mohu = True
+            is_thumb_shuiyin = True
+            if len(pack_dict[pack.pack_id]['imgs']) < 5:
+                is_mohu = False
+            if len(pack_dict[pack.pack_id]['imgs']) < pack_dict[pack.pack_id]['unlock_num']:
+                is_shuiyin = False
+                is_mohu = False
+                is_thumb_shuiyin = False
+
+            img_url = utils.get_signed_url(img_key, is_shuiyin = is_shuiyin, is_yasuo = False, is_mohu=is_mohu)
+            thumb_url = utils.get_signed_url(img_key, is_shuiyin = is_thumb_shuiyin, is_yasuo = True, is_mohu=is_mohu)
+            height, width = image_sizes[img_key]
+            pack_dict[pack.pack_id]["imgs"].append(img_url)
+            pack_dict[pack.pack_id]["thumb_imgs"].append(thumb_url)
+            pack_dict[pack.pack_id]["heights"].append(height)
+            pack_dict[pack.pack_id]["widths"].append(width)
+
     logging.info(f'time used: {int(time.time() - t0)}s')
+
+    rst_packs = []
+    for pack in pack_dict.values():
+        if len(pack['imgs']) > 0 or pack['finish_seconds_left'] > 0:
+            rst_packs.append(pack)
+        else:
+            pack['description'] = '任务超时，请耐心等待或联系客服'
+            rst_packs.append(pack)
 
     response = {
         'code': 0,
         'msg': 'success',
         'data': {
-            'packs': list([pack for pack in pack_dict.values() if len(pack['imgs']) > 0 or pack['finish_seconds_left'] > 0])
+            'packs': rst_packs
         }
     }
+
     return jsonify(response), 200
+
+
 
 @app.route('/')
 def index():
