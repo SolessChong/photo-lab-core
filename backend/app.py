@@ -562,8 +562,17 @@ def start_sd_generate():
             m += selector_sd.generate_sd_task_with_tag(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, tag_ids = tag_id_list, limit=limit, wait_status=wait_status)
         else:
             m += selector_sd.generate_sd_task(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, limit=limit, wait_status=wait_status)
-        
-        pack.total_seconds = 3*60*60
+        # Check if person in person_id_list are all finished
+        all_lora_ready = True
+        for person_id in person_id_list:
+            person = models.Person.query.get(person_id)
+            if person.lora_train_status != 'finished':
+                all_lora_ready = False
+                break
+        if all_lora_ready:
+            pack.total_seconds = 23*60
+        else:
+            pack.total_seconds = 3*60*60
 
     # --------------------------- 以下是启动mj和reface的任务 ------------------------------
     else :
