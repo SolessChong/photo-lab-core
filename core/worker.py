@@ -36,6 +36,7 @@
 #
 import os
 import time
+from urllib3.exceptions import ProtocolError
 from core import conf
 from core import train_lora
 from core import set_up_scene
@@ -50,6 +51,9 @@ import logging
 from backend.extensions import app, db
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+MAX_RETRIES = 3
+RETRY_DELAY = 5  # Delay in seconds
 
 # Train LORA model
 # test case, 
@@ -137,23 +141,33 @@ def task_render_scene(task_id):
             Path(lora_file_path + '.0').touch()
     logging.info(f"  --- Local person lora finished")
 
-    try:
-        if scene.base_img_key is not None:
-            rst_img = render.render_lora_on_base_img(task)
-        elif scene.prompt is not None:
-            rst_img = render.render_lora_on_prompt(task)
-        else:
-            logging.error(f"  --- ❌ Render scene failed. Invalid task, No base_img or prompt. task_id={task_id}")
+    for retry in range(MAX_RETRIES):
+        try:
+            if scene.base_img_key is not None:
+                rst_img = render.render_lora_on_base_img(task)
+            elif scene.prompt is not None:
+                rst_img = render.render_lora_on_prompt(task)
+            else:
+                logging.error(f"  --- ❌ Render scene failed. Invalid task, No base_img or prompt. task_id={task_id}")
+                task.task_fail()
+                return -1
+            # compose rst_img_key
+            rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
+            task.update_result_img_key(rst_img_key)
+            write_PILimg(rst_img, task.result_img_key)
+            logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
+            break
+        except ProtocolError as e:
+            logging.error(f"Connection error occurred: {e}")
+            if retry < MAX_RETRIES - 1:  # Don't sleep after the last retry
+                logging.info(f"Retrying in {RETRY_DELAY} seconds...")
+                time.sleep(RETRY_DELAY)
+            else:
+                logging.error(f"Max retries exceeded. Raising the exception.")
+                raise
+        except Exception as e:
+            logging.exception(f"  --- ❌ Render scene failed. {e}")
             task.task_fail()
-            return -1
-        # compose rst_img_key
-        rst_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
-        task.update_result_img_key(rst_img_key)
-        write_PILimg(rst_img, task.result_img_key)
-        logging.info(f"--- Render scene success.  save to oss: {task.result_img_key}")
-    except Exception as e:
-        logging.exception(f"  --- ❌ Render scene failed. {e}")
-        task.task_fail()
 
     db.session.close()
     return 0
