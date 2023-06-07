@@ -98,6 +98,7 @@ if __name__ == "__main__":
     argparse.add_argument('--notify_count', type=int, default=0, help='Notify Count')
     argparse.add_argument('--user_since', type=str, help='All new users since')
 
+    notification_num = 0
     args = argparse.parse_args()
     if args.pack:
         notify_pack(args.pack)
@@ -122,8 +123,10 @@ if __name__ == "__main__":
             for p in filtered_packs:
                 if p.user_id == u.user_id:
                     notify_pack(p)
+                    notification_num += 1
                     break
 
+    logging.info(f'notification_num: {notification_num}')
 """
     "payload":{    // 必填，JSON格式，具体消息内容(iOS最大为2012B)
         "aps":{    // 必填，严格按照APNs定义来填写
