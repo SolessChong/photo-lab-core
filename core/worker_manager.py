@@ -84,7 +84,7 @@ def render(Session, port):
 
         todo_task_id_list = []
         try:
-            print(f"======= Task: render scene: current_task_id={current_task_id}")
+            logger.info(f"======= Task: render scene: current_task_id={current_task_id}")
             tasks = session.query(models.Task).filter(models.Task.status == 'wait', models.Task.id >= current_task_id).order_by(models.Task.id).limit(step).with_for_update().all()
             if len(tasks) > 0:
                 current_task_id = tasks[-1].id + 1
@@ -110,7 +110,7 @@ def render(Session, port):
                     todo_task_id_list.append(task.id)
                     task.status = 'processing'
         except Exception as e:
-            print(f"Error: {e}")
+            logger.exception(f"Error: {e}")
         finally:
             session.commit()
             session.close()
@@ -120,7 +120,7 @@ def render(Session, port):
             try:
                 worker.task_render_scene(id)
             except Exception as e:
-                print(f"Error: {e}")
+                logger.exception(f"Error: {e}")
                 session = Session()
                 session.begin()
                 task = session.query(models.Task).filter(models.Task.id == id)
@@ -143,7 +143,7 @@ def setup_scene(Session):
             scene.setup_status = 'processing'
         session.commit()
     except Exception as e:
-        print(f"Error: {e}")
+        logger.exception(f"Error: {e}")
     finally:
         session.close()
 
@@ -151,7 +151,7 @@ def setup_scene(Session):
         try:
             worker.task_set_up_scene(id)
         except Exception as e:
-            print(f"Error: {e}")
+            logger.exception(f"Error: {e}")
             scene = models.Scene.query.get(id)
             scene.setup_status = 'fail'
             a_c_c(scene, db)
