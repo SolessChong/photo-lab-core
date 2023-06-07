@@ -22,9 +22,9 @@ msg_templates = {
     'render_finish': {
         'aps': {
             'alert': {
-                'title': '拍摄完成',
+                'title': '您有一套AI照片待查看',
                 'subtitle': '',
-                'body': '您有一套AI照片已经拍摄完成，赶快打开PicMagic查看吧！'
+                'body': '您的一套AI照片已经完成，为了避免过期，请尽快打开PicMagic查看吧！'
             }
         }
     },
