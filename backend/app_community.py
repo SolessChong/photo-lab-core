@@ -81,8 +81,8 @@ def get_all_notes():
     response_data = []
     for note in note_data:
         for image in note['images']:
-            img_url = utils.get_signed_url(image['img_key'])
-            image['img_url'] = img_url
+            image['img_url'] = utils.get_signed_url(image['img_key'])
+            image['img_thumb_url'] = utils.get_signed_url(image['img_key'], is_yasuo=True)
         response_data.append(note)
 
     response = {

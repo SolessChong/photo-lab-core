@@ -54,10 +54,16 @@ def create_user():
     else:
         user_ip = request.remote_addr
     user_agent = request.headers.get('User-Agent')
-    logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
-
-    # Create a new user with the generated user_id
-    new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50)
+    # return dummy result tJ0T5BcptE if user_agent contains 1.0.7 or 1.0.8
+    if user_agent and ('1.0.7' in user_agent or '1.0.8' in user_agent):
+        user_id = 'tJ0T5BcptE'
+        user_ip = ''
+        new_user = models.User.query.filter_by(user_id=user_id).first()
+        logging.info(f'!!!! Dummy user for test, user_id is {user_id}, ua is {user_agent}')
+    else:
+        logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
+        # Create a new user with the generated user_id
+        new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50)
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
