@@ -61,7 +61,7 @@ def get_signed_url(img_key, is_shuiyin = False, is_yasuo = False, is_mohu = Fals
     value = 'image/auto-orient,1/quality,q_90/format,jpg'
 
     if is_shuiyin:
-        value += '/watermark,text_UGljIE1hZ2ljICAgICAgIA,color_ffffff,size_250,rotate_30,fill_1,shadow_100,g_se,t_78,x_30,y_30'
+        value += '/watermark,text_UGljIE1hZ2ljICAgICAgIA,color_ffffff,size_50,rotate_30,fill_1,shadow_100,g_se,t_78,x_30,y_30'
     if is_yasuo:
         value += '/resize,m_lfit,w_400'
     if is_mohu:
