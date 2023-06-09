@@ -190,6 +190,7 @@ class Tag(db.Model):
     tag_name = db.Column(db.String(255), nullable=True)
     rate = db.Column(db.Integer, nullable=True, default=0)
     img_key = db.Column(db.String(255), nullable=True)
+    display_name = db.Column(db.JSON, nullable=True)
 
 class TagScene(db.Model):
     __tablename__ = 'tag_scene'
