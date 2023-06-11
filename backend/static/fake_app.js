@@ -70,9 +70,6 @@ async function loadUserResults(userIds) {
     }
 }
 
-
-
-
 async function loadAllUserIds() {
     try {
         const response = await fetch('/get_all_user');
@@ -95,10 +92,7 @@ async function loadAllUserIds() {
     } catch (error) {
         console.error('Error fetching all user IDs:', error);
     }
-}
-
-
-function loadSceneEditData(page, collection_name_filter='', non_tag=false, is_industry=0, scene_id_filter='') {
+}function loadSceneEditData(page, collection_name_filter='', non_tag=false, is_industry=0, scene_id_filter='') {
     let allTags = [];
 
     // Fetch all tags from the server
