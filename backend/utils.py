@@ -64,8 +64,11 @@ def get_signed_url(img_key, is_shuiyin = False, is_yasuo = False, is_mohu = Fals
         value += '/watermark,text_UGljIE1hZ2ljICAgICAgIA,color_ffffff,size_50,rotate_30,fill_1,shadow_100,g_se,t_78,x_30,y_30'
     if is_yasuo:
         value += '/resize,m_lfit,w_400'
-    if is_mohu:
-        value += '/blur,r_20,s_20'
+        if is_mohu:
+            value += '/blur,r_6,s_10'
+    else:
+        if is_mohu:
+            value += '/blur,r_15,s_20'
     oss_domain = f"http://{OSS_BUCKET_NAME}.{OSS_ENDPOINT}"
 
     return oss_domain + '/' + urllib.parse.quote(img_key.encode('utf-8')) + '?&x-oss-process=' + value

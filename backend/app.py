@@ -710,6 +710,7 @@ def get_generated_images():
             rst_packs.append(pack)
         else:
             pack['description'] = '任务超时，请耐心等待或联系客服'
+            logger.error(f'pack {pack["pack_id"]} is timeout')
             rst_packs.append(pack)
 
     response = {
