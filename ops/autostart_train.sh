@@ -1,2 +1,1 @@
-byobu new-window -t Train 'cd /home/chong/photolab/photo-lab-core/ && . venv/bin/activate && python -m worker_manager train'
-byobu new-window -t Monitor 'watch nvidia-smi'
+/home/chong/photolab/photo-lab-core/venv/bin/python -m worker_manager train > /home/chong/photolab/photo-lab-core/log/worker_manager_train.log 2>&1 &
