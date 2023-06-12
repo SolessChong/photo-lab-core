@@ -1,11 +1,13 @@
 import os
 import time
+import datetime
 import unittest
 import requests
 import json
 from backend import app
 from backend import extensions
 from backend.models import db, Payment, Pack
+from backend import models
 
 class AppTest(unittest.TestCase):
     def setUp(self):
@@ -78,6 +80,47 @@ class AppTest(unittest.TestCase):
         # assert response content can be parsed as a dict (json)
         self.assertTrue(isinstance(response.json(), dict))
         self.assertEqual(response.status_code, 200)
+
+    def test_promo_code(self):
+        user_id = 'test_promo_code_user_id'
+        code = 'test_promo_code'
+        # populate test data
+        extensions.app.app_context().push()
+        user = models.User.query.filter_by(user_id=user_id).first()
+        promo_code = models.PromoCode.query.filter_by(code=code).first()
+        if user:
+            db.session.delete(user)
+        if promo_code:
+            db.session.delete(promo_code)
+        db.session.commit()
+        user = models.User(user_id=user_id)
+        db.session.add(user)
+        promo_code = models.PromoCode(code=code, type=models.PromoCode.Type.subscribe_week, expire_time=datetime.datetime.now() + datetime.timedelta(days=7))
+        db.session.add(promo_code)
+        db.session.commit()
+
+        # Test web request
+        response = self.client.post('http://photolab.aichatjarvis.com/api/use_promo_code', json={'user_id': user_id, 'code': code})
+        # assert response content can be parsed as a dict (json)
+        self.assertTrue(isinstance(response.json(), dict))
+        self.assertEqual(response.status_code, 200)
+        # assert user's subscribe_until is updated
+        user = models.User.query.filter_by(user_id=user_id).first()
+        self.assertTrue(user.subscribe_until > datetime.datetime.now())
+
+        # Use again and will return invalid code error
+        response = self.client.post('http://photolab.aichatjarvis.com/api/use_promo_code', json={'user_id': user_id, 'code': code})
+        self.assertTrue(isinstance(response.json(), dict))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['code'], 1)
+        self.assertEqual(response.json()['msg'], 'error')
+        self.assertEqual(response.json()['data']['message'], 'Invalid code')
+
+        # delete test data
+        db.session.delete(user)
+        db.session.delete(promo_code)
+        db.session.commit()
+        
 
 if __name__ == '__main__':
     unittest.main()

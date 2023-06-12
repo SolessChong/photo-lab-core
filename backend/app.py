@@ -4,7 +4,7 @@ import time
 from backend import bd_conversion_utils
 from urllib.parse import urlparse, parse_qs
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from flask import Flask, request, jsonify, render_template
 import secrets
@@ -55,8 +55,8 @@ def create_user():
         user_ip = request.remote_addr
     user_agent = request.headers.get('User-Agent')
     # return dummy result tJ0T5BcptE if user_agent contains 1.0.7 or 1.0.8
-    if user_agent and ('1.0.7' in user_agent or '1.0.8' in user_agent):
-        user_id = 'tJ0T5BcptE'
+    if user_agent and ('1.0.9' in user_agent or '1.0.10' in user_agent):
+        user_id = 'matTlTd5hz'
         user_ip = ''
         new_user = models.User.query.filter_by(user_id=user_id).first()
         logging.info(f'!!!! Dummy user for test, user_id is {user_id}, ua is {user_agent}')
@@ -123,10 +123,15 @@ def get_user():
             if person_source:
                 image_data = utils.oss_get(person_source.base_img_key)
 
-                face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
-                print(face_coordinates)
-                cropped_face = aliyun_face_detector.crop_face_pil(image_data, face_coordinates)
-
+                try:
+                    face_coordinates = aliyun_face_detector.get_face_coordinates(image_data)
+                    print(face_coordinates)
+                    cropped_face = aliyun_face_detector.crop_face_pil(image_data, face_coordinates)
+                except Exception as e:
+                    logging.error(f'get face coordinates error: {e}')
+                    cropped_face = image_data
+                    continue
+                
                 person.head_img_key = f'head_img/{person.name}.jpg'
                 utils.oss_put(person.head_img_key, cropped_face)
 
@@ -310,6 +315,8 @@ def upload_payment_post():
 
 @app.route('/api/get_example_2', methods=['GET'])
 def get_example_2():
+    lang = request.headers.get('language')
+
     examples = models.Example.query.all()
 
     result = {
@@ -350,11 +357,18 @@ def get_example_2():
         img_key = tag.img_key
         if img_key and img_key in image_sizes:  # check if the key exists in the image_sizes dictionary
             img_height, img_width = image_sizes[img_key]
+            tag_display_name = tag.tag_name
+            if lang:
+                for locale, name in tag.display_name.items():
+                    if locale.startswith(lang):
+                        tag_display_name = name
+                        break
+                
             rs = {
                 'img_url': utils.get_signed_url(tag.img_key, is_yasuo=True),
                 'img_height': img_height,
                 'img_width': img_width,
-                'style': tag.tag_name,
+                'style': tag_display_name,
                 'id': tag.id,
                 'tag_id': tag.id
             }
@@ -566,13 +580,18 @@ def start_sd_generate():
         all_lora_ready = True
         for person_id in person_id_list:
             person = models.Person.query.get(person_id)
-            if person.lora_train_status != 'finished':
+            if person.lora_train_status != 'finish':
                 all_lora_ready = False
                 break
         if all_lora_ready:
             pack.total_seconds = 23*60
         else:
-            pack.total_seconds = 3*60*60
+            # Count all persons with lora_train_status == 'wait'
+            wait_count = models.Person.query.filter(models.Person.lora_train_status == 'wait').count()
+            if wait_count == 0:
+                pack.total_seconds = 57 * 60
+            else:
+                pack.total_seconds = 3*60*60
 
     # --------------------------- 以下是启动mj和reface的任务 ------------------------------
     else :
@@ -665,7 +684,7 @@ def get_generated_images():
         if img_key:
             is_shuiyin = is_mohu = True
             is_thumb_shuiyin = True
-            if len(pack_dict[pack.pack_id]['imgs']) < 5:
+            if len(pack_dict[pack.pack_id]['imgs']) < 1:
                 is_mohu = False
             if len(pack_dict[pack.pack_id]['imgs']) < pack_dict[pack.pack_id]['unlock_num']:
                 is_shuiyin = False
@@ -675,10 +694,13 @@ def get_generated_images():
             img_url = utils.get_signed_url(img_key, is_shuiyin = is_shuiyin, is_yasuo = False, is_mohu=is_mohu)
             thumb_url = utils.get_signed_url(img_key, is_shuiyin = is_thumb_shuiyin, is_yasuo = True, is_mohu=is_mohu)
             height, width = image_sizes[img_key]
-            pack_dict[pack.pack_id]["imgs"].append(img_url)
-            pack_dict[pack.pack_id]["thumb_imgs"].append(thumb_url)
-            pack_dict[pack.pack_id]["heights"].append(height)
-            pack_dict[pack.pack_id]["widths"].append(width)
+            if int(height) > 0 and int(width) > 0:
+                pack_dict[pack.pack_id]["imgs"].append(img_url)
+                pack_dict[pack.pack_id]["thumb_imgs"].append(thumb_url)
+                pack_dict[pack.pack_id]["heights"].append(height)
+                pack_dict[pack.pack_id]["widths"].append(width)
+            else:
+                logging.error(f'Invalid image size: {img_key} {height} {width}')
 
     logging.info(f'time used: {int(time.time() - t0)}s')
 
@@ -756,6 +778,24 @@ def get_global_config():
     result = {}
     for config in configs:
         result[config.key] = config.value
+    # Locale for person_type_data
+    if request.headers.get('language'):
+        language = request.headers.get('language')
+        logger.info(f'language: {language}')
+
+        person_type_data = json.loads(result['person_type_data'])
+
+        fields_to_replace = [('display_name', 'display_name_locale'), ('display_info', 'display_info_locale')]
+        for fields_replace_pair in fields_to_replace:
+            # for each entry in person_type_data, match first language in entry['display_name_locale'] using 'laugnage' as prefix
+            # replace entry['display_name'] with display_name_locale[locale] content
+            for entry in person_type_data:
+                for locale, display_name in entry[fields_replace_pair[1]].items():
+                    if locale.startswith(language):
+                        entry[fields_replace_pair[0]] = display_name
+                        break
+        result['person_type_data'] = json.dumps(person_type_data)
+
     response = {
         'code': 0,
         'msg': 'success',
@@ -782,6 +822,72 @@ def submit_contact_form():
     }
     return jsonify(response), 200
 
+def return_error(msg):
+    response = {
+        'code': 1,
+        'msg': msg,
+        'data': {'message': msg}
+    }
+    return jsonify(response), 200
+
+def return_success(msg, **kwargs):
+    response = {
+        'code': 0,
+        'msg': 'success',
+        'data': {'message': msg}
+    }
+    response['data'].update(kwargs)
+    return jsonify(response), 200
+
+@app.route('/api/use_promo_code', methods=['POST'])
+def use_promo_code():
+    '''
+    {
+        "code": "Fffdddd";
+        "user_id": "I63CGgUTMT";
+    }
+    '''
+    data = request.get_json()
+    code = data.get('code')
+    user_id = data.get('user_id')
+    user = models.User.query.filter_by(user_id=user_id).first()
+    if not code or not user_id:
+        return return_error('Missing code or user_id')
+    if not user:
+        return return_error('User not found')
+    # Mark models.PromoCode as used.
+    promo_code = models.PromoCode.query.filter_by(code=code).first()
+    if not promo_code:
+        return return_error('No such code')
+    if not promo_code.is_valid():
+        return return_error('Invalid code')
+    if promo_code.referer_user_id == user_id:
+        return return_error('Cannot use your own code')
+    # Valid. Use the code
+    promo_code.use(user_id)
+    
+    # Subscribe promo type
+    if promo_code.type in [models.PromoCode.Type.subscribe_week, models.PromoCode.Type.subscribe_month, models.PromoCode.Type.subscribe_year]:
+        # determine time_delta by type using switch
+        if promo_code.type == models.PromoCode.Type.subscribe_week:
+            time_delta = timedelta(days=7)
+
+        elif promo_code.type == models.PromoCode.Type.subscribe_month:
+            time_delta = timedelta(days=30)
+        elif promo_code.type == models.PromoCode.Type.subscribe_year:
+            time_delta = timedelta(days=365)
+
+        # Update user's subscribe_until
+        if user.subscribe_until is None or user.subscribe_until < datetime.utcnow():
+            user.subscribe_until = datetime.utcnow() + time_delta
+        else:
+            user.subscribe_until += time_delta
+
+        db.session.commit()
+        return return_success('Promo code used successfully', promo_code=promo_code.to_dict())
+
+    # Unkown promo type
+    return return_error('Unknown promo code type')
 
 if __name__ == '__main__':
     # Add argument parser: -p: port

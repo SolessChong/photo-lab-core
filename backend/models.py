@@ -35,6 +35,7 @@ class User(db.Model):
     max_img_num = db.Column(db.Integer, nullable=True)
     subscribe_until = db.Column(db.DateTime, nullable=True)
     create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    promo_code_id = db.Column(db.Integer, nullable=True)
 
 class Source(db.Model):
     __tablename__ = 'source'
@@ -189,6 +190,7 @@ class Tag(db.Model):
     tag_name = db.Column(db.String(255), nullable=True)
     rate = db.Column(db.Integer, nullable=True, default=0)
     img_key = db.Column(db.String(255), nullable=True)
+    display_name = db.Column(db.JSON, nullable=True)
 
 class TagScene(db.Model):
     __tablename__ = 'tag_scene'
@@ -244,4 +246,58 @@ class Note(db.Model):
             'text': self.text,
             'rate': self.rate,
             'create_time': self.create_time
+        }
+    
+class PromoCode(db.Model):
+    # define available promo code types: 'subscribe_week', 'subscribe_month', 'balance', 'discount'
+    class Type:
+        subscribe_week = 'subscribe_week'
+        subscribe_month = 'subscribe_month'
+        subscribe_year = 'subscribe_year'
+        balance = 'balance'
+        discount = 'discount'
+
+    __tablename__ = 'promo_codes'
+    id = db.Column(db.Integer, primary_key=True)
+    '''unique code'''
+    code = db.Column(db.String(128), unique=True)
+    '''subscribe_week, subscribe_month, balance, discount'''
+    type = db.Column(db.String(255))
+    value = db.Column(db.Integer)
+    used_count = db.Column(db.Integer, default=0)
+    max_use_count = db.Column(db.Integer, default=1)
+    '''user_id who use this code. when max_userd_count > 1, this field is None'''
+    user_id = db.Column(db.String(255))
+    referer_user_id = db.Column(db.String(255))
+    create_time = db.Column(db.DateTime, default=datetime.utcnow)
+    expire_time = db.Column(db.DateTime, default=datetime.utcnow)
+    '''when this code is used, update this field. when max_userd_count > 1, this field is last used time'''
+    use_time = db.Column(db.DateTime, default=datetime.utcnow)
+    '''reseller name'''
+    reseller = db.Column(db.String(255))
+
+    def is_valid(self):
+        return self.expire_time > datetime.utcnow() and self.used_count < self.max_use_count
+
+    def use(self, user_id):
+        self.used_count += 1
+        if self.max_use_count == 1:
+            self.user_id = user_id
+        self.use_time = datetime.utcnow()
+        db.session.commit()
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'code': self.code,
+            'type': self.type,
+            'value': self.value,
+            'used_count': self.used_count,
+            'max_use_count': self.max_use_count,
+            'user_id': self.user_id,
+            'referer_user_id': self.referer_user_id,
+            'create_time': self.create_time,
+            'expire_time': self.expire_time,
+            'use_time': self.use_time,
+            'reseller': self.reseller
         }

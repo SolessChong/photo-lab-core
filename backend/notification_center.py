@@ -70,8 +70,14 @@ def notify_complete_packs(notify_count=0, user_id=None):
     #   1. count task with status is 'finish' and task.pack_id == pack.pack_id >= COMPLETE_PACK_MIN_PICS
     #   2. no task with status is 'wait' and task.pack_id == pack.pack_id
     #   3. pack.notify_count <= notify_count
-    subquery = db.session.query(Task.pack_id).\
-        filter(Task.status == 'finish').\
+    if user_id:
+        base_query = db.session.query(Task.pack_id).\
+            filter(Task.status == 'finish').\
+            filter(Task.user_id == user_id)
+    else:
+        base_query = db.session.query(Task.pack_id).\
+            filter(Task.status == 'finish')
+    subquery = base_query.\
         group_by(Task.pack_id).\
         having(db.func.count(Task.id) >= config.COMPLETE_PACK_MIN_PICS).\
         correlate(Pack)
@@ -92,7 +98,6 @@ def notify_complete_packs(notify_count=0, user_id=None):
 if __name__ == "__main__":
     argparse = argparse.ArgumentParser()
     # args: cmd, --pack, --user,
-    argparse.add_argument('cmd', type=str, help='CMD')
     argparse.add_argument('--pack', type=int, help='Pack ID')
     argparse.add_argument('--user', type=str, help='User ID')
     argparse.add_argument('--notify_count', type=int, default=0, help='Notify Count')
@@ -100,6 +105,9 @@ if __name__ == "__main__":
 
     notification_num = 0
     args = argparse.parse_args()
+
+    logging.info(f'args: {args}')
+
     if args.pack:
         notify_pack(args.pack)
     elif args.user:
