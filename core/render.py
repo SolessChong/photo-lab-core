@@ -203,7 +203,6 @@ def render_lora_on_base_img(task) -> Image:
     logging.info(f"    ----  ✅ Task {task.id}, Scene {scene_id} finished successfully.")
     return image
 
-
 # main program
 if __name__ == "__main__":
     from backend.extensions import db, app

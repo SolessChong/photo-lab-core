@@ -9,8 +9,11 @@ cd $prefix_path
 # Define an array of ports
 ports=(7890 7891 7892 7893)
 
-# Create the directory for storing PID files if it doesn't exist
+# Create the directory for storing PID file if it doesn't exist
 mkdir -p ops
+
+# Clear the PID file
+echo "" > "ops/worker_render.pids"
 
 for i in ${!ports[@]}; do
   port=${ports[$i]}
@@ -22,8 +25,8 @@ for i in ${!ports[@]}; do
   # Get the PID of the most recent background process that was started
   pid=$!
 
-  # Write the PID to a file
-  echo $pid > "ops/worker_render_${port}.pid"
+  # Append the PID to the file
+  echo $pid >> "ops/worker_render.pids"
 
   # Sleep for a few seconds to allow the previous service to start
   sleep 5
