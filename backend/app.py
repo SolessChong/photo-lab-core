@@ -1,6 +1,8 @@
 from backend import config
 import argparse
 import time
+import base64
+import jwt
 from backend import bd_conversion_utils
 from urllib.parse import urlparse, parse_qs
 
@@ -14,7 +16,7 @@ from celery import group, Celery, chain, chord
 import logging
 import requests
 from .config import wait_status
-from sqlalchemy import Table, select, and_, desc
+from sqlalchemy import func, Table, select, and_, desc
 from sqlalchemy.orm import joinedload, aliased
 from collections import defaultdict
 
@@ -63,7 +65,11 @@ def create_user():
     else:
         logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
         # Create a new user with the generated user_id
-        new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50)
+        dna = {
+            'pay_group': random.randint(1,100),
+            'pay_in_advance': random.randint(0,100) < 5,
+        }
+        new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50, dna=dna)
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
@@ -155,6 +161,8 @@ def get_user():
             "min_img_num": 10,
             "max_img_num": 20,
             "is_subscribe": is_subscribe,
+            "dna": user.dna,
+            "subscribe_until": user.subscribe_until.timestamp() if user.subscribe_until else None,
         },
         "msg": "get user successfully",
         "code": 0
@@ -192,7 +200,8 @@ def upload_payment():
         logger.error(f'upload_payment receipt {receipt} already exists')
         return jsonify({"error": f"receipt {receipt} already exists"}), 400
     # 2. check receipt is valid
-    if not utils.validate_IAP_receipt(receipt):
+    validate_rst = utils.validate_IAP_receipt(receipt)
+    if not validate_rst:
         logger.error(f'upload_payment receipt {receipt} is invalid')
         return jsonify({"error": f"receipt {receipt} is invalid"}), 400
     
@@ -214,6 +223,13 @@ def upload_payment():
     else:
         return jsonify({"msg": "error: Pack not found", 'code': 1}), 404
     
+    # Update subscribe using the first item in response['receipt']['in_app']
+    if validate_rst[1][0].get('expires_date_ms'):
+        user = models.User.query.filter_by(user_id=user_id).first()
+        # store subscribe_until (timestamp) in user table 
+        user.subscribe_until = datetime.fromtimestamp(int(validate_rst[1][0]['expires_date_ms']) / 1000)
+        user.subscribe_info = validate_rst[1][0]
+
     # Commit the changes
     db.session.commit()
     
@@ -234,6 +250,29 @@ def upload_payment():
 
     return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
 
+# Apple subscribe renew callback
+@app.route('/api/subscribe_renew', methods=['POST'])
+def subscribe_renew():
+    logger.info(f'subscribe_renew request.')
+    # save request to data file with timestamp
+    with open(f'./tmp/subscribe_renew_{int(time.time())}.dat', 'w') as f:
+        f.write(json.dumps(request.json))
+
+    # JWT decode and validate
+    signed_payload = request.json['signed_payload']
+    payload = jwt.decode(signed_payload, options={"verify_signature": False})
+    signed_renew_info = payload['signedTransactionInfo']
+    renew_info = jwt.decode(signed_renew_info, options={"verify_signature": False})
+    
+    # find user whos subscribe_info json_contains original_transaction_id
+    original_transaction_id = renew_info['originalTransactionId']
+    user = models.User.query.filter(func.JSON_CONTAINS(models.User.subscribe_info, original_transaction_id)).first()
+    if user:
+        user.subscribe_until = datetime.fromtimestamp(int(renew_info['renewalDate']) / 1000)
+        db.session.commit()
+        logger.info(f'subscribe_renew user {user.user_id} renewed')
+    return jsonify({"msg": "subscribe_renew successful", 'code':0}), 200
+    
 
 # Post request for upload_payment
 @app.route('/api/upload_payment', methods=['POST'])
@@ -907,7 +946,8 @@ if __name__ == '__main__':
     config.is_industry = args.is_industry
     config.min_image_num = args.image_num
     config.user_group = args.user_group
-    app.run(host='0.0.0.0', port=args.port)
+    app.run(host='0.0.0.0', port=args.port, ssl_context=('photolab.aichatjarvis.com.pem', 'photolab.aichatjarvis.com.key'))
+    
 else:
     gunicorn_logger = logging.getLogger('gunicorn.error')
     logging.root.handlers = gunicorn_logger.handlers

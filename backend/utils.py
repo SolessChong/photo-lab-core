@@ -188,7 +188,8 @@ def validate_IAP_receipt(receipt):
     response = requests.post(url, json=data)
     if response.status_code == 200:
         rst = response.json()
-        return len(rst['receipt']['in_app']) > 0 and rst['status'] == 0
+        valid = len(rst['receipt']['in_app']) > 0 and rst['status'] == 0
+        return valid, rst['receipt']['in_app']
     else:
         print(f"Error validating IAP receipt: {response.status_code}")
         return False
