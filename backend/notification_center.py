@@ -28,6 +28,24 @@ msg_templates = {
             }
         }
     },
+    'new_user_activate_2': {
+        'aps': {
+            'alert': {
+                'title': '欢迎使用PicMagic',
+                'subtitle': '',
+                'body': '您的账号已经激活，请您尽快在新人优惠过期前上传照片。'
+            }
+        }
+    },
+    'new_user_activate_3': {
+        'aps': {
+            'alert': {
+                'title': 'PicMagic新人礼遇已准备就绪',
+                'subtitle': '',
+                'body': '账号已激活，上传照片享受新人特惠，赶快行动吧！'
+            }
+        }
+    },
     'new_tag': {
 
     }
@@ -102,6 +120,7 @@ if __name__ == "__main__":
     argparse.add_argument('--user', type=str, help='User ID')
     argparse.add_argument('--notify_count', type=int, default=0, help='Notify Count')
     argparse.add_argument('--user_since', type=str, help='All new users since')
+    argparse.add_argument('--user_activate_since', type=str, help='All new users (not activated) registered since')
 
     notification_num = 0
     args = argparse.parse_args()
@@ -133,6 +152,14 @@ if __name__ == "__main__":
                     notify_pack(p)
                     notification_num += 1
                     break
+    elif args.user_activate_since:
+        # filter all users since
+        users_without_persons = db.session.query(User).join(Person, User.id == Person.user_id, isouter=True) \
+            .filter(User.create_time >= args.user_activate_since) \
+            .filter(Person.id.is_(None)).all()
+        for u in users_without_persons:
+            send_notification('new_user_activate', u.user_id)
+            notification_num += 1
 
     logging.info(f'notification_num: {notification_num}')
 """
