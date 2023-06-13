@@ -191,6 +191,10 @@ def upload_payment():
     if payment:
         logger.error(f'upload_payment receipt {receipt} already exists')
         return jsonify({"error": f"receipt {receipt} already exists"}), 400
+    # 2. check receipt is valid
+    if not utils.validate_IAP_receipt(receipt):
+        logger.error(f'upload_payment receipt {receipt} is invalid')
+        return jsonify({"error": f"receipt {receipt} is invalid"}), 400
     
     # Create a new payment
     new_payment = models.Payment(
@@ -590,6 +594,8 @@ def start_sd_generate():
             wait_count = models.Person.query.filter(models.Person.lora_train_status == 'wait').count()
             if wait_count == 0:
                 pack.total_seconds = 57 * 60
+            elif wait_count == 1:
+                pack.total_seconds = 86 * 60
             else:
                 pack.total_seconds = 3*60*60
 
