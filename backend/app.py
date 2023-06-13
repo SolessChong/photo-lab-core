@@ -259,16 +259,19 @@ def subscribe_renew():
         f.write(json.dumps(request.json))
 
     # JWT decode and validate
-    signed_payload = request.json['signed_payload']
+    signed_payload = request.json['signedPayload']
     payload = jwt.decode(signed_payload, options={"verify_signature": False})
-    signed_renew_info = payload['signedTransactionInfo']
+    signed_renew_info = payload['data']['signedTransactionInfo']
     renew_info = jwt.decode(signed_renew_info, options={"verify_signature": False})
     
     # find user whos subscribe_info json_contains original_transaction_id
     original_transaction_id = renew_info['originalTransactionId']
-    user = models.User.query.filter(func.JSON_CONTAINS(models.User.subscribe_info, original_transaction_id)).first()
+    original_transaction_id_json = json.dumps({"original_transaction_id": original_transaction_id})
+    user = models.User.query.filter(func.JSON_CONTAINS(models.User.subscribe_info, original_transaction_id_json)).first()
+
     if user:
-        user.subscribe_until = datetime.fromtimestamp(int(renew_info['renewalDate']) / 1000)
+        # determine new subscribe_until
+        user.subscribe_until = datetime.fromtimestamp(int(renew_info['expiresDate']) / 1000)
         db.session.commit()
         logger.info(f'subscribe_renew user {user.user_id} renewed')
     return jsonify({"msg": "subscribe_renew successful", 'code':0}), 200
@@ -278,6 +281,10 @@ def subscribe_renew():
 @app.route('/api/upload_payment', methods=['POST'])
 def upload_payment_post():
     logger.info(f'upload_payment request args is {request.json}')
+    # save request to data file with timestamp
+    with open(f'./tmp/upload_payment_{int(time.time())}.dat', 'w') as f:
+        f.write(json.dumps(request.json))
+
     # Get args from request post data
     args = dict(request.json)
     # Handle the frontend parameter name mistake
@@ -305,10 +312,11 @@ def upload_payment_post():
     if payment:
         logger.error(f'upload_payment receipt {receipt} already exists')
         return jsonify({"error": f"receipt {receipt} already exists"}), 400
-    # # 2. check receipt is valid
-    # if not utils.validate_IAP_receipt(receipt):
-    #     logger.error(f'upload_payment receipt {receipt} is invalid')
-    #     return jsonify({"error": f"receipt {receipt} is invalid"}), 400
+    # 2. check receipt is valid
+    validate_rst = utils.validate_IAP_receipt(receipt)
+    if not validate_rst:
+        logger.error(f'upload_payment receipt {receipt} is invalid')
+        return jsonify({"error": f"receipt {receipt} is invalid"}), 400
 
     # Create a new payment
     new_payment = models.Payment(
@@ -333,6 +341,13 @@ def upload_payment_post():
         user = models.User.query.filter_by(user_id=user_id).first()
         # store subscribe_until (timestamp) in user table 
         user.subscribe_until = datetime.fromtimestamp(int(subscribe_until))
+
+    # Update subscribe using the first item in response['receipt']['in_app']
+    if validate_rst[1][0].get('expires_date_ms'):
+        user = models.User.query.filter_by(user_id=user_id).first()
+        # store subscribe_until (timestamp) in user table 
+        user.subscribe_until = datetime.fromtimestamp(int(validate_rst[1][0]['expires_date_ms']) / 1000)
+        user.subscribe_info = validate_rst[1][0]
     
     # Commit the changes
     db.session.commit()
