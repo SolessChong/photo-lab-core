@@ -36,6 +36,8 @@ class User(db.Model):
     subscribe_until = db.Column(db.DateTime, nullable=True)
     create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
     promo_code_id = db.Column(db.Integer, nullable=True)
+    subscribe_info = db.Column(db.JSON, nullable=True, default=None)
+    dna = db.Column(db.JSON, nullable=True, default=None)
 
 class Source(db.Model):
     __tablename__ = 'source'
