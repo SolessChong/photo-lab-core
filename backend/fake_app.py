@@ -6,6 +6,7 @@ from backend.extensions import  app, db
 from flask_cors import CORS
 from sqlalchemy import func
 from datetime import datetime, timedelta
+import pytz
 from flask import jsonify
 import json
 from PIL import Image
@@ -13,9 +14,13 @@ from core.resource_manager import *
 from backend.models import User, Source, Person, GeneratedImage, Pack, Scene, Task, Payment, BdClick
 from celery import Celery, chain, chord, group, signature
 from backend.config import CELERY_CONFIG
+from backend import utils
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
+from datetime import datetime, date
+from sqlalchemy import cast, Date, or_
 from werkzeug.datastructures import FileStorage
+from werkzeug.utils import secure_filename
 from . import models
 from io import BytesIO
 from backend.app_community import app_community
@@ -167,15 +172,15 @@ def get_tasks():
 
     tasks_query = Task.query.filter(Task.result_img_key != None)
 
+    tasks_query = tasks_query.join(Scene, Task.scene_id == Scene.scene_id)
+
     if collection_name_filter:
-        tasks_query = tasks_query.join(Scene, Task.scene_id == Scene.scene_id).filter(Scene.collection_name == collection_name_filter)
+        tasks_query = tasks_query.filter(Scene.collection_name == collection_name_filter)
 
     if person_id_filter:
         tasks_query = tasks_query.filter(func.JSON_CONTAINS(Task.person_id_list, str(person_id_filter)))
 
     # Add the scene rate and task rate to the query
-    tasks_query = tasks_query.join(Scene, Task.scene_id == Scene.scene_id)
-
     tasks_query = tasks_query.with_entities(
         Task.id,
         Task.scene_id,
@@ -303,6 +308,21 @@ def scene_stats():
         scene_counts[status] = Scene.query.filter(Scene.setup_status == status).count()
     return jsonify(scene_counts)
 
+@app.route('/get_person_stats', methods=['GET'])
+def person_stats():
+    today = date.today()
+    new_person = Person.query.filter(cast(Person.update_time, Date) == today).count()
+    lora_train_stats = {
+        'wait': Person.query.filter(Person.lora_train_status == 'wait').count(),
+        'finish': Person.query.filter(Person.lora_train_status == 'finish').count(),
+        'processing': Person.query.filter(Person.lora_train_status == 'processing').count()
+    }
+    stats = {
+        'newPerson': new_person,
+        'loraTrainStatus': lora_train_stats
+    }
+    return jsonify(stats)
+
 @app.route('/get_payment_stats', methods=['GET'])
 def payment_stats():
     payments = Payment.query.order_by((Payment.id.desc())).limit(100).all()
@@ -316,6 +336,46 @@ def payment_stats():
             'product_id': payment.product_id
         })
     return jsonify(payment_stats)
+
+
+@app.route('/get_all_stats', methods=['GET'])
+def get_all_stats():
+    # Task stats
+    task_stats = {stat: Task.query.filter(Task.status == stat).count() for stat in ['wait', 'finish', 'fail']}
+    
+    # Scene stats
+    scene_stats = {status: Scene.query.filter(Scene.setup_status == status).count() for status in ['wait', 'finish', 'fail']}
+    
+    # Person stats
+    today = date.today()
+    new_person = Person.query.filter(cast(Person.update_time, Date) == today).count()
+    lora_train_stats = {status: Person.query.filter(Person.lora_train_status == status).count() for status in ['wait', 'finish', 'processing']}
+    person_stats = {'newPerson': new_person, 'loraTrainStatus': lora_train_stats}
+    
+    # Payment stats
+    payments = Payment.query.order_by((Payment.id.desc())).limit(100).all()
+    utc_timezone = pytz.timezone('UTC')
+    target_timezone = pytz.timezone('Asia/Shanghai')
+    payment_stats = [{
+            'id': payment.id, 'user_id': payment.user_id, 'payment_amount': payment.payment_amount, 
+            'pack_id': payment.pack_id, 'product_id': payment.product_id, 
+            'create_time': utc_timezone.localize(payment.create_time).astimezone(target_timezone).strftime('%Y-%m-%d %H:%M:%S')
+        } for payment in payments]
+    
+    # Pack stats
+    packs_created_today = Pack.query.filter(cast(Pack.start_time, Date) == today).count()
+    packs_unlocked_or_have_unlock_num = Pack.query.filter(or_(Pack.unlock_num > 0, Pack.is_unlock > 0)).count()
+    pack_stats = {'createdToday': packs_created_today, 'unlockedOrHaveUnlockNum': packs_unlocked_or_have_unlock_num}
+    
+    # All stats
+    all_stats = {
+        'taskStats': task_stats,
+        'sceneStats': scene_stats,
+        'personStats': person_stats,
+        'paymentStats': payment_stats,
+        'packStats': pack_stats,
+    }
+    return jsonify(all_stats)
 
 ####################
 ### Person Tab
@@ -543,6 +603,71 @@ def aggregate_stats():
 
     return jsonify(response)
 
+####################
+### Tag Tab
+# Add a route for getting all tags
+@app.route('/api/get_all_tags', methods=['GET'])
+def get_all_tags_tag_tab():
+    tags = models.Tag.query.all()
+    tag_data = [{'id': tag.id, 'tag_name': tag.tag_name, 'rate': tag.rate, 'img_key': tag.img_key} for tag in tags]
+    response = {
+        'code': 0,
+        'msg': 'success',
+        'data': tag_data
+    }
+    return jsonify(response)
+
+@app.route('/api/filter_scenes_by_tag', methods=['POST'])
+def filter_scenes_by_tag():
+    data = request.get_json()
+    tag_id = data.get('tag_id')
+    tag = models.Tag.query.get(tag_id)
+    scenes = db.session.query(models.Scene).join(models.TagScene, models.TagScene.scene_id == models.Scene.scene_id).filter(models.TagScene.tag_id == tag_id).all()
+    scene_data = [{'id': scene.scene_id, 'img_key': scene.base_img_key} for scene in scenes]
+
+    response = {
+        'code': 0,
+        'msg': 'success',
+        'scenes': scene_data,
+        'tag': {
+            'tag_img_key': tag.img_key if tag else None,
+            'tag_id': tag.id if tag else None,
+            'tag_name': tag.tag_name if tag else None,
+            'tag_rate': tag.rate if tag else None
+        }
+    }
+    return jsonify(response)
+
+@app.route('/upload_tag_image', methods=['POST'])
+def upload_tag_image():
+    # Check if the post request has the file part
+    if 'file' not in request.files:
+        return jsonify({'success': False, 'error': 'No file part in the request.'}), 400
+    if 'tag_name' not in request.form:
+        return jsonify({'success': False, 'error': 'No tag name in the request.'}), 400
+    
+    file = request.files['file']
+    tag_name = request.form['tag_name']
+
+    # If the file is one of the allowed types/extensions
+    if file and file.filename != '':
+        filename = secure_filename(file.filename)
+
+        # Upload file to OSS
+        oss_key = f'examples/tags/{tag_name}.png'
+        # Pass file content to oss_put directly
+        utils.oss_put(oss_key, file.stream.read())
+
+        # Update Tag
+        tag = db.session.query(models.Tag).filter(models.Tag.tag_name == tag_name).first()
+        if tag is not None:
+            tag.img_key = oss_key
+            db.session.commit()
+
+        return jsonify({'success': True, 'message': 'File successfully uploaded.'}), 200
+
+    else:
+        return jsonify({'success': False, 'error': 'Invalid file.'}), 400
 
 if __name__ == '__main__':
     # Add argument parser: -p: port

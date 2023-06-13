@@ -22,6 +22,7 @@
     <script src="{{ url_for('static', filename='dashboard.js') }}" ></script>
     <script src="{{ url_for('static', filename='taskview.js') }}" ></script>
     <script src="{{ url_for('static', filename='notes.js') }}" ></script>
+    <script src="{{ url_for('static', filename='tags.js') }}" ></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles_fake.css') }}">
         
     <style>
@@ -101,6 +102,9 @@
             <a class="nav-link" id="notes-tab" data-bs-toggle="tab" href="#notes" role="tab" 
                 aria-controls="notes" aria-selected="false">Notes</a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="tags-tab" data-bs-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">Tags</a>
+        </li>
     </ul>
     <div class="tab-content" id="mainTabsContent">
         <div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
@@ -125,6 +129,26 @@
                             <div class="card-body" id="scene-stats">
                                 <!-- Scene stats will be populated here -->
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                          <div class="card-header">
+                            Person Stats
+                          </div>
+                          <div class="card-body" id="person-stats">
+                            <!-- Person stats will be populated here -->
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                          <div class="card-header">
+                            Person Stats
+                          </div>
+                          <div class="card-body" id="pack-stats">
+                            <!-- Person stats will be populated here -->
+                          </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -342,37 +366,64 @@
                 <button id="load-more-notes" class="btn btn-primary">Load More</button>
             </div>
         </div>
+
+        <!-- Tags Tab -->
+        <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
+            <div class="container">
+            <div class="row mt-4">
+                <div class="col-md-6">
+                <label for="tag-select" class="form-label">Select Tag:</label>
+                <select class="form-select" id="tag-select">
+                    <option value="" selected>Loading...</option>
+                </select>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                <div id="tag-image-container">
+                    <img id="tag-image" class="img-thumbnail" src="" alt="">
+                </div>
+                <div class="mt-3">
+                    <label for="upload-tag-image" class="form-label">Upload Image:</label>
+                    <input type="file" class="form-control" id="upload-tag-image">
+                    <button id="upload-image-btn" class="btn btn-primary mt-2">Upload</button>
+                </div>
+                </div>
+                <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="tag-id" class="form-label">Tag ID:</label>
+                    <input type="text" class="form-control" id="tag-id" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="tag-name" class="form-label">Tag Name:</label>
+                    <input type="text" class="form-control" id="tag-name" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="tag-rate" class="form-label">Tag Rate:</label>
+                    <input type="text" class="form-control" id="tag-rate" readonly>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+  
     </div>
 
     <script>
         ////////////////////////////
         // Stats Tab
         function fetchStats() {
-            fetch('/get_task_stats')
+            fetch('/get_all_stats')
                 .then(response => response.json())
-                .then(taskStats => {
-                    displayTaskStats(taskStats);
+                .then(stats => {
+                    displayTaskStats(stats.taskStats);
+                    displaySceneStats(stats.sceneStats);
+                    displayPersonStats(stats.personStats);
+                    displayPaymentStats(stats.paymentStats);
+                    displayPackStats(stats.packStats); // assuming you have a function to display pack stats
                 })
                 .catch(error => {
-                    console.error('Error fetching task stats:', error);
-                });
-
-            fetch('/get_scene_stats')
-                .then(response => response.json())
-                .then(sceneStats => {
-                    displaySceneStats(sceneStats);
-                })
-                .catch(error => {
-                    console.error('Error fetching scene stats:', error);
-                });
-
-            fetch('/get_payment_stats')
-                .then(response => response.json())
-                .then(paymentStats => {
-                    displayPaymentStats(paymentStats);
-                })
-                .catch(error => {
-                    console.error('Error fetching payment stats:', error);
+                    console.error('Error fetching stats:', error);
                 });
         }
 
@@ -394,23 +445,47 @@
             `;
         }
 
+        function displayPersonStats(personStats) {
+            const personStatsElem = document.getElementById('person-stats');
+            personStatsElem.innerHTML = `
+                <p>Today's New Person: ${personStats.newPerson}</p>
+                <p>LoRa Train Status:</p>
+                <ul>
+                <li>Wait: ${personStats.loraTrainStatus.wait}</li>
+                <li>Finish: ${personStats.loraTrainStatus.finish}</li>
+                <li>Processing: ${personStats.loraTrainStatus.processing}</li>
+                </ul>
+            `;
+        }
+
+        function displayPackStats(packStats) {
+            const packStatsElem = document.getElementById('pack-stats');
+            packStatsElem.innerHTML = `
+                <p>Packs Created Today: ${packStats.createdToday}</p>
+                <p>Packs Unlocked or Have Unlock Num: ${packStats.unlockedOrHaveUnlockNum}</p>
+            `;
+        }
+
         function displayPaymentStats(paymentStats) {
             const paymentStatsElem = document.getElementById('payment-stats');
-            let innerHTML = '<div class="card"><div class="card-header">Recent Payments</div><div class="card-body"><table class="table table-striped"><thead><tr><th>ID</th><th>User ID</th><th>Amount</th><th>Pack ID</th><th>Product ID</th></tr></thead><tbody>';
-            
-            for(let i = 0; i < paymentStats.length; i++) {
+            let innerHTML = '<div class="card"><div class="card-header">Recent Payments</div><div class="card-body" style="overflow: auto; max-height: 300px;"><table class="table table-striped" style="width: 800px"><thead><tr><th>ID</th><th>User ID</th><th>Amount</th><th>Pack ID</th><th>Product ID</th><th>Create Time</th></tr></thead><tbody>';
+
+            for (let i = 0; i < paymentStats.length; i++) {
                 innerHTML += `<tr>
                                 <td>${paymentStats[i].id}</td>
                                 <td>${paymentStats[i].user_id}</td>
                                 <td>${paymentStats[i].payment_amount}</td>
                                 <td>${paymentStats[i].pack_id}</td>
                                 <td>${paymentStats[i].product_id}</td>
+                                <td>${paymentStats[i].create_time}</td>
                             </tr>`;
             }
 
             innerHTML += '</tbody></table></div></div>';
             paymentStatsElem.innerHTML = innerHTML;
         }
+
+
 
         // Fetch stats when the dashboard tab is shown
         document.getElementById('dashboard-tab').addEventListener('shown.bs.tab', function (e) {

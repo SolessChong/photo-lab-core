@@ -168,6 +168,7 @@ def task_render_scene(task_id):
         except Exception as e:
             logging.exception(f"  --- ❌ Render scene failed. {e}")
             task.task_fail()
+            raise
 
     db.session.close()
     return 0
