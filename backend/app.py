@@ -344,6 +344,7 @@ def upload_payment_post():
         user = models.User.query.filter_by(user_id=user_id).first()
         # store subscribe_until (timestamp) in user table 
         user.subscribe_until = datetime.fromtimestamp(int(subscribe_until))
+        logger.info(f'get subscribe_until from app. user {user_id} subscribe_until {user.subscribe_until}')
 
     # Update subscribe using the first item in response['receipt']['in_app']
     if validate_rst[1][0].get('expires_date_ms'):
@@ -351,6 +352,7 @@ def upload_payment_post():
         # store subscribe_until (timestamp) in user table 
         user.subscribe_until = datetime.fromtimestamp(int(validate_rst[1][0]['expires_date_ms']) / 1000)
         user.subscribe_info = validate_rst[1][0]
+        logger.info(f'get subscribe_until from receipt. user {user_id} subscribe_until {user.subscribe_until}')
     
     # Commit the changes
     db.session.commit()
@@ -949,7 +951,8 @@ def use_promo_code():
             user.subscribe_until = datetime.utcnow() + time_delta
         else:
             user.subscribe_until += time_delta
-
+        user.promo_code_id = promo_code.id
+        
         db.session.commit()
         return return_success('Promo code used successfully', promo_code=promo_code.to_dict())
 
