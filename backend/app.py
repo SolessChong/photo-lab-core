@@ -317,6 +317,9 @@ def upload_payment_post():
     if not validate_rst:
         logger.error(f'upload_payment receipt {receipt} is invalid')
         return jsonify({"error": f"receipt {receipt} is invalid"}), 400
+    if len(validate_rst[1]) == 0:
+        logger.error(f'upload_payment receipt, empty "in_app" list')
+        return jsonify({"error": f"receipt {receipt} is invalid"}), 400
 
     # Create a new payment
     new_payment = models.Payment(
@@ -613,67 +616,70 @@ def start_sd_generate():
     person_id_list.sort()
     category = request.form['category']
     limit = request.form.get('limit', 50, type=int)
-    tag_id_list = request.form.get('tag_id_list', None)
-    if (tag_id_list):
-        tag_id_list = json.loads(tag_id_list)
+    tag_id_list_input = request.form.get('tag_id_list', None)
+    if (tag_id_list_input):
+        tag_id_list_input = json.loads(tag_id_list_input)
         try:
-            tag_id_list = [int(tag_id) for tag_id in tag_id_list]
+            tag_id_list_input = [int(tag_id) for tag_id in tag_id_list_input]
         except Exception as e:
             return {"status": "error", "message": "Invalid tag_id_list"}, 400
-    
-    pack = models.Pack(user_id=user_id, total_img_num=0, start_time= datetime.utcnow(), unlock_num = 0, description='合集')
-    db.session.add(pack)
-    db.session.commit()
+    for tag_id in tag_id_list_input:
+        tag_id_list = [tag_id]
+        
+        pack = models.Pack(user_id=user_id, total_img_num=0, start_time= datetime.utcnow(), unlock_num = 0, description='合集')
+        db.session.add(pack)
+        db.session.commit()
 
 
-    m = 0
-    # --------------------------- SD 生成任务 ------------------------------------
-    if (models.User.query.filter_by(user_id=user_id).first().group == 1):
-        if (tag_id_list):
-            logging.info(f'generate_sd_task_with_tag user_id: {user_id},  person_id_list: {person_id_list},  {category},  tag_id_list: {tag_id_list} {limit}')
-            m += selector_sd.generate_sd_task_with_tag(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, tag_ids = tag_id_list, limit=limit, wait_status=wait_status)
-        else:
-            m += selector_sd.generate_sd_task(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, limit=limit, wait_status=wait_status)
-        # Check if person in person_id_list are all finished
-        all_lora_ready = True
-        for person_id in person_id_list:
-            person = models.Person.query.get(person_id)
-            if person.lora_train_status != 'finish':
-                all_lora_ready = False
-                break
-        if all_lora_ready:
-            pack.total_seconds = 23*60
-        else:
-            # Count all persons with lora_train_status == 'wait'
-            wait_count = models.Person.query.filter(models.Person.lora_train_status == 'wait').count()
-            if wait_count == 0:
-                pack.total_seconds = 57 * 60
-            elif wait_count == 1:
-                pack.total_seconds = 86 * 60
+        m = 0
+        # --------------------------- SD 生成任务 ------------------------------------
+        if (models.User.query.filter_by(user_id=user_id).first().group == 1):
+            if (tag_id_list):
+                logging.info(f'generate_sd_task_with_tag user_id: {user_id},  person_id_list: {person_id_list},  {category},  tag_id_list: {tag_id_list} {limit}')
+                m += selector_sd.generate_sd_task_with_tag(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, tag_ids = tag_id_list, limit=limit, wait_status=wait_status)
             else:
-                pack.total_seconds = 3*60*60
+                m += selector_sd.generate_sd_task(category=category, person_id_list = person_id_list, user_id = user_id, pack_id=pack.pack_id, limit=limit, wait_status=wait_status)
+            # Check if person in person_id_list are all finished
+            all_lora_ready = True
+            for person_id in person_id_list:
+                person = models.Person.query.get(person_id)
+                if person.lora_train_status != 'finish':
+                    all_lora_ready = False
+                    break
+            if all_lora_ready:
+                pack.total_seconds = 23*60
+            else:
+                # Count all persons with lora_train_status == 'wait'
+                wait_count = models.Person.query.filter(models.Person.lora_train_status == 'wait').count()
+                if wait_count == 0:
+                    pack.total_seconds = 57 * 60
+                elif wait_count == 1:
+                    pack.total_seconds = 86 * 60
+                else:
+                    pack.total_seconds = 3*60*60
 
-    # --------------------------- 以下是启动mj和reface的任务 ------------------------------
-    else :
-        limit = 5
-        pack.total_seconds = 2*60
-        # m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='mj', limit=limit, wait_status=wait_status)
+        # --------------------------- 以下是启动mj和reface的任务 ------------------------------
+        else :
+            limit = 5
+            pack.total_seconds = 2*60
+            # m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='mj', limit=limit, wait_status=wait_status)
 
-        m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='reface', limit=limit, wait_status=wait_status)
+            m += selector_other.generate_task(person_id=person_id_list[0], category=category, pack_id=pack.pack_id, user_id=user_id, action_type='reface', limit=limit, wait_status=wait_status)
 
-    # --------------------------- 以下是返回结果 ----------------------------------
-    response = {
-        'code': 0, 
-        'msg': f'启动{m}张照片的AI拍摄任务',
-        'data': {
-            "total_time_seconds": pack.total_seconds,
-            "total_img_num": m,
-            "des": f"AI拍摄完成后，您将获得{m}张照片"
+        # --------------------------- 以下是返回结果 ----------------------------------
+        response = {
+            'code': 0, 
+            'msg': f'启动{m}张照片的AI拍摄任务',
+            'data': {
+                "total_time_seconds": pack.total_seconds,
+                "total_img_num": m,
+                "des": f"AI拍摄完成后，您将获得{m}张照片"
+            }
         }
-    }
-    pack.total_img_num = m
-    pack.description = f'合集{m}张'
-    db.session.add(pack)
+        pack.total_img_num = m
+        pack.description = f'合集{m}张'
+        db.session.add(pack)
+        
     db.session.commit()
 
     try:

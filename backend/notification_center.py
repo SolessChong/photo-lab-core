@@ -37,7 +37,7 @@ msg_templates = {
             }
         }
     },
-    'new_user_activate_3': {
+    'new_user_activate': {
         'aps': {
             'alert': {
                 'title': 'PicMagic新人礼遇已准备就绪',
@@ -48,7 +48,16 @@ msg_templates = {
     },
     'new_tag': {
 
-    }
+    },
+    'payment_error': {
+        'aps': {
+            'alert': {
+                'title': 'PicMagic支付出错',
+                'subtitle': '',
+                'body': '您的支付失败，请联系客服微信 solesschong。'
+            }
+        }
+    },
 }
 
 def send_notification(msg_type, user_id, **kwargs):
@@ -110,7 +119,9 @@ def notify_complete_packs(notify_count=0, user_id=None):
     
     logging.info(f'notify_complete_packs: {len(filtered_packs)}')
     for pack in filtered_packs:
+        pack.total_seconds = 0
         notify_pack(pack)
+    db.session.commit()
     
 
 if __name__ == "__main__":
