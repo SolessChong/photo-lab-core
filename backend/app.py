@@ -752,7 +752,7 @@ def get_generated_images():
         if img_key:
             is_shuiyin = is_mohu = True
             is_thumb_shuiyin = True
-            if len(pack_dict[pack.pack_id]['imgs']) < 1:
+            if len(pack_dict[pack.pack_id]['imgs']) < config.PREVIEW_CLEAR_IMG_NUM:
                 is_mohu = False
             if len(pack_dict[pack.pack_id]['imgs']) < pack_dict[pack.pack_id]['unlock_num']:
                 is_shuiyin = False
