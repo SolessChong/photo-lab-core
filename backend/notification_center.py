@@ -169,7 +169,7 @@ if __name__ == "__main__":
             .filter(User.create_time >= args.user_activate_since) \
             .filter(Person.id.is_(None)).all()
         for u in users_without_persons:
-            send_notification('new_user_activate', u.user_id)
+            send_notification('new_user_activate_2', u.user_id)
             notification_num += 1
 
     logging.info(f'notification_num: {notification_num}')

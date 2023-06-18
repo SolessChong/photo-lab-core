@@ -57,7 +57,7 @@ def create_user():
         user_ip = request.remote_addr
     user_agent = request.headers.get('User-Agent')
     # return dummy result tJ0T5BcptE if user_agent contains 1.0.7 or 1.0.8
-    if user_agent and ('1.0.9' in user_agent or '1.0.10' in user_agent):
+    if user_agent and ('1.0.11' in user_agent or '1.1.1' in user_agent):
         user_id = 'matTlTd5hz'
         user_ip = ''
         new_user = models.User.query.filter_by(user_id=user_id).first()
@@ -65,8 +65,9 @@ def create_user():
     else:
         logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
         # Create a new user with the generated user_id
+        pay_rand = random.randint(1, 100)
         dna = {
-            'pay_group': random.randint(1,100),
+            'pay_group': 1 if pay_rand < 50 else 10,
             'pay_in_advance': random.randint(0,100) < 5,
         }
         new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50, dna=dna)
@@ -777,7 +778,7 @@ def get_generated_images():
         if len(pack['imgs']) > 0 or pack['finish_seconds_left'] > 0:
             rst_packs.append(pack)
         else:
-            pack['description'] = '任务超时，请耐心等待或联系客服'
+            pack['description'] = '用户激增，任务超时，请耐心等待或联系客服'
             logger.error(f'pack {pack["pack_id"]} is timeout')
             rst_packs.append(pack)
 
