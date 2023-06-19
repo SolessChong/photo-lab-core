@@ -117,7 +117,8 @@ def render_lora_on_base_img(task) -> Image:
     # Extract config
     # 1. update config from scene.params
     lora_upscaler_params = scene.params.get("lora_upscaler_params", templates.UPSCALER_DEFAULT)
-    i2i_params = templates.LORA_INPAINT_PARAMS
+    # make a copy of default params and update with scene.params
+    i2i_params = templates.LORA_INPAINT_PARAMS.copy()
     if scene.params and scene.params.get("i2i_params"):
         i2i_params.update(scene.params.get("i2i_params"))
     i2i_params['negative_prompt'] = i2i_params.get('negative_prompt', '') + ',' + scene.negative_prompt
