@@ -14,6 +14,8 @@ CELERY_CONFIG = {
     'CELERY_RESULT_BACKEND': 'redis://:Yzkj8888!@r-wz9d9mt4zsofl3s0pnpd.redis.rds.aliyuncs.com/0'
 }
 
+IAP_SHARED_PASSWORD = '09a0d8af2b224ba38a925210edf94d2b'
+
 import os
 
 mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab_dev?charset=utf8'
@@ -36,3 +38,5 @@ BD_CONVERSION_POST_URL = 'https://analytics.oceanengine.com/api/v2/conversion'
 print(f'config: ', mysql_uri)
 
 COMPLETE_PACK_MIN_PICS = 30
+
+PREVIEW_CLEAR_IMG_NUM = 5

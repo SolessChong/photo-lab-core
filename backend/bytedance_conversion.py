@@ -65,3 +65,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     app.run(host='0.0.0.0', port=args.port, ssl_context=('photolab.aichatjarvis.com.pem', 'photolab.aichatjarvis.com.key'))
+else:
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+    app.logger.debug('logger setup.')

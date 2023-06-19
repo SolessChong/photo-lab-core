@@ -1,0 +1,2 @@
+export DEV_MODE="false"
+gunicorn -w 5 backend.bytedance_conversion:app --daemon --log-level info --access-logfile /root/photo-lab-core/log/bd_conversion_app.log --error-logfile /root/photo-lab-core/log/bd_conversion_error.log --pid /root/photo-lab-core/ops/bd_conversion_gunicorn.pid --limit-request-line 20000 --bind 0.0.0.0:5000 --certfile=photolab.aichatjarvis.com.pem --keyfile=photolab.aichatjarvis.com.key

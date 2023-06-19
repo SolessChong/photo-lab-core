@@ -107,13 +107,14 @@ class AppTest(unittest.TestCase):
         # assert user's subscribe_until is updated
         user = models.User.query.filter_by(user_id=user_id).first()
         self.assertTrue(user.subscribe_until > datetime.datetime.now())
+        self.assertEqual(user.promo_code_id, promo_code.id)
 
         # Use again and will return invalid code error
         response = self.client.post('http://photolab.aichatjarvis.com/api/use_promo_code', json={'user_id': user_id, 'code': code})
         self.assertTrue(isinstance(response.json(), dict))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['code'], 1)
-        self.assertEqual(response.json()['msg'], 'error')
+        self.assertEqual(response.json()['msg'], 'Invalid code')
         self.assertEqual(response.json()['data']['message'], 'Invalid code')
 
         # delete test data

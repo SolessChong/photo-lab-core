@@ -5,6 +5,7 @@ import urllib
 import time
 from io import BytesIO
 from PIL import Image
+from backend import config
 from concurrent.futures import ThreadPoolExecutor
 
 # 阿里云MySQL和OSS相关配置
@@ -12,6 +13,8 @@ DB_HOST = 'rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com'
 DB_USER = 'jarvis_root'
 DB_PASSWORD = 'Jarvis123!!'
 DB_NAME = 'photolab'
+
+ALLOW_SANDBOX_PAYMENT = True
 
 OSS_ACCESS_KEY_ID = 'LTAINBTpPolLKWoX'
 OSS_ACCESS_KEY_SECRET = '1oQVQkxt7VlqB0fO7r7JEforkPgwOw'
@@ -64,8 +67,11 @@ def get_signed_url(img_key, is_shuiyin = False, is_yasuo = False, is_mohu = Fals
         value += '/watermark,text_UGljIE1hZ2ljICAgICAgIA,color_ffffff,size_50,rotate_30,fill_1,shadow_100,g_se,t_78,x_30,y_30'
     if is_yasuo:
         value += '/resize,m_lfit,w_400'
-    if is_mohu:
-        value += '/blur,r_20,s_20'
+        if is_mohu:
+            value += '/blur,r_15,s_20'
+    else:
+        if is_mohu:
+            value += '/blur,r_20,s_20'
     oss_domain = f"http://{OSS_BUCKET_NAME}.{OSS_ENDPOINT}"
 
     return oss_domain + '/' + urllib.parse.quote(img_key.encode('utf-8')) + '?&x-oss-process=' + value
@@ -181,11 +187,17 @@ def get_image_sizes(img_keys):
 # Validate IAP receipt
 def validate_IAP_receipt(receipt):
     url = 'https://buy.itunes.apple.com/verifyReceipt'
-    data = {'receipt-data': receipt}
+    data = {'receipt-data': receipt, 'password': config.IAP_SHARED_PASSWORD}
     response = requests.post(url, json=data)
     if response.status_code == 200:
         rst = response.json()
-        return len(rst['receipt']['in_app']) > 0 and rst['status'] == 0
+        if int(rst['status']) == 21007 and ALLOW_SANDBOX_PAYMENT:
+            url = 'https://sandbox.itunes.apple.com/verifyReceipt'
+            response = requests.post(url, json=data)
+            if response.status_code == 200:
+                rst = response.json()
+        valid = len(rst['receipt']['in_app']) > 0 and rst['status'] == 0
+        return valid, rst['receipt']['in_app']
     else:
         print(f"Error validating IAP receipt: {response.status_code}")
         return False
