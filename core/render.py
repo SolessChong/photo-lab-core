@@ -115,10 +115,15 @@ def render_lora_on_base_img(task) -> Image:
     prompt = scene.prompt
 
     # Extract config
+    # 1. update config from scene.params
     lora_upscaler_params = scene.params.get("lora_upscaler_params", templates.UPSCALER_DEFAULT)
-    i2i_params = templates.LORA_INPAINT_PARAMS
+    # make a copy of default params and update with scene.params
+    i2i_params = templates.LORA_INPAINT_PARAMS.copy()
     if scene.params and scene.params.get("i2i_params"):
         i2i_params.update(scene.params.get("i2i_params"))
+    i2i_params['negative_prompt'] = i2i_params.get('negative_prompt', '') + ',' + scene.negative_prompt
+    # TODO: 2. update config from task.params
+    
 
     options = {'sd_model_checkpoint': scene.params.get('model')}
     get_api_instance().set_options(options)
@@ -209,25 +214,26 @@ if __name__ == "__main__":
     app.app_context().push()
     # Argument 'task'
     parser = argparse.ArgumentParser()
-    parser.add_argument("--task", help="task id")
+    parser.add_argument("--task", nargs='+', type=int, help="task id")
     # Argument 'person', list of int
     parser.add_argument("--person", nargs='+', type=int, help="person id list")
     # Argument 'scene'
     parser.add_argument("--scene", help="scene id")
 
     args = parser.parse_args()
-    task_id = args.task
+    task_id_list = args.task
     person_id_list = args.person
     scene_id = args.scene
     # Should have task, or (person and scene)
-    assert task_id or (person_id_list and scene_id), "  -- ❌ Task id or (person id and scene id) is required."
+    assert task_id_list or (person_id_list and scene_id), "  -- ❌ Task id or (person id and scene id) is required."
 
-    if task_id:
-        task = models.Task.query.get(task_id)
-        img = render_lora_on_base_img(task)
-        task.result_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
-        write_PILimg(img, task.result_img_key)
-        db.session.add(task)
+    if task_id_list:
+        for task_id in task_id_list:
+            task = models.Task.query.get(task_id)
+            img = render_lora_on_base_img(task)
+            task.result_img_key = ResourceMgr.get_resource_oss_url(ResourceType.RESULT_IMG, task.id)
+            write_PILimg(img, task.result_img_key)
+            db.session.add(task)
         db.session.commit()
     elif person_id_list and scene_id:
         task = models.Task(scene_id=scene_id, person_id_list=person_id_list)
