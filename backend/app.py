@@ -292,6 +292,29 @@ def upload_payment_post():
     if args.get('uxser_id'):
         args['user_id'] = args['uxser_id']
         del args['uxser_id']
+
+    # Restore purchase
+    if args.get('restored') == 1:
+        receipt = args.get('receipt')
+        # find receipt in previous payments
+        payment = models.Payment.query.filter_by(receipt=receipt).first()
+        if not payment:
+            logger.error(f'upload_payment restore receipt {receipt} not found')
+            return return_error(f"restore receipt {receipt} not found")
+        # copy previous user's subscription, cancel previous user's subscription
+        previous_user = models.User.query.filter_by(user_id=payment.user_id).first()
+        new_user = models.User.query.filter_by(user_id=args['user_id']).first()
+        if not previous_user or not new_user:
+            logger.error(f'upload_payment restore user {args["user_id"]} not found')
+            return return_error(f"restore user {args['user_id']} not found")
+        new_user.subscribe_until = previous_user.subscribe_until
+        new_user.subscribe_info = previous_user.subscribe_info
+        previous_user.subscribe_until = None
+        previous_user.subscribe_info = None
+        db.session.commit()
+        logger.info(f'upload_payment restore user {args["user_id"]} from {payment.user_id}')
+        return return_success(f"restore user {args['user_id']} from {payment.user_id}")
+
     missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id']
                       if args.get(param) is None]
     if missing_params:
