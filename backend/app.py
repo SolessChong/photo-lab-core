@@ -296,7 +296,7 @@ def upload_payment_post():
                       if args.get(param) is None]
     if missing_params:
         logger.error(f'upload_payment missing params {missing_params}')
-        return jsonify({"error": f"Missing parameters: {', '.join(missing_params)}"}), 400
+        return return_error(f"Missing parameters: {', '.join(missing_params)}")
 
     user_id = args.get('user_id')
     payment_amount = args.get('payment_amount')
@@ -312,15 +312,15 @@ def upload_payment_post():
     payment = models.Payment.query.filter_by(receipt=receipt).first()
     if payment:
         logger.error(f'upload_payment receipt {receipt} already exists')
-        return jsonify({"error": f"receipt {receipt} already exists"}), 400
+        return return_error(f"receipt {receipt} already exists")
     # 2. check receipt is valid
     validate_rst = utils.validate_IAP_receipt(receipt)
     if not validate_rst:
         logger.error(f'upload_payment receipt {receipt} is invalid')
-        return jsonify({"error": f"receipt {receipt} is invalid"}), 400
+        return return_error(f"receipt {receipt} is invalid")
     if len(validate_rst[1]) == 0:
         logger.error(f'upload_payment receipt, empty "in_app" list')
-        return jsonify({"error": f"receipt {receipt} is invalid"}), 400
+        return return_error(f"receipt {receipt} is invalid")
 
     # Create a new payment
     new_payment = models.Payment(
@@ -338,7 +338,7 @@ def upload_payment_post():
         pack.unlock_num += int(unlock_num)
         pack.is_unlock = pack.unlock_num >= pack.total_img_num
     else:
-        return jsonify({"msg": "error: Pack not found", 'code': 1}), 404
+        return return_error(f"Pack not found")
     
     # Handle subscribe logics
     if subscribe_until:
