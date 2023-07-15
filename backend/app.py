@@ -37,6 +37,9 @@ celery_app = Celery('myapp',
 task_train_lora_str = 'train_lora'
 task_render_scene_str = 'render_scene'
 
+from aliyunsdkcore.client import AcsClient
+from aliyunsdksts.request.v20150401 import AssumeRoleRequest
+client = AcsClient(config.OSS_ACCESS_KEY_ID, config.OSS_ACCESS_KEY_SECRET)
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +60,7 @@ def create_user():
         user_ip = request.remote_addr
     user_agent = request.headers.get('User-Agent')
     # return dummy result tJ0T5BcptE if user_agent contains 1.0.7 or 1.0.8
-    if user_agent and ('1.0.11' in user_agent or '1.1.1' in user_agent):
+    if user_agent and ('1.1.4' in user_agent or '1.1.5' in user_agent):
         user_id = 'matTlTd5hz'
         user_ip = ''
         new_user = models.User.query.filter_by(user_id=user_id).first()
@@ -66,8 +69,14 @@ def create_user():
         logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
         # Create a new user with the generated user_id
         pay_rand = random.randint(1, 100)
+        if pay_rand < 25:   # 25%
+            pay_group = 1
+        elif pay_rand < 50: # 25%
+            pay_group = 10
+        else:               # 50%
+            pay_group = 20
         dna = {
-            'pay_group': 1 if pay_rand < 50 else 10,
+            'pay_group': pay_group,
             'pay_in_advance': random.randint(0,100) < 5,
         }
         new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50, dna=dna)
@@ -296,23 +305,20 @@ def upload_payment_post():
     # Restore purchase
     if args.get('restored') == 1:
         receipt = args.get('receipt')
-        # find receipt in previous payments
-        payment = models.Payment.query.filter_by(receipt=receipt).first()
-        if not payment:
-            logger.error(f'upload_payment restore receipt {receipt} not found')
-            return return_error(f"restore receipt {receipt} not found")
-        # copy previous user's subscription, cancel previous user's subscription
-        previous_user = models.User.query.filter_by(user_id=payment.user_id).first()
-        new_user = models.User.query.filter_by(user_id=args['user_id']).first()
-        if not previous_user or not new_user:
-            logger.error(f'upload_payment restore user {args["user_id"]} not found')
-            return return_error(f"restore user {args['user_id']} not found")
-        new_user.subscribe_until = previous_user.subscribe_until
-        new_user.subscribe_info = previous_user.subscribe_info
-        previous_user.subscribe_until = None
-        previous_user.subscribe_info = None
+        # validate receipt, if valid, set user's subscribe_until to 
+        validate_rst = utils.validate_IAP_receipt(receipt)
+        if not validate_rst or len(validate_rst[1]) == 0:
+            logger.error(f'upload_payment receipt {receipt} is invalid')
+            return return_error(f"receipt {receipt} is invalid")
+        expire_date = validate_rst[1][0].get('expires_date_ms')
+        if not expire_date:
+            logger.error(f'upload_payment receipt {receipt} no expire_date_ms field')
+            return return_error(f"receipt {receipt} no expire_date_ms field")
+        user = models.User.query.filter_by(user_id=args['user_id']).first()
+        user.subscribe_until = datetime.fromtimestamp(int(expire_date) / 1000)
+
         db.session.commit()
-        logger.info(f'upload_payment restore user {args["user_id"]} from {payment.user_id}')
+        logger.info(f'upload_payment restore for user {args["user_id"]}')
         return return_success(f"restore user {args['user_id']} from {payment.user_id}")
 
     missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'pack_id', 'product_id']
@@ -398,6 +404,88 @@ def upload_payment_post():
 
     return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
 
+
+# Post request for upload_payment
+@app.route('/api/upload_gp_payment', methods=['POST'])
+def upload_gp_payment_post():
+    logger.info(f'upload_payment request args is {request.json}')
+    # save request to data file with timestamp
+    with open(f'./tmp/upload_gp_payment_{int(time.time())}.dat', 'w') as f:
+        f.write(json.dumps(request.json))
+
+    # Get args from request post data
+    args = dict(request.json)
+
+    missing_params = [param for param in ['user_id', 'payment_amount', 'receipt', 'product_id']
+                      if args.get(param) is None]
+    if missing_params:
+        logger.error(f'upload_payment missing params {missing_params}')
+        return return_error(f"Missing parameters: {', '.join(missing_params)}")
+
+    user_id = args.get('user_id')
+    payment_amount = args.get('payment_amount')
+    receipt = args.get('receipt')
+    pack_id = args.get('pack_id', None)
+    product_id = args.get('product_id')
+    # get unlock_num. If not provided, set to infinite, for backward compatibility
+    unlock_num = args.get('unlock_num', 9999)
+    subscribe_until = args.get('subscribe_until', None)
+
+    # Validate payment
+    # 1. check receipt doesn't exist in payments
+    payment = models.Payment.query.filter_by(receipt=receipt).first()
+    if payment:
+        logger.error(f'upload_payment receipt {receipt} already exists')
+        return return_error(f"receipt {receipt} already exists")
+    # 2. check receipt is valid
+    # validate_rst = utils.validate_IAP_receipt(receipt)
+
+
+    # Create a new payment
+    new_payment = models.Payment(
+        user_id=user_id, 
+        payment_amount=int(payment_amount) if payment_amount else None, 
+        receipt=receipt, 
+        pack_id=int(pack_id) if pack_id else None, 
+        product_id=product_id
+    )
+    db.session.add(new_payment)
+
+    # Update is_unlock to 1 for the pack with the given pack_id
+    if pack_id:
+        pack = models.Pack.query.get(pack_id)
+        if pack:
+            pack.unlock_num += int(unlock_num)
+            pack.is_unlock = pack.unlock_num >= pack.total_img_num
+        else:
+            return return_error(f"Pack not found")
+        
+    # Handle subscribe logics
+    if subscribe_until:
+        user = models.User.query.filter_by(user_id=user_id).first()
+        # store subscribe_until (timestamp) in user table 
+        user.subscribe_until = datetime.fromtimestamp(int(subscribe_until))
+        logger.info(f'get subscribe_until from app. user {user_id} subscribe_until {user.subscribe_until}')
+
+    # Commit the changes
+    db.session.commit()
+    
+    ############################
+    # send payment callback request to toutiao
+    # bd_conversion_utils.report_event(user_id, 'active_pay', payment_amount)
+
+    ###########################
+    # Notify
+    url = 'https://maker.ifttt.com/trigger/PicPayment/json/with/key/kvpqNPLePMIVcUkAuZiGy'
+    payload = {
+        'msg': f'User {user_id} paid {payment_amount} for pack {pack_id}, at product_id {product_id}'
+    }
+    try:
+        requests.post(url, json=payload, timeout=15)
+    except Exception as e:
+        logging.error(f'notify ifttt error: {e}')
+
+    return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
 
 
 @app.route('/api/get_example_2', methods=['GET'])
@@ -804,6 +892,8 @@ def get_generated_images():
             pack['description'] = '用户激增，任务超时，请耐心等待或联系客服'
             logger.error(f'pack {pack["pack_id"]} is timeout')
             rst_packs.append(pack)
+    # sort rst_packs by pack_id
+    rst_packs.sort(key=lambda x: x['pack_id'], reverse=True)    
 
     response = {
         'code': 0,
@@ -982,6 +1072,40 @@ def use_promo_code():
 
     # Unkown promo type
     return return_error('Unknown promo code type')
+
+@app.route('/api/get_token', methods=['GET'])
+def get_token():
+    # Define the request
+    request = AssumeRoleRequest.AssumeRoleRequest()
+
+    # Set the parameters
+    request.set_RoleArn("xcx-upload-source@role.1669620267795435.onaliyunservice.com")
+    request.set_RoleSessionName("yourSessionName")
+    request.set_Policy('''
+        {
+            "Version": "1",
+            "Statement": [
+                {
+                    "Action": "oss:*",
+                    "Resource": "*",
+                    "Effect": "Allow"
+                }
+            ]
+        }
+    ''')
+
+    request.set_DurationSeconds(3600)
+
+    # Initiate the request and get the response
+    response = client.do_action_with_exception(request)
+
+    # Convert the response from bytes to json
+    response_dict = json.loads(response)
+
+    # Get the credentials from the response
+    credentials = response_dict['Credentials']
+
+    return jsonify(credentials)
 
 if __name__ == '__main__':
     # Add argument parser: -p: port

@@ -39,4 +39,5 @@ print(f'config: ', mysql_uri)
 
 COMPLETE_PACK_MIN_PICS = 30
 
+# 每个pack未解锁前，可以预览的图片数量，超过该数量设为模糊
 PREVIEW_CLEAR_IMG_NUM = 5
