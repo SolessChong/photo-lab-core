@@ -38,6 +38,8 @@ class User(db.Model):
     promo_code_id = db.Column(db.Integer, nullable=True)
     subscribe_info = db.Column(db.JSON, nullable=True, default=None)
     dna = db.Column(db.JSON, nullable=True, default=None)
+    diamond = db.Column(db.Integer, nullable=True)
+    open_id=db.Column(db.String(64), nullable=True)
 
 class Source(db.Model):
     __tablename__ = 'source'
@@ -184,6 +186,7 @@ class Payment(db.Model):
     pack_id = db.Column(db.Integer, nullable=True)
     product_id = db.Column(db.String(45), nullable=True)
     create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    pay_type = db.Column(db.Integer, nullable=True)
 
 
 class Tag(db.Model):
@@ -207,6 +210,13 @@ class GlobalConfig(db.Model):
     key = db.Column(db.String(255), nullable=True)
     value = db.Column(db.Text, nullable=True)
     is_delete = db.Column(db.SmallInteger, nullable=True, default=0)
+
+class InviteRecord(db.Model):
+    __tablename__ = 'invite_record'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    open_id = db.Column(db.String(255), nullable=True)
+    invite_open_id = db.Column(db.String(255), nullable=True)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)

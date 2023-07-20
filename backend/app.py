@@ -12,6 +12,9 @@ from flask import Flask, request, jsonify, render_template
 import secrets
 import random
 import string
+import schedule
+import threading
+import time
 from celery import group, Celery, chain, chord
 import logging
 import requests
@@ -26,6 +29,8 @@ from . import web_function
 from . import utils
 from . import models
 from . import selector_other, selector_sd
+
+from backend.notification_center import wechat_notify_complete_packs, wechat_notify_pack, send_wechat_notification
 
 from backend.app_community import upload_note, get_all_notes, add_note_from_task, app_community
 
@@ -53,7 +58,53 @@ app.register_blueprint(app_community)
 def create_user():
     # Generate a random user_id with 10 characters
     user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+    # wechat login code
+    code = request.args.get('code')
+    invite_open_id = request.args.get('invite_open_id')
 
+    # call wechat
+    url = 'https://api.weixin.qq.com/sns/jscode2session'
+
+    params={
+        'appid': config.appid,
+        'secret': config.appsecret,
+        'js_code': code,
+        'grant_type' : 'authorization_code'
+    }
+    response = requests.get(url, params=params)
+    
+    data = response.json()
+
+    open_id = data.get('openid')
+    error_msg = data.get('errmsg')
+
+    logging.info(f'open_id is {open_id} errmsg={error_msg}')
+
+    # get user by open_id
+    if open_id:
+        user = models.User.query.filter_by(open_id=open_id).first()
+        if user:
+            logging.info(f'user already exist by open_id={open_id}')
+            # Create the response object with the specified format
+            response = {
+                "code": 0,
+                "msg": "create user successfully",
+                "data": {
+                    "user_id": user.user_id,
+                    "min_img_num": user.min_img_num,
+                    "max_img_num": user.max_img_num,
+                    "pay_group": user.dna.get('pay_group'),
+                    "shot_num": 10,
+                    "shot_seconds:" : 10,
+                    "max_styles" : 1,
+                    "diamond": user.diamond,
+                    "received" : 0,
+                    "open_id": user.open_id
+                }
+            }
+            # Return the response object as a JSON response
+            return jsonify(response)
+    
     if 'X-Forwarded-For' in request.headers:
         user_ip = request.headers.getlist("X-Forwarded-For")[0].rpartition(' ')[-1]
     else:
@@ -79,7 +130,20 @@ def create_user():
             'pay_group': pay_group,
             'pay_in_advance': random.randint(0,100) < 5,
         }
-        new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50, dna=dna)
+        diamond=config.INIT_DIAMOND
+        received=0
+        if open_id and invite_open_id and open_id != invite_open_id:
+            logger.info(f'open_id not equal, open_id={open_id}, invite_open_id={invite_open_id}')
+            # 邀请者
+            invite_user = models.User.query.filter_by(open_id=invite_open_id).first()
+            if invite_user:
+                logger.info(f'invite exist, invite success')
+                diamond = diamond+config.INVITED_ADD_DIAMOND
+                received=1
+                invite_user.diamond = invite_user.diamond + config.INVITED_ADD_DIAMOND
+                new_invire_record=models.InviteRecord(open_id= open_id, invite_open_id = invite_open_id)
+                db.session.add(new_invire_record)
+        new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50, dna=dna, diamond=diamond, open_id=open_id)
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
@@ -106,13 +170,16 @@ def create_user():
         "code": 0,
         "msg": "create user successfully",
         "data": {
-            "user_id": user_id,
+            "user_id": new_user.user_id,
+            "open_id": new_user.open_id,
             "min_img_num": new_user.min_img_num,
             "max_img_num": new_user.max_img_num,
             "pay_group": random.randint(1,3),
             "shot_num": 10,
             "shot_seconds:" : 10,
-            "max_styles" : 1
+            "max_styles" : 1,
+            "diamond": new_user.diamond,
+            "received": received
         }
     }
 
@@ -164,7 +231,7 @@ def get_user():
         })
     
     is_subscribe = user.subscribe_until is not None and user.subscribe_until.timestamp() > int(time.time())
-
+    invite_num = models.InviteRecord.query.filter_by(invite_open_id=user.open_id).count()
     response = {
         "data": {
             "persons": result_persons,
@@ -173,9 +240,26 @@ def get_user():
             "is_subscribe": is_subscribe,
             "dna": user.dna,
             "subscribe_until": user.subscribe_until.timestamp() if user.subscribe_until else None,
+            "diamond" : user.diamond,
+            "invited_num" : invite_num,
+            "used_diamond" : 0,
+            "unlock_need_diamond": config.UNLOCK_PHOTO_DIAMOND,
+            "open_id": user.open_id
         },
         "msg": "get user successfully",
         "code": 0
+    }
+
+    return jsonify(response), 200
+
+# todo get wechat server msg
+@app.route('/api/get_wechat_msg', methods=['GET'])
+def get_wechat_msg():
+    
+    response={
+        "data":{
+            
+        }
     }
 
     return jsonify(response), 200
@@ -259,6 +343,149 @@ def upload_payment():
         logging.error(f'notify ifttt error: {e}')
 
     return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
+
+
+@app.route('/api/upload_diamond_payment', methods=['GET'])
+def upload_diamond_payment():
+    logger.info(f'upload_payment request args is {request.args}')
+    # Create a mutable copy of request.args
+    args = dict(request.args)
+    # Handle the frontend parameter name mistake
+    if args.get('uxser_id'):
+        args['user_id'] = args['uxser_id']
+        del args['uxser_id']
+    missing_params = [param for param in ['user_id', 'pack_id', 'product_id']
+                      if args.get(param) is None]
+    if missing_params:
+        logger.error(f'upload_payment missing params {missing_params}')
+        return jsonify({"error": f"Missing parameters: {', '.join(missing_params)}"}), 400
+
+    user_id = args.get('user_id')
+    pack_id = args.get('pack_id')
+    product_id = args.get('product_id')
+    # get unlock_num. If not provided, set to infinite, for backward compatibility
+    unlock_num = args.get('unlock_num', 9999)
+
+    # Validate payment
+    # 1. check user diamond is enough
+    # 1. get user
+    user = models.User.query.filter_by(user_id=user_id).first()
+    if not user:
+        return jsonify({"error": "user not found"}), 400
+    
+    if user.diamond < config.UNLOCK_PHOTO_DIAMOND:
+        return jsonify({"error": "diamond not enough"}), 400
+    user.diamond = user.diamond - config.UNLOCK_PHOTO_DIAMOND
+    # Create a new payment
+    new_payment = models.Payment(
+        user_id=user_id, 
+        payment_amount=config.UNLOCK_PHOTO_DIAMOND * 100, 
+        receipt='', 
+        pack_id=int(pack_id) if pack_id else None, 
+        product_id=product_id,
+        # 支付类型：点券支付
+        pay_type=2
+    )
+    db.session.add(new_payment)
+
+    # Update is_unlock to 1 for the pack with the given pack_id
+    pack = models.Pack.query.get(pack_id)
+    if pack:
+        pack.unlock_num += int(unlock_num)
+        pack.is_unlock = pack.unlock_num >= pack.total_img_num
+    else:
+        return jsonify({"msg": "error: Pack not found", 'code': 1}), 404
+
+    # Commit the changes
+    db.session.commit()
+    
+    ############################
+    # send payment callback request to toutiao
+    bd_conversion_utils.report_event(user_id, 'active_pay', config.UNLOCK_PHOTO_DIAMOND)
+
+    ###########################
+    # Notify
+    url = 'https://maker.ifttt.com/trigger/PicPayment/json/with/key/kvpqNPLePMIVcUkAuZiGy'
+    payload = {
+        'msg': f'User {user_id} paid {payment_amount} for pack {pack_id}, at product_id {product_id}'
+    }
+    try:
+        requests.post(url, json=payload, timeout=5)
+    except Exception as e:
+        logging.error(f'notify ifttt error: {e}')
+
+    return jsonify({"msg": "Payment successful and pack unlocked", 'code':0}), 200
+
+
+@app.route('/api/get_wechat_open_id', methods=['GET'])
+def get_wechat_open_id():
+    # Generate a random user_id with 10 characters
+    user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+
+    if 'X-Forwarded-For' in request.headers:
+        user_ip = request.headers.getlist("X-Forwarded-For")[0].rpartition(' ')[-1]
+    else:
+        user_ip = request.remote_addr
+    user_agent = request.headers.get('User-Agent')
+    # return dummy result tJ0T5BcptE if user_agent contains 1.0.7 or 1.0.8
+    if user_agent and ('1.1.4' in user_agent or '1.1.5' in user_agent):
+        user_id = 'matTlTd5hz'
+        user_ip = ''
+        new_user = models.User.query.filter_by(user_id=user_id).first()
+        logging.info(f'!!!! Dummy user for test, user_id is {user_id}, ua is {user_agent}')
+    else:
+        logging.info(f'create new user ip is {user_ip}, ua is {user_agent}')
+        # Create a new user with the generated user_id
+        pay_rand = random.randint(1, 100)
+        if pay_rand < 25:   # 25%
+            pay_group = 1
+        elif pay_rand < 50: # 25%
+            pay_group = 10
+        else:               # 50%
+            pay_group = 20
+        dna = {
+            'pay_group': pay_group,
+            'pay_in_advance': random.randint(0,100) < 5,
+        }
+        new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50, dna=dna, diamond=100)
+
+    # Add the new user to the database and commit the changes
+    db.session.add(new_user)
+    db.session.commit()
+
+    # send active request to toutiao
+    click = models.BdClick.query.filter(models.BdClick.ip == user_ip, models.BdClick.con_status==0).order_by(models.BdClick.id.desc()).first()
+    if click:
+        try:
+            requests.get(click.callback)
+            click.con_status = 1
+            click.user_id = user_id
+            db.session.add(click)
+            db.session.commit()
+            logging.info(f'update click {click.id} to user {user_id}')
+        except Exception as e:
+            logging.error(f'update click {click.id} to user {user_id} error: {e}')
+    else:
+        logging.error(f'no click for ip {user_ip}')
+
+
+    # Create the response object with the specified format
+    response = {
+        "code": 0,
+        "msg": "create user successfully",
+        "data": {
+            "user_id": user_id,
+            "min_img_num": new_user.min_img_num,
+            "max_img_num": new_user.max_img_num,
+            "pay_group": random.randint(1,3),
+            "shot_num": 10,
+            "shot_seconds:" : 10,
+            "max_styles" : 1
+        }
+    }
+
+    # Return the response object as a JSON response
+    return jsonify(response)
 
 # Apple subscribe renew callback
 @app.route('/api/subscribe_renew', methods=['POST'])
@@ -1107,6 +1334,56 @@ def get_token():
 
     return jsonify(credentials)
 
+@app.route('/api/send_msg', methods=['GET'])
+def send_msg():
+    access_token = get_wechat_access_token(config.appid, config.appsecret)
+    logger.info(f'access_token={access_token}')
+    wechat_notify_complete_packs(access_token)
+     # Create the response object with the specified format
+    response = {
+        "code": 0,
+        "msg": "send msg success",
+        "data": {
+        }
+    }
+
+    # Return the response object as a JSON response
+    return jsonify(response)
+
+def get_wechat_access_token(appid, secret):
+    url = f"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}"
+    response = requests.get(url)
+    result = response.json()
+    if 'access_token' in result:
+        return result['access_token']
+    else:
+        logging.error(f"Failed to get access_token: {result}")
+        return None
+
+# def job():
+#     app = Flask(__name__)
+#     with app.app_context():
+#         try:
+#             logger.info(f'task run')
+#             access_token = get_wechat_access_token(config.appid, config.appsecret)
+#             logger.info(f'access_token={access_token}')
+#             wechat_notify_complete_packs(access_token)
+#         except Exception as e:
+#             print("An error occurred:", e)
+
+
+# def run_schedule():
+#     while True:
+#         schedule.run_pending()
+#         time.sleep(100)
+
+# # 每30分钟执行一次
+# schedule.every(10).seconds.do(job)
+
+# # 在一个新的线程中启动定时任务
+# t = threading.Thread(target=run_schedule)
+# t.start()
+
 if __name__ == '__main__':
     # Add argument parser: -p: port
     parser = argparse.ArgumentParser()
@@ -1125,4 +1402,5 @@ else:
     logging.root.handlers = gunicorn_logger.handlers
     logging.root.setLevel(gunicorn_logger.level)
     logging.debug('logger setup.')
+
 

@@ -4,6 +4,7 @@ import argparse
 import requests
 import time
 import logging
+from . import models
 from backend.models import *
 from backend.extensions import app, db
 from backend import config
@@ -92,6 +93,45 @@ def notify_pack(pack):
     pack.notify_count += 1
     db.session.commit()
 
+def wechat_notify_pack(access_token, pack):
+    if type(pack) is int:
+        pack = Pack.query.filter(Pack.pack_id == pack).first()
+    if pack is None:
+        logging.error('pack not found')
+        return
+    send_wechat_notification(access_token, pack.user_id)
+    pack.notify_count += 1
+    db.session.commit()
+
+def send_wechat_notification(access_token, user_id, **kwargs):
+   url = f"https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={access_token}"
+   user = models.User.query.filter_by(user_id=user_id).first()
+   if not user:
+       return
+   if user.open_id is None or user.open_id=='':
+       return
+   now = datetime.now()
+   formatted_now = now.strftime("%Y-%m-%d %H:%M:%S")
+   data = {
+        "touser": user.open_id,
+        "template_id": "MaJhNCrgV0FzdQgGPNNxfZ3LCQlTM0f1aDpM_5OqLUs",
+        "page": "pages/index/index",
+        "data": {
+            "time1": {
+                "value": f"{formatted_now}"
+            },
+            "thing3": {
+                "value": "二维码生成完毕"
+            },
+            "thing2": {
+                "value": "您的图片已经画好啦，快去看看吧～"
+            }
+        }
+   }
+   
+   response = requests.post(url, json=data)
+   logging.info(response.text)
+
 def notify_complete_packs(notify_count=0, user_id=None):
     # Join Task and Packs, on Task.pack_id == Pack.pack_id, filter all packs with:
     #   1. count task with status is 'finish' and task.pack_id == pack.pack_id >= COMPLETE_PACK_MIN_PICS
@@ -121,6 +161,38 @@ def notify_complete_packs(notify_count=0, user_id=None):
     for pack in filtered_packs:
         pack.total_seconds = 0
         notify_pack(pack)
+    db.session.commit()
+
+
+def wechat_notify_complete_packs(access_token, notify_count=0, user_id=None):
+    # Join Task and Packs, on Task.pack_id == Pack.pack_id, filter all packs with:
+    #   1. count task with status is 'finish' and task.pack_id == pack.pack_id >= COMPLETE_PACK_MIN_PICS
+    #   2. no task with status is 'wait' and task.pack_id == pack.pack_id
+    #   3. pack.notify_count <= notify_count
+    if user_id:
+        base_query = db.session.query(Task.pack_id).\
+            filter(Task.status == 'finish').\
+            filter(Task.user_id == user_id)
+    else:
+        base_query = db.session.query(Task.pack_id).\
+            filter(Task.status == 'finish')
+    subquery = base_query.\
+        group_by(Task.pack_id).\
+        having(db.func.count(Task.id) >= config.COMPLETE_PACK_MIN_PICS).\
+        correlate(Pack)
+    
+    filtered_packs = db.session.query(Pack).\
+        filter(~db.exists().where(db.and_(Task.pack_id == Pack.pack_id, Task.status == 'wait'))).\
+        filter(Pack.notify_count <= notify_count).\
+        filter(Pack.pack_id.in_(subquery)).\
+        all()
+    
+    # filter packs used_up 
+    
+    logging.info(f'notify_complete_packs: {len(filtered_packs)}')
+    for pack in filtered_packs:
+        pack.total_seconds = 0
+        wechat_notify_pack(access_token, pack)
     db.session.commit()
     
 

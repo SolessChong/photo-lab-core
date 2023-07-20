@@ -41,3 +41,20 @@ COMPLETE_PACK_MIN_PICS = 30
 
 # 每个pack未解锁前，可以预览的图片数量，超过该数量设为模糊
 PREVIEW_CLEAR_IMG_NUM = 5
+
+# 解锁照片需要的点券面额
+UNLOCK_PHOTO_DIAMOND = 75
+
+# 小程序的appid
+appid='wxd92770660bc5d9cb'
+# 小程序的appsecret
+appsecret='1f5968f1572ee04e9d5d18a8a7dbd6b6'
+
+# 图片生成后提醒的模板id
+PHOTO_GENERATE_TEMPLATE_ID='MaJhNCrgV0FzdQgGPNNxfZ3LCQlTM0f1aDpM_5OqLUs'
+
+# 邀请和被邀请奖励的点券
+INVITED_ADD_DIAMOND=100
+
+# 初始的点券
+INIT_DIAMOND=100
