@@ -354,7 +354,7 @@ def upload_diamond_payment():
     if args.get('uxser_id'):
         args['user_id'] = args['uxser_id']
         del args['uxser_id']
-    missing_params = [param for param in ['user_id', 'pack_id', 'product_id']
+    missing_params = [param for param in ['user_id', 'pack_id']
                       if args.get(param) is None]
     if missing_params:
         logger.error(f'upload_payment missing params {missing_params}')
