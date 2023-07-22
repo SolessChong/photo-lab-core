@@ -381,7 +381,6 @@ def upload_diamond_payment():
     
     if user.diamond < config.UNLOCK_PHOTO_DIAMOND:
         return jsonify({"error": "diamond not enough"}), 400
-    user.diamond = user.diamond - config.UNLOCK_PHOTO_DIAMOND
     # Create a new payment
     new_payment = models.Payment(
         user_id=user_id, 
@@ -402,6 +401,7 @@ def upload_diamond_payment():
     else:
         return jsonify({"msg": "error: Pack not found", 'code': 1}), 404
 
+    user.diamond = user.diamond - config.UNLOCK_PHOTO_DIAMOND
     # Commit the changes
     db.session.commit()
     
