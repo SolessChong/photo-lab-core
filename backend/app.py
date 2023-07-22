@@ -79,11 +79,13 @@ def create_user():
     error_msg = data.get('errmsg')
 
     logging.info(f'open_id is {open_id} errmsg={error_msg}')
-
+    tip=''
     # get user by open_id
     if open_id:
         user = models.User.query.filter_by(open_id=open_id).first()
         if user:
+            if invite_open_id:
+                tip='不是新用户，无法领取邀请奖励'
             logging.info(f'user already exist by open_id={open_id}')
             # Create the response object with the specified format
             response = {
@@ -99,7 +101,8 @@ def create_user():
                     "max_styles" : 1,
                     "diamond": user.diamond,
                     "received" : 0,
-                    "open_id": user.open_id
+                    "open_id": user.open_id,
+                    "tip": tip
                 }
             }
             # Return the response object as a JSON response
@@ -142,7 +145,10 @@ def create_user():
                 received=1
                 invite_user.diamond = invite_user.diamond + config.INVITED_ADD_DIAMOND
                 new_invire_record=models.InviteRecord(open_id= open_id, invite_open_id = invite_open_id)
+                tip='领取奖励成功'
                 db.session.add(new_invire_record)
+            else:
+                tip='邀请者不存在，无法领取奖励'
         new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50, dna=dna, diamond=diamond, open_id=open_id)
 
     # Add the new user to the database and commit the changes
@@ -354,7 +360,7 @@ def upload_diamond_payment():
     if args.get('uxser_id'):
         args['user_id'] = args['uxser_id']
         del args['uxser_id']
-    missing_params = [param for param in ['user_id', 'pack_id', 'product_id']
+    missing_params = [param for param in ['user_id', 'pack_id']
                       if args.get(param) is None]
     if missing_params:
         logger.error(f'upload_payment missing params {missing_params}')
@@ -407,7 +413,7 @@ def upload_diamond_payment():
     # Notify
     url = 'https://maker.ifttt.com/trigger/PicPayment/json/with/key/kvpqNPLePMIVcUkAuZiGy'
     payload = {
-        'msg': f'User {user_id} paid {payment_amount} for pack {pack_id}, at product_id {product_id}'
+        'msg': f'User {user_id} paid {config.UNLOCK_PHOTO_DIAMOND} for pack {pack_id}, at product_id {product_id}'
     }
     try:
         requests.post(url, json=payload, timeout=5)
