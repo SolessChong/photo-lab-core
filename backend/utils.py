@@ -7,6 +7,8 @@ from io import BytesIO
 from PIL import Image
 from backend import config
 from concurrent.futures import ThreadPoolExecutor
+import random
+import uuid
 
 # 阿里云MySQL和OSS相关配置
 DB_HOST = 'rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com'
@@ -201,3 +203,14 @@ def validate_IAP_receipt(receipt):
     else:
         print(f"Error validating IAP receipt: {response.status_code}")
         return False
+
+
+# generate random char
+def generate_order_id():
+    # 生成一个UUID
+    random_uuid = uuid.uuid4()
+
+    # 转换为32位不重复的字符串
+    unique_str = str(random_uuid).replace('-', '')
+
+    return unique_str

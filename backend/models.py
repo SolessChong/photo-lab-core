@@ -218,6 +218,18 @@ class InviteRecord(db.Model):
     invite_open_id = db.Column(db.String(255), nullable=True)
     create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
+class WechatPayOrder(db.Model):
+    __tablename__ = 'wechat_pay_order'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    open_id = db.Column(db.String(255), nullable=True)
+    state = db.Column(db.Integer, nullable=True)
+    order_id = db.Column(db.String(32), nullable=True)
+    amount = db.Column(db.Integer, nullable=True)
+    wechat_order_id = db.Column(db.String(32), nullable=True)
+    wechat_origin_text = db.Column(db.String(2048), nullable=True)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    update_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))

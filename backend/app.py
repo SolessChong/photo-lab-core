@@ -8,13 +8,15 @@ from urllib.parse import urlparse, parse_qs
 
 from datetime import datetime, timedelta
 import json
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, url_for
 import secrets
 import random
 import string
+import hmac
 import schedule
 import threading
 import time
+
 from celery import group, Celery, chain, chord
 import logging
 import requests
@@ -33,6 +35,14 @@ from . import selector_other, selector_sd
 from backend.notification_center import wechat_notify_complete_packs, wechat_notify_pack, send_wechat_notification
 
 from backend.app_community import upload_note, get_all_notes, add_note_from_task, app_community
+
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+# from wechatpy.pay import WeChatPay
+# from wechatpy.pay.utils import check_signature
 
 celery_app = Celery('myapp',
                     broker='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0',
@@ -518,6 +528,174 @@ def subscribe_renew():
         db.session.commit()
         logger.info(f'subscribe_renew user {user.user_id} renewed')
     return jsonify({"msg": "subscribe_renew successful", 'code':0}), 200
+
+
+# wechat miniprogram pre order
+@app.route('/api/wechat/pre_pay', methods=['POST'])
+def wechat_pre_pay():
+    logger.info(f'wechat_pre_pay args is {request.json}')
+    args = dict(request.json)
+
+    missing_params = [param for param in ['open_id', 'amount']
+                      if args.get(param) is None]
+                
+    if missing_params:
+        logger.error(f'upload_payment missing params {missing_params}')
+        return return_error(f"Missing parameters: {', '.join(missing_params)}")
+    
+    open_id = args.get('open_id')
+    amount = args.get('amount')
+
+    user = models.User.query.filter_by(open_id=open_id)
+    if not user:
+        return jsonify({"error": "user not found"}), 400
+    
+    url = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi"
+    parsed_url = urlparse(url)
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    }
+    amount_json= {
+        "total": amount,
+        "currency": "CNY"
+    }
+    payer={
+        "openid":open_id
+    }
+    with open('backend/apiclient_key.pem', 'r') as f:
+       private_key = f.read()
+    #    logging.info(f'private_key={private_key}')
+    order_id = utils.generate_order_id()
+    data = {
+        "mchid": config.WECHAT_PAY_MCHID,
+        "out_trade_no": order_id,
+        "appid": config.appid,
+        "description": '点券',
+        "notify_url": config.WECHAT_PAY_NOTIFY_URL,
+        "amount": amount_json,
+        "payer": payer,
+    }
+
+    request_body = json.dumps(data)
+    logging.info(f'{request_body}')
+    token, timestamp, nonce = get_wechat_pay_token(config.WECHAT_PAY_MCHID, config.WECHAT_PAY_CERT_SERIAL, private_key, "POST", parsed_url.path, request_body)
+    headers["Authorization"] = token
+    wechat_response = requests.post(url, headers=headers, data=request_body)
+
+    prepay_id = wechat_response.json()["prepay_id"]
+
+    package = 'prepay_id='+prepay_id
+    logging.info(f'package={package}')
+    pay_sign = get_wechat_pay_sign(config.appid, timestamp, nonce, package, private_key)
+    wechat_pay_order = models.WechatPayOrder.query.filter_by(order_id=order_id).first()
+    
+    if wechat_pay_order:
+        return jsonify({"error": "order already exist"}), 400
+    
+    new_pay_order = models.WechatPayOrder(open_id=open_id, state=1, order_id=order_id, amount=amount)
+    # create wechat order
+    db.session.add(new_pay_order)
+    db.session.commit()
+    # logger.info(f'{pre_pay_id}')
+    response={
+        "code":0,
+        "msg":"call wechat pre pay success",
+        "data": {
+            "prepay_id": prepay_id,
+            "pay_sign": pay_sign,
+            "timestamp": timestamp,
+            "nonce": nonce,
+            "sign_type":"RSA",
+            "package": package
+            
+        }
+    }
+    return jsonify(response)
+
+# wechat miniprogram pay callback
+@app.route('/api/wechat/pay_callback', methods=['POST'])
+def wechat_pay_callback():
+    logger.info(f'wechat_pre_pay args is {request.json}')
+    data = request.json
+    source = data.get("resource")
+    nonce = source.get("nonce")
+    ciphertext = source.get("ciphertext")
+    associated_data = source.get("associated_data")
+    aesgcm = AESGCM(config.WECHAT_PAY_API_KEY.encode())
+
+    # 都需要转成bytes类型才能进行解密
+    associated_data = associated_data.encode() if isinstance(associated_data, str) else associated_data
+    nonce = nonce.encode() if isinstance(nonce, str) else nonce
+    ciphertext = base64.b64decode(ciphertext)
+
+    # 解密
+    plaintext = aesgcm.decrypt(nonce, ciphertext, associated_data)
+    plaintext_decode = plaintext.decode()
+    logging.info(f'plaintext={plaintext_decode}')
+    plaintext_json = json.loads(plaintext_decode)
+    # our order_id
+    out_trade_no = plaintext_json.get("out_trade_no")
+    # wechat order_id
+    wechat_order_id = plaintext_json.get("transaction_id")
+    trade_state = plaintext_json.get("trade_state")
+    if trade_state =='SUCCESS':
+        # for update lock data
+        wechat_pay_order = models.WechatPayOrder.query.filter_by(order_id=out_trade_no, state=1).with_for_update().first()
+        if not wechat_pay_order:
+            logging.info(f'order_id={out_trade_no} order not found')
+            return jsonify({"code": "FALI","message":"失败"}), 400
+        open_id = wechat_pay_order.open_id
+        amount = wechat_pay_order.amount
+        user = models.User.query.filter_by(open_id=open_id).first()
+        if not user:
+            logging.info(f'open_idd={open_id} user not found')
+            return jsonify({"code": "FALI","message":"失败"}), 400
+        user.diamond = user.diamond + config.MONEY_DIAMOND_RATE * amount
+        wechat_pay_order.state=3
+        wechat_pay_order.wechat_order_id = wechat_order_id
+        wechat_pay_order.wechat_origin_text=plaintext_decode
+        wechat_pay_order.update_time=datetime.now()
+        # Commit the session to save changes
+        db.session.commit()
+        # pay success add diamond
+    else:
+        # pay fail
+        return jsonify({"code": "FALI","message":"失败"}), 400
+
+        
+
+    # out_trade_no = plaintext_decode.get("out_trade_no")
+    # return plaintext.decode()
+    # notify_data = wechat_pay.parse_payment_result(data)
+
+    return 'SUCCESS'
+    
+
+def get_wechat_pay_sign(appid, timestamp, nonce, package, private_key):
+    message = '\n'.join([appid, timestamp, nonce, package, ''])
+    logging.info(f'sign={message}')
+    rsa_key = RSA.import_key(private_key)
+    signer = pkcs1_15.new(rsa_key)
+    hash_obj = SHA256.new(message.encode('utf-8'))
+    pay_sign = base64.b64encode(signer.sign(hash_obj)).decode('utf-8')
+    return pay_sign
+
+def get_wechat_pay_token(mchid, serial_no, private_key, method, url, request_body):
+    timestamp = str(int(time.time()))
+    nonce = str(int(time.time() * 1000))
+    message = '\n'.join([method, url, timestamp, nonce, request_body, ''])
+    logging.info(f'sign={message}')
+
+    rsa_key = RSA.import_key(private_key)
+    signer = pkcs1_15.new(rsa_key)
+    hash_obj = SHA256.new(message.encode('utf-8'))
+    signature = base64.b64encode(signer.sign(hash_obj)).decode('utf-8')
+
+    token = 'WECHATPAY2-SHA256-RSA2048 mchid="{}",nonce_str="{}",signature="{}",timestamp="{}",serial_no="{}"'.format(
+        mchid, nonce, signature, timestamp, serial_no)
+    logging.info(f'token={token}')
+    return token, timestamp, nonce
     
 
 # Post request for upload_payment
@@ -1401,6 +1579,7 @@ if __name__ == '__main__':
     config.is_industry = args.is_industry
     config.min_image_num = args.image_num
     config.user_group = args.user_group
+    # wechat_pay = WeChatPay(config.appid, config.appsecret, config.m)
     app.run(host='0.0.0.0', port=args.port, ssl_context=('photolab.aichatjarvis.com.pem', 'photolab.aichatjarvis.com.key'))
     
 else:
