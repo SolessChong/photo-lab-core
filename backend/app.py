@@ -1127,27 +1127,26 @@ def upload_multiple_sources():
     
     user_id = args.get('user_id')
     user_id = args.get('person_id')
-    image_oss_key = args.get('image_oss_key')
+    image_oss_keys = args.get('image_oss_keys')
 
     # 查找 persons 表中是否存在相应的记录
     person = models.Person.query.filter_by(user_id=user_id, person_id=person_id).first()
+    source = models.Source.query.filter_by(user_id=user_id, person_id=person_id, is_first=1).first()
     if not person:
-        # 如果不存在，创建一个新的 Person 对象并将其保存到数据库中
-        new_person = models.Person(name=person_name, user_id=user_id)
-        db.session.add(new_person)
-        db.session.commit()
-        person_id = new_person.id
+        return jsonify({"msg": "person_id不存在","code":-1}), 400
+    if not source:
+        return jsonify({"msg": "首张图片不存在","code":-1}), 400
     else:
         person_id = person.id
         person.lora_train_status = None
 
-    print(img_oss_keys, type(img_oss_keys))
+    print(image_oss_keys, type(image_oss_keys))
 
     success_count = 0
-    keys = json.loads(img_oss_keys)
+    keys = json.loads(image_oss_keys)
     for key in keys:
         data = utils.oss_source_get(key)
-        if (not_filtration==1) or aliyun_face_detector.one_face(data):
+        if aliyun_face_detector.aliyun_face_compare(source.base_img_key):
             utils.oss_put(key, data)
             source = models.Source(base_img_key=key, user_id=user_id, type=source_type, person_id=person_id)
             db.session.add(source)

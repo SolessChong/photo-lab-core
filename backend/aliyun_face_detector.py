@@ -3,7 +3,7 @@ import io
 import logging
 from PIL import Image
 from alibabacloud_facebody20191230.client import Client
-from alibabacloud_facebody20191230.models import DetectFaceAdvanceRequest
+from alibabacloud_facebody20191230.models import DetectFaceAdvanceRequest,CompareFaceRequest
 from alibabacloud_tea_openapi.models import Config
 from alibabacloud_tea_util.models import RuntimeOptions
 from alibabacloud_imageseg20191230.client import Client as ImageSegClient
@@ -50,6 +50,26 @@ def aliyun_face_detect(img):
         print("Error code:", error.code)
     
     return None
+
+def aliyun_face_compare(source_img, target_img):
+    compare_face_request = CompareFaceRequest(
+    image_urla=source_img,
+    image_urlb=target_img
+    )
+
+    runtime = RuntimeOptions()
+
+    try:
+         #初始化Client
+        client = Client(config)
+        response = client.compare_face_with_options(compare_face_request, runtime)
+        # 获取整体结果
+        return response.body
+    except Exception as error:
+    # 获取整体报错信息
+        print(error)
+        # 获取单个字段
+        print(error.code)
 
 # 检测png图片中的人脸
 def detect_face(img):
