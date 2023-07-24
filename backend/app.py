@@ -1114,23 +1114,23 @@ def create_person():
     return jsonify(response)
 
 @app.route('/api/v2/upload_multiple_sources', methods = ['POST'])
-def upload_multiple_sources():
-    logger.info(f'create_person args is {request.json}')
+def upload_multiple_sources_v2():
+    logger.info(f'upload_multiple_sources args is {request.json}')
     args = dict(request.json)
 
     missing_params = [param for param in ['user_id', 'img_oss_keys', 'person_id']
                       if args.get(param) is None]
                 
     if missing_params:
-        logger.error(f'create_person missing params {missing_params}')
+        logger.error(f'upload_multiple_sources missing params {missing_params}')
         return return_error(f"Missing parameters: {', '.join(missing_params)}")       
     
     user_id = args.get('user_id')
-    user_id = args.get('person_id')
-    image_oss_keys = args.get('image_oss_keys')
+    person_id = args.get('person_id')
+    image_oss_keys = args.get('img_oss_keys')
 
     # 查找 persons 表中是否存在相应的记录
-    person = models.Person.query.filter_by(user_id=user_id, person_id=person_id).first()
+    person = models.Person.query.filter_by(user_id=user_id, id=person_id).first()
     source = models.Source.query.filter_by(user_id=user_id, person_id=person_id, is_first=1).first()
     if not person:
         return jsonify({"msg": "person_id不存在","code":-1}), 400
@@ -1143,14 +1143,21 @@ def upload_multiple_sources():
     print(image_oss_keys, type(image_oss_keys))
 
     success_count = 0
-    keys = json.loads(image_oss_keys)
-    for key in keys:
+    result_map={}
+    soure_base_img = utils.oss_source_get(source.base_img_key)
+    for key in image_oss_keys:
         data = utils.oss_source_get(key)
-        if aliyun_face_detector.aliyun_face_compare(source.base_img_key):
+        # confidence =aliyun_face_detector.aliyun_face_compare(soure_base_img, data)['Data']['Confidence']
+        confidence =aliyun_face_detector.aliyun_face_compare(soure_base_img, data)
+        logging.info(f'confidence={confidence}')
+        if confidence> config.FACE_COMPARE_CONFIDENCE:
             utils.oss_put(key, data)
-            source = models.Source(base_img_key=key, user_id=user_id, type=source_type, person_id=person_id)
+            source = models.Source(base_img_key=key, user_id=user_id, person_id=person_id, is_first=0)
             db.session.add(source)
+            result_map[key]="success"
             success_count += 1
+        else:
+            result_map[key]="fail"
     db.session.commit()
 
     response = {
@@ -1158,31 +1165,10 @@ def upload_multiple_sources():
         "code": 0, 
         "data": {
             "person_id": person_id,
-            "person_name": person_name,
-            "success_count": success_count,
-            "checklist": [
-            {
-                "title": "背景多样性",
-                "hint": "上传更多背景不同的照片",
-                "score": 87,
-                "is_ok": 1
-            },
-            {
-                "title": "人物照片清晰度",
-                "hint": "上传清晰的人物照片",
-                "score": 43,
-                "is_ok": 0
-            },
-            {
-                "title": "人物角度多样性",
-                "hint": "上传更多不同角度的人物照片",
-                "score": 40,
-                "is_ok": 0
-            }]
+            "img_result": result_map
         }
     }
     
-    logging.info(f'upload source success {user_id} {person_id} {person_name}')
     return jsonify(response)
 
 @app.route('/api/upload_multiple_sources', methods = ['POST'])
