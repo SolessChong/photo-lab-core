@@ -9,6 +9,7 @@ from backend import config
 from concurrent.futures import ThreadPoolExecutor
 import random
 import uuid
+import string
 
 # 阿里云MySQL和OSS相关配置
 DB_HOST = 'rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com'
@@ -214,3 +215,9 @@ def generate_order_id():
     unique_str = str(random_uuid).replace('-', '')
 
     return unique_str
+
+
+def generate_unique_string(length=8):
+    letters_and_digits = string.ascii_letters + string.digits
+    result_str = ''.join(random.sample(letters_and_digits, length))
+    return result_str

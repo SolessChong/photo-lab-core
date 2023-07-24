@@ -212,6 +212,7 @@ def get_user():
         return jsonify({"error": "user not found"}), 404
 
     persons = models.Person.query.filter_by(user_id=user_id).all()
+    logging.info(f'persons={persons}')
 
     result_persons = []
 
@@ -266,6 +267,7 @@ def get_user():
         "code": 0
     }
 
+    logging.info(f'get_user response = {response}')
     return jsonify(response), 200
 
 # todo get wechat server msg
@@ -1049,6 +1051,135 @@ def upload_source():
             "person_id": person_id,
             "person_name": person_name,
             "source_num": count
+        }
+    }
+    
+    logging.info(f'upload source success {user_id} {person_id} {person_name}')
+    return jsonify(response)
+
+
+# uploda one picture and create person
+@app.route('/api/create_person', methods=['POST'])
+def create_person(): 
+
+    logger.info(f'create_person args is {request.json}')
+    args = dict(request.json)
+
+    missing_params = [param for param in ['user_id', 'image_oss_key']
+                      if args.get(param) is None]
+                
+    if missing_params:
+        logger.error(f'create_person missing params {missing_params}')
+        return return_error(f"Missing parameters: {', '.join(missing_params)}")       
+    
+    user_id = args.get('user_id')
+    image_oss_key = args.get('image_oss_key')
+    user = models.User.query.filter_by(user_id=user_id).first()
+    if not user:
+        return jsonify({"error": "用户不存在","code":-1}), 400
+    # get image from oss by image_oss_key
+    try:
+        data = utils.oss_source_get(image_oss_key)
+    except Exception as e:
+        message = e.details['Message']
+        return jsonify({"msg": message,"code":-1}), 400
+    
+    try:
+        oss_result = aliyun_face_detector.one_face(data)
+    except Exception as e:
+        return {"status": "error", "message": "Invalid person_id_list"}, 400
+    
+    if oss_result:
+        person_name = utils.generate_unique_string()
+        new_person =models.Person(name=person_name, user_id=user.id)
+        db.session.add(new_person)
+        db.session.commit()
+        utils.oss_put(image_oss_key, data)
+        source = models.Source(base_img_key=image_oss_key, user_id=user_id, person_id=new_person.id, is_first=1)
+        db.session.add(source)
+        db.session.commit()
+    else:
+        return jsonify({"error": "上传图片不正确，图片应该是正面人脸照片且只有一张人脸","code":-1}), 400
+
+    response = {
+        "msg": "上传人像图片成功", 
+        "code": 0, 
+        "data": {
+            "person_id": new_person.id,
+            "persion_name": person_name,
+        }
+    }
+    
+    logging.info(f'upload source success {user_id} {new_person.id} {person_name}')
+    return jsonify(response)
+
+@app.route('/api/v2/upload_multiple_sources', methods = ['POST'])
+def upload_multiple_sources():
+    logger.info(f'create_person args is {request.json}')
+    args = dict(request.json)
+
+    missing_params = [param for param in ['user_id', 'img_oss_keys', 'person_id']
+                      if args.get(param) is None]
+                
+    if missing_params:
+        logger.error(f'create_person missing params {missing_params}')
+        return return_error(f"Missing parameters: {', '.join(missing_params)}")       
+    
+    user_id = args.get('user_id')
+    user_id = args.get('person_id')
+    image_oss_key = args.get('image_oss_key')
+
+    # 查找 persons 表中是否存在相应的记录
+    person = models.Person.query.filter_by(user_id=user_id, person_id=person_id).first()
+    if not person:
+        # 如果不存在，创建一个新的 Person 对象并将其保存到数据库中
+        new_person = models.Person(name=person_name, user_id=user_id)
+        db.session.add(new_person)
+        db.session.commit()
+        person_id = new_person.id
+    else:
+        person_id = person.id
+        person.lora_train_status = None
+
+    print(img_oss_keys, type(img_oss_keys))
+
+    success_count = 0
+    keys = json.loads(img_oss_keys)
+    for key in keys:
+        data = utils.oss_source_get(key)
+        if (not_filtration==1) or aliyun_face_detector.one_face(data):
+            utils.oss_put(key, data)
+            source = models.Source(base_img_key=key, user_id=user_id, type=source_type, person_id=person_id)
+            db.session.add(source)
+            success_count += 1
+    db.session.commit()
+
+    response = {
+        "msg": "上传人像图片成功", 
+        "code": 0, 
+        "data": {
+            "person_id": person_id,
+            "person_name": person_name,
+            "success_count": success_count,
+            "checklist": [
+            {
+                "title": "背景多样性",
+                "hint": "上传更多背景不同的照片",
+                "score": 87,
+                "is_ok": 1
+            },
+            {
+                "title": "人物照片清晰度",
+                "hint": "上传清晰的人物照片",
+                "score": 43,
+                "is_ok": 0
+            },
+            {
+                "title": "人物角度多样性",
+                "hint": "上传更多不同角度的人物照片",
+                "score": 40,
+                "is_ok": 0
+            }]
         }
     }
     

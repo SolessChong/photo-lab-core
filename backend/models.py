@@ -49,6 +49,7 @@ class Source(db.Model):
     type = db.Column(db.String(255), nullable=True)
     person_id = db.Column(db.Integer, nullable=True)
     base_img_key = db.Column(db.String(255), nullable=False)
+    is_first = db.Column(db.Integer, nullable=True)
     
 class Person(db.Model):
     __tablename__ = 'persons'
