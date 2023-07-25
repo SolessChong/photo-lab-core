@@ -40,6 +40,8 @@ class User(db.Model):
     dna = db.Column(db.JSON, nullable=True, default=None)
     diamond = db.Column(db.Integer, nullable=True)
     open_id=db.Column(db.String(64), nullable=True)
+    name=db.Column(db.String(64), nullable=True)
+    icon=db.Column(db.String(256), nullable=True)
 
 class Source(db.Model):
     __tablename__ = 'source'

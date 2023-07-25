@@ -202,6 +202,33 @@ def create_user():
     # Return the response object as a JSON response
     return jsonify(response)
 
+@app.route('/api/get_order', methods=['GET'])
+def get_order():
+    order_id = request.args.get('order_id')
+    # order_type 1-wechat 2-douyin
+    order_type = request.args.get('order_type')
+    if not order_id:
+        return jsonify({"msg": "order_id is required", "code":-1}), 400
+    if not order_type:
+        return jsonify({"msg": "order_type is required", "coder": -1}), 400
+    wechat_order = models.WechatPayOrder.query.filter_by(order_id=order_id).first()
+    if not wechat_order:
+        return jsonify({"msg": "order not found", "code": -1}), 400
+    state=0
+    if wechat_order.state ==2:
+        state = 1
+    if wechat_order.state ==3:
+        state= 1
+    response = {
+        "data": {
+            "state": state
+        },
+        "msg": "get order successfully",
+        "code": 0
+    }
+    return jsonify(response), 200
+
+
 @app.route('/api/get_user', methods=['GET'])
 def get_user():
     user_id = request.args.get('user_id')
@@ -248,7 +275,14 @@ def get_user():
         })
     
     is_subscribe = user.subscribe_until is not None and user.subscribe_until.timestamp() > int(time.time())
+    # 邀请的数量
     invite_num = models.InviteRecord.query.filter_by(invite_open_id=user.open_id).count()
+    # 被邀请的数量
+    be_invite_num =models.InviteRecord.query.filter_by(open_id=user.open_id).count()
+    if be_invite_num > 1:
+        be_invite_num=1
+    used_diamond = int(models.Payment.query.filter_by(user_id=user_id, pay_type=2).with_entities(func.sum(models.Payment.payment_amount)).scalar() or 0)
+    
     response = {
         "data": {
             "persons": result_persons,
@@ -259,9 +293,12 @@ def get_user():
             "subscribe_until": user.subscribe_until.timestamp() if user.subscribe_until else None,
             "diamond" : user.diamond,
             "invited_num" : invite_num,
-            "used_diamond" : 0,
+            "used_diamond" : used_diamond,
             "unlock_need_diamond": config.UNLOCK_PHOTO_DIAMOND,
-            "open_id": user.open_id
+            "open_id": user.open_id,
+            "reward_diamond": (invite_num + be_invite_num) * config.INVITED_ADD_DIAMOND,
+            "name": user.name,
+            "icon": user.icon
         },
         "msg": "get user successfully",
         "code": 0
@@ -269,6 +306,33 @@ def get_user():
 
     logging.info(f'get_user response = {response}')
     return jsonify(response), 200
+
+
+@app.route('/api/update_user', methods=['POST'])
+def update_user():
+    logger.info(f'upload_multiple_sources args is {request.json}')
+    args = dict(request.json)
+    user_id= args.get('user_id')
+    name = args.get('name')
+    icon = args.get('icon')
+
+    if not name and not icon:
+        return jsonify({"msg": "name and icon都为空","code":-1}), 400
+    
+    if not user_id:
+        return jsonify({"msg": "user_id不能为空","code":-1}), 400
+    user = models.User.query.filter_by(user_id=user_id).first()
+    if not user:
+        return jsonify({"msg": "user not found","code":-1}), 400
+    if name:
+        user.name=name
+    if icon:
+        user.icon=icon
+    db.session.add(user)
+    db.session.commit()
+    return jsonify({"msg": "update success","code":0}), 400
+
+
 
 # todo get wechat server msg
 @app.route('/api/get_wechat_msg', methods=['GET'])
@@ -396,7 +460,7 @@ def upload_diamond_payment():
     # Create a new payment
     new_payment = models.Payment(
         user_id=user_id, 
-        payment_amount=config.UNLOCK_PHOTO_DIAMOND * 100, 
+        payment_amount=config.UNLOCK_PHOTO_DIAMOND, 
         receipt='', 
         pack_id=int(pack_id) if pack_id else None, 
         product_id=product_id,
@@ -538,19 +602,38 @@ def wechat_pre_pay():
     logger.info(f'wechat_pre_pay args is {request.json}')
     args = dict(request.json)
 
-    missing_params = [param for param in ['open_id', 'amount']
+    missing_params = [param for param in ['open_id', 'pay_config_id']
                       if args.get(param) is None]
                 
     if missing_params:
         logger.error(f'upload_payment missing params {missing_params}')
         return return_error(f"Missing parameters: {', '.join(missing_params)}")
+
+    # get config json
+    with open('backend/pay_config.json', 'r') as f:
+        data = json.load(f)
+    
+    pay_config_id = args.get('pay_config_id')
+
+    # 在pay_config列表中查找匹配的数据
+    matched_data = None
+    for item in data['pay_config']:
+        if item['id'] == pay_config_id:
+            matched_data = item
+            break
+
+    # 判断是否找到匹配的数据
+    if matched_data is not None:
+        # 获取匹配数据的所有字段
+        amount = matched_data['current_price']
+    else:
+        return jsonify({"msg": "支付类型不存在","code":-1}), 400
     
     open_id = args.get('open_id')
-    amount = args.get('amount')
 
     user = models.User.query.filter_by(open_id=open_id)
     if not user:
-        return jsonify({"error": "user not found"}), 400
+        return jsonify({"msg": "user not found","code":-1}), 400
     
     url = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi"
     parsed_url = urlparse(url)
@@ -609,7 +692,8 @@ def wechat_pre_pay():
             "timestamp": timestamp,
             "nonce": nonce,
             "sign_type":"RSA",
-            "package": package
+            "package": package,
+            "order_id": order_id
             
         }
     }
@@ -1076,7 +1160,7 @@ def create_person():
     image_oss_key = args.get('image_oss_key')
     user = models.User.query.filter_by(user_id=user_id).first()
     if not user:
-        return jsonify({"error": "用户不存在","code":-1}), 400
+        return jsonify({"msg": "用户不存在","code":-1}), 400
     # get image from oss by image_oss_key
     try:
         data = utils.oss_source_get(image_oss_key)
@@ -1087,11 +1171,11 @@ def create_person():
     try:
         oss_result = aliyun_face_detector.one_face(data)
     except Exception as e:
-        return {"status": "error", "message": "Invalid person_id_list"}, 400
+        return {"msg": "error", "code": -1}, 400
     
     if oss_result:
         person_name = utils.generate_unique_string()
-        new_person =models.Person(name=person_name, user_id=user.id)
+        new_person =models.Person(name=person_name, user_id=user_id)
         db.session.add(new_person)
         db.session.commit()
         utils.oss_put(image_oss_key, data)
@@ -1099,7 +1183,7 @@ def create_person():
         db.session.add(source)
         db.session.commit()
     else:
-        return jsonify({"error": "上传图片不正确，图片应该是正面人脸照片且只有一张人脸","code":-1}), 400
+        return jsonify({"msg": "上传图片不正确，图片应该是正面人脸照片且只有一张人脸","code":-1}), 400
 
     response = {
         "msg": "上传人像图片成功", 
@@ -1150,7 +1234,7 @@ def upload_multiple_sources_v2():
         # confidence =aliyun_face_detector.aliyun_face_compare(soure_base_img, data)['Data']['Confidence']
         confidence =aliyun_face_detector.aliyun_face_compare(soure_base_img, data)
         logging.info(f'confidence={confidence}')
-        if confidence> config.FACE_COMPARE_CONFIDENCE:
+        if confidence is not None and confidence> config.FACE_COMPARE_CONFIDENCE:
             utils.oss_put(key, data)
             source = models.Source(base_img_key=key, user_id=user_id, person_id=person_id, is_first=0)
             db.session.add(source)
@@ -1165,10 +1249,23 @@ def upload_multiple_sources_v2():
         "code": 0, 
         "data": {
             "person_id": person_id,
-            "img_result": result_map
+            "img_result": result_map,
+            "success_count": success_count
         }
     }
     
+    return jsonify(response)
+
+
+@app.route('/api/pay_config', methods = ['GET'])
+def get_pay_config():
+    with open('backend/pay_config.json', 'r') as f:
+        config = json.load(f)
+    response = {
+        "msg": "get pay config success", 
+        "code": 0, 
+        "data": config
+    }
     return jsonify(response)
 
 @app.route('/api/upload_multiple_sources', methods = ['POST'])
