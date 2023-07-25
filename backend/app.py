@@ -1241,6 +1241,7 @@ def upload_multiple_sources_v2():
             result_map[key]="success"
             success_count += 1
         else:
+            utils.oss_put(key, data)
             result_map[key]="fail"
     db.session.commit()
 
@@ -1253,6 +1254,7 @@ def upload_multiple_sources_v2():
             "success_count": success_count
         }
     }
+    logging.info(f'upload source response={response}')
     
     return jsonify(response)
 
