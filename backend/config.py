@@ -27,10 +27,10 @@ user_group = 1  # 3 for is_inudstry
 min_image_num = 15
 
 if dev_mode:
-    mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab_dev?charset=utf8'
+    mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab_dev?charset=utf8mb4'
     wait_status = 'dev_wait'
 else:
-    mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab?charset=utf8'
+    mysql_uri = 'mysql+pymysql://jarvis_root:Jarvis123!!@rm-wz9e5292roauu423g6o.mysql.rds.aliyuncs.com/photolab?charset=utf8mb4'
     wait_status = 'wait'
 
 BD_CONVERSION_POST_URL = 'https://analytics.oceanengine.com/api/v2/conversion'
