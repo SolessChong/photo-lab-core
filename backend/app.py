@@ -33,6 +33,7 @@ from . import models
 from . import selector_other, selector_sd
 
 from backend.notification_center import wechat_notify_complete_packs, wechat_notify_pack, send_wechat_notification
+from backend.friends import create_friend
 
 from backend.app_community import upload_note, get_all_notes, add_note_from_task, app_community
 
@@ -66,6 +67,7 @@ app.register_blueprint(app_community)
 
 @app.route('/api/create_user', methods=['GET'])
 def create_user():
+    logger.info(f'create_user args is {request.args}')
     # Generate a random user_id with 10 characters
     user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
     # wechat login code
@@ -96,6 +98,8 @@ def create_user():
         if user:
             if invite_open_id:
                 tip='不是新用户，无法领取邀请奖励'
+            if open_id and invite_open_id:    
+                create_friend(open_id, invite_open_id)
             logging.info(f'user already exist by open_id={open_id}')
             # Create the response object with the specified format
             response = {
@@ -159,12 +163,14 @@ def create_user():
                 db.session.add(new_invire_record)
             else:
                 tip='邀请者不存在，无法领取奖励'
+        
         new_user = models.User(user_id=user_id, ip = user_ip, ua = user_agent, group = config.user_group, min_img_num = config.min_image_num, max_img_num = 50, dna=dna, diamond=diamond, open_id=open_id)
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)
     db.session.commit()
-
+    if open_id and invite_open_id:
+        create_friend(open_id, invite_open_id)
     # send active request to toutiao
     click = models.BdClick.query.filter(models.BdClick.ip == user_ip, models.BdClick.con_status==0).order_by(models.BdClick.id.desc()).first()
     if click:
@@ -243,9 +249,13 @@ def get_user():
     friend_persons=[]
     friend_open_ids = [record[0] for record in models.InviteRecord.query.filter_by(invite_open_id=user.open_id).with_entities(models.InviteRecord.open_id).all()]
     # invite me user 
-    invite_record = models.InviteRecord.query.filter_by(open_id=user.open_id).first()
-    if invite_record:
-        friend_open_ids.append(invite_record.open_id)
+    # invite_record = models.InviteRecord.query.filter_by(open_id=user.open_id).first()
+    friends = models.Friends.query.filter_by(open_id = user.open_id).all()
+    # if invite_record:
+    #     friend_open_ids.append(invite_record.open_id)
+    if friends:
+        for friend in friends:
+            friend_open_ids.append(friend.friend_open_id)
     friend_open_ids= list(set(friend_open_ids))
     
     logging.info(f'friend_open_ids={friend_open_ids}') 
@@ -345,6 +355,24 @@ def get_user():
     return jsonify(response), 200
 
 
+@app.route('/api/fake_photo_task', methods=['GET'])
+def fake_photo_task():
+    logging.info(f'fask photo run')
+    tasks = models.Task.query.filter_by(status='dev_wait').limit(100).all()
+    i=0
+    if tasks:
+        for task in tasks:
+            task.status = 'finish'
+            task.result_img_key = 'sources/P0Cqcug1f9/20230724/169020476529567.jpg'
+            db.session.commit()
+            i=i+1
+    logging.info(f'fask photo size={i}')
+    response = {
+        "msg": "fake_photo_task success",
+        "code": 0
+    }
+    return jsonify(response), 200
+        
 @app.route('/api/update_user', methods=['POST'])
 def update_user():
     logger.info(f'update_user args is {request.json}')
