@@ -58,3 +58,25 @@ INVITED_ADD_DIAMOND=100
 
 # 初始的点券
 INIT_DIAMOND=100
+
+
+# 微信支付appid
+WECHAT_PAY_APPID='wx8704366ddba782a3'
+
+# 微信支付mchid
+WECHAT_PAY_MCHID='1640872063'
+
+# 微信回调地址
+WECHAT_PAY_NOTIFY_URL ='https://photolab.aichatjarvis.com:8003/api/wechat/pay_callback'
+
+# 微信支付正式序列号
+WECHAT_PAY_CERT_SERIAL='221FBF6FFB2C48737C652FBD40DA298F9C7808E8'
+
+# 微信支付apikey
+WECHAT_PAY_API_KEY='yuzhiHoiuasr7098qw3709AWwq342312'
+
+# 人民币和点券的汇率
+MONEY_DIAMOND_RATE=100
+
+# 人脸比对的正确率阈值
+FACE_COMPARE_CONFIDENCE=80

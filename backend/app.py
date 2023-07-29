@@ -8,13 +8,15 @@ from urllib.parse import urlparse, parse_qs
 
 from datetime import datetime, timedelta
 import json
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, url_for
 import secrets
 import random
 import string
+import hmac
 import schedule
 import threading
 import time
+
 from celery import group, Celery, chain, chord
 import logging
 import requests
@@ -33,6 +35,14 @@ from . import selector_other, selector_sd
 from backend.notification_center import wechat_notify_complete_packs, wechat_notify_pack, send_wechat_notification
 
 from backend.app_community import upload_note, get_all_notes, add_note_from_task, app_community
+
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+# from wechatpy.pay import WeChatPay
+# from wechatpy.pay.utils import check_signature
 
 celery_app = Celery('myapp',
                     broker='redis://default:Yzkj8888!@r-wz9d9mt4zsofl3s0pn.redis.rds.aliyuncs.com:6379/0',
@@ -192,6 +202,33 @@ def create_user():
     # Return the response object as a JSON response
     return jsonify(response)
 
+@app.route('/api/get_order', methods=['GET'])
+def get_order():
+    order_id = request.args.get('order_id')
+    # order_type 1-wechat 2-douyin
+    order_type = request.args.get('order_type')
+    if not order_id:
+        return jsonify({"msg": "order_id is required", "code":-1}), 400
+    if not order_type:
+        return jsonify({"msg": "order_type is required", "coder": -1}), 400
+    wechat_order = models.WechatPayOrder.query.filter_by(order_id=order_id).first()
+    if not wechat_order:
+        return jsonify({"msg": "order not found", "code": -1}), 400
+    state=0
+    if wechat_order.state ==2:
+        state = 1
+    if wechat_order.state ==3:
+        state= 1
+    response = {
+        "data": {
+            "state": state
+        },
+        "msg": "get order successfully",
+        "code": 0
+    }
+    return jsonify(response), 200
+
+
 @app.route('/api/get_user', methods=['GET'])
 def get_user():
     user_id = request.args.get('user_id')
@@ -202,6 +239,40 @@ def get_user():
         return jsonify({"error": "user not found"}), 404
 
     persons = models.Person.query.filter_by(user_id=user_id).all()
+    
+    friend_persons=[]
+    friend_open_ids = [record[0] for record in models.InviteRecord.query.filter_by(invite_open_id=user.open_id).with_entities(models.InviteRecord.open_id).all()]
+    # invite me user 
+    invite_record = models.InviteRecord.query.filter_by(open_id=user.open_id).first()
+    if invite_record:
+        friend_open_ids.append(invite_record.open_id)
+    friend_open_ids= list(set(friend_open_ids))
+    
+    logging.info(f'friend_open_ids={friend_open_ids}') 
+    if friend_open_ids:
+        users = models.User.query.filter(models.User.open_id.in_(friend_open_ids)).all()
+        if users:
+            for temp_user in users:
+                logging.info(f'temp_user={temp_user}')
+                process_persons = models.Person.query.filter_by(user_id=temp_user.user_id).all()
+                for process_person in process_persons:
+                    if process_person.head_img_key:
+                        head_img_url = utils.get_signed_url(process_person.head_img_key)
+                    else:
+                        head_img_url = None
+                    
+                    friend_persons.append({
+                        "person_id": process_person.id,
+                        "person_name": process_person.name,
+                        "head_img_url": head_img_url,
+                        "lora_train_status": process_person.lora_train_status,
+                        "user_name": temp_user.name,
+                        "user_icon": temp_user.icon
+                        
+                    })
+    
+                        
+    logging.info(f'persons={persons}')
 
     result_persons = []
 
@@ -232,12 +303,22 @@ def get_user():
         result_persons.append({
             "person_id": person.id,
             "person_name": person.name,
+            "nickname": user.name,
             "head_img_url": head_img_url,
             "lora_train_status": person.lora_train_status,
         })
     
     is_subscribe = user.subscribe_until is not None and user.subscribe_until.timestamp() > int(time.time())
+    # 邀请的数量
     invite_num = models.InviteRecord.query.filter_by(invite_open_id=user.open_id).count()
+    # 被邀请的数量
+    be_invite_num =models.InviteRecord.query.filter_by(open_id=user.open_id).count()
+    if be_invite_num > 1:
+        be_invite_num=1
+    used_diamond = int(models.Payment.query.filter_by(user_id=user_id, pay_type=2).with_entities(func.sum(models.Payment.payment_amount)).scalar() or 0)
+    icon_url=None
+    if user.icon:
+        icon_url = utils.get_signed_url(user.icon)
     response = {
         "data": {
             "persons": result_persons,
@@ -248,15 +329,49 @@ def get_user():
             "subscribe_until": user.subscribe_until.timestamp() if user.subscribe_until else None,
             "diamond" : user.diamond,
             "invited_num" : invite_num,
-            "used_diamond" : 0,
+            "used_diamond" : used_diamond,
             "unlock_need_diamond": config.UNLOCK_PHOTO_DIAMOND,
-            "open_id": user.open_id
+            "open_id": user.open_id,
+            "reward_diamond": (invite_num + be_invite_num) * config.INVITED_ADD_DIAMOND,
+            "name": user.name,
+            "icon": icon_url,
+            "friend_persons": friend_persons 
         },
         "msg": "get user successfully",
         "code": 0
     }
 
+    logging.info(f'get_user response = {response}')
     return jsonify(response), 200
+
+
+@app.route('/api/update_user', methods=['POST'])
+def update_user():
+    logger.info(f'update_user args is {request.json}')
+    args = dict(request.json)
+    user_id= args.get('user_id')
+    name = args.get('name')
+    icon = args.get('icon')
+
+    if not name and not icon:
+        return jsonify({"msg": "name and icon都为空","code":-1}), 400
+    
+    if not user_id:
+        return jsonify({"msg": "user_id不能为空","code":-1}), 400
+    user = models.User.query.filter_by(user_id=user_id).first()
+    if not user:
+        return jsonify({"msg": "user not found","code":-1}), 400
+    if name:
+        user.name=name
+    if icon:
+        data = utils.oss_source_get(icon)
+        utils.oss_put(icon, data)
+        user.icon=icon
+    db.session.add(user)
+    db.session.commit()
+    return jsonify({"msg": "update success","code":0}), 200
+
+
 
 # todo get wechat server msg
 @app.route('/api/get_wechat_msg', methods=['GET'])
@@ -384,7 +499,7 @@ def upload_diamond_payment():
     # Create a new payment
     new_payment = models.Payment(
         user_id=user_id, 
-        payment_amount=config.UNLOCK_PHOTO_DIAMOND * 100, 
+        payment_amount=config.UNLOCK_PHOTO_DIAMOND, 
         receipt='', 
         pack_id=int(pack_id) if pack_id else None, 
         product_id=product_id,
@@ -518,6 +633,196 @@ def subscribe_renew():
         db.session.commit()
         logger.info(f'subscribe_renew user {user.user_id} renewed')
     return jsonify({"msg": "subscribe_renew successful", 'code':0}), 200
+
+
+# wechat miniprogram pre order
+@app.route('/api/wechat/pre_pay', methods=['POST'])
+def wechat_pre_pay():
+    logger.info(f'wechat_pre_pay args is {request.json}')
+    args = dict(request.json)
+
+    missing_params = [param for param in ['open_id', 'pay_config_id']
+                      if args.get(param) is None]
+                
+    if missing_params:
+        logger.error(f'upload_payment missing params {missing_params}')
+        return return_error(f"Missing parameters: {', '.join(missing_params)}")
+
+    # get config json
+    with open('backend/pay_config.json', 'r') as f:
+        data = json.load(f)
+    
+    pay_config_id = args.get('pay_config_id')
+
+    # 在pay_config列表中查找匹配的数据
+    matched_data = None
+    for item in data['pay_config']:
+        if item['id'] == pay_config_id:
+            matched_data = item
+            break
+
+    # 判断是否找到匹配的数据
+    if matched_data is not None:
+        # 获取匹配数据的所有字段
+        amount = matched_data['current_price']
+    else:
+        return jsonify({"msg": "支付类型不存在","code":-1}), 400
+    
+    diamond = matched_data['diamond']
+    open_id = args.get('open_id')
+
+    user = models.User.query.filter_by(open_id=open_id)
+    if not user:
+        return jsonify({"msg": "user not found","code":-1}), 400
+    
+    url = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi"
+    parsed_url = urlparse(url)
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    }
+    amount_json= {
+        "total": amount,
+        "currency": "CNY"
+    }
+    payer={
+        "openid":open_id
+    }
+    with open('backend/apiclient_key.pem', 'r') as f:
+       private_key = f.read()
+    #    logging.info(f'private_key={private_key}')
+    order_id = utils.generate_order_id()
+    data = {
+        "mchid": config.WECHAT_PAY_MCHID,
+        "out_trade_no": order_id,
+        "appid": config.appid,
+        "description": '点券',
+        "notify_url": config.WECHAT_PAY_NOTIFY_URL,
+        "amount": amount_json,
+        "payer": payer,
+    }
+
+    request_body = json.dumps(data)
+    logging.info(f'{request_body}')
+    token, timestamp, nonce = get_wechat_pay_token(config.WECHAT_PAY_MCHID, config.WECHAT_PAY_CERT_SERIAL, private_key, "POST", parsed_url.path, request_body)
+    headers["Authorization"] = token
+    wechat_response = requests.post(url, headers=headers, data=request_body)
+
+    prepay_id = wechat_response.json()["prepay_id"]
+
+    package = 'prepay_id='+prepay_id
+    logging.info(f'package={package}')
+    pay_sign = get_wechat_pay_sign(config.appid, timestamp, nonce, package, private_key)
+    wechat_pay_order = models.WechatPayOrder.query.filter_by(order_id=order_id).first()
+    
+    if wechat_pay_order:
+        return jsonify({"error": "order already exist"}), 400
+    
+    new_pay_order = models.WechatPayOrder(open_id=open_id, state=1, order_id=order_id, amount=amount, diamond = diamond)
+    # create wechat order
+    db.session.add(new_pay_order)
+    db.session.commit()
+    # logger.info(f'{pre_pay_id}')
+    response={
+        "code":0,
+        "msg":"call wechat pre pay success",
+        "data": {
+            "prepay_id": prepay_id,
+            "pay_sign": pay_sign,
+            "timestamp": timestamp,
+            "nonce": nonce,
+            "sign_type":"RSA",
+            "package": package,
+            "order_id": order_id
+            
+        }
+    }
+    return jsonify(response)
+
+# wechat miniprogram pay callback
+@app.route('/api/wechat/pay_callback', methods=['POST'])
+def wechat_pay_callback():
+    logger.info(f'wechat_pre_pay args is {request.json}')
+    data = request.json
+    source = data.get("resource")
+    nonce = source.get("nonce")
+    ciphertext = source.get("ciphertext")
+    associated_data = source.get("associated_data")
+    aesgcm = AESGCM(config.WECHAT_PAY_API_KEY.encode())
+
+    # 都需要转成bytes类型才能进行解密
+    associated_data = associated_data.encode() if isinstance(associated_data, str) else associated_data
+    nonce = nonce.encode() if isinstance(nonce, str) else nonce
+    ciphertext = base64.b64decode(ciphertext)
+
+    # 解密
+    plaintext = aesgcm.decrypt(nonce, ciphertext, associated_data)
+    plaintext_decode = plaintext.decode()
+    logging.info(f'plaintext={plaintext_decode}')
+    plaintext_json = json.loads(plaintext_decode)
+    # our order_id
+    out_trade_no = plaintext_json.get("out_trade_no")
+    # wechat order_id
+    wechat_order_id = plaintext_json.get("transaction_id")
+    trade_state = plaintext_json.get("trade_state")
+    if trade_state =='SUCCESS':
+        # for update lock data
+        wechat_pay_order = models.WechatPayOrder.query.filter_by(order_id=out_trade_no, state=1).with_for_update().first()
+        if not wechat_pay_order:
+            logging.info(f'order_id={out_trade_no} order not found')
+            return jsonify({"code": "FALI","message":"失败"}), 400
+        open_id = wechat_pay_order.open_id
+        amount = wechat_pay_order.amount
+        diamond = wechat_pay_order.diamond
+        user = models.User.query.filter_by(open_id=open_id).first()
+        if not user:
+            logging.info(f'open_idd={open_id} user not found')
+            return jsonify({"code": "FALI","message":"失败"}), 400
+        user.diamond = user.diamond + diamond
+        wechat_pay_order.state=3
+        wechat_pay_order.wechat_order_id = wechat_order_id
+        wechat_pay_order.wechat_origin_text=plaintext_decode
+        wechat_pay_order.update_time=datetime.now()
+        # Commit the session to save changes
+        db.session.commit()
+        # pay success add diamond
+    else:
+        # pay fail
+        return jsonify({"code": "FALI","message":"失败"}), 400
+
+        
+
+    # out_trade_no = plaintext_decode.get("out_trade_no")
+    # return plaintext.decode()
+    # notify_data = wechat_pay.parse_payment_result(data)
+
+    return 'SUCCESS'
+    
+
+def get_wechat_pay_sign(appid, timestamp, nonce, package, private_key):
+    message = '\n'.join([appid, timestamp, nonce, package, ''])
+    logging.info(f'sign={message}')
+    rsa_key = RSA.import_key(private_key)
+    signer = pkcs1_15.new(rsa_key)
+    hash_obj = SHA256.new(message.encode('utf-8'))
+    pay_sign = base64.b64encode(signer.sign(hash_obj)).decode('utf-8')
+    return pay_sign
+
+def get_wechat_pay_token(mchid, serial_no, private_key, method, url, request_body):
+    timestamp = str(int(time.time()))
+    nonce = str(int(time.time() * 1000))
+    message = '\n'.join([method, url, timestamp, nonce, request_body, ''])
+    logging.info(f'sign={message}')
+
+    rsa_key = RSA.import_key(private_key)
+    signer = pkcs1_15.new(rsa_key)
+    hash_obj = SHA256.new(message.encode('utf-8'))
+    signature = base64.b64encode(signer.sign(hash_obj)).decode('utf-8')
+
+    token = 'WECHATPAY2-SHA256-RSA2048 mchid="{}",nonce_str="{}",signature="{}",timestamp="{}",serial_no="{}"'.format(
+        mchid, nonce, signature, timestamp, serial_no)
+    logging.info(f'token={token}')
+    return token, timestamp, nonce
     
 
 # Post request for upload_payment
@@ -875,6 +1180,135 @@ def upload_source():
     }
     
     logging.info(f'upload source success {user_id} {person_id} {person_name}')
+    return jsonify(response)
+
+
+# uploda one picture and create person
+@app.route('/api/create_person', methods=['POST'])
+def create_person(): 
+
+    logger.info(f'create_person args is {request.json}')
+    args = dict(request.json)
+
+    missing_params = [param for param in ['user_id', 'image_oss_key']
+                      if args.get(param) is None]
+                
+    if missing_params:
+        logger.error(f'create_person missing params {missing_params}')
+        return return_error(f"Missing parameters: {', '.join(missing_params)}")       
+    
+    user_id = args.get('user_id')
+    image_oss_key = args.get('image_oss_key')
+    user = models.User.query.filter_by(user_id=user_id).first()
+    if not user:
+        return jsonify({"msg": "用户不存在","code":-1}), 400
+    # get image from oss by image_oss_key
+    try:
+        data = utils.oss_source_get(image_oss_key)
+    except Exception as e:
+        message = e.details['Message']
+        return jsonify({"msg": message,"code":-1}), 400
+    
+    try:
+        oss_result = aliyun_face_detector.one_face(data)
+    except Exception as e:
+        return {"msg": "error", "code": -1}, 400
+    
+    if oss_result:
+        person_name = utils.generate_unique_string()
+        new_person =models.Person(name=person_name, user_id=user_id)
+        db.session.add(new_person)
+        db.session.commit()
+        utils.oss_put(image_oss_key, data)
+        source = models.Source(base_img_key=image_oss_key, user_id=user_id, person_id=new_person.id, is_first=1)
+        db.session.add(source)
+        db.session.commit()
+    else:
+        return jsonify({"msg": "上传图片不正确，图片应该是正面人脸照片且只有一张人脸","code":-1}), 400
+
+    response = {
+        "msg": "上传人像图片成功", 
+        "code": 0, 
+        "data": {
+            "person_id": new_person.id,
+            "persion_name": person_name,
+        }
+    }
+    
+    logging.info(f'upload source success {user_id} {new_person.id} {person_name}')
+    return jsonify(response)
+
+@app.route('/api/v2/upload_multiple_sources', methods = ['POST'])
+def upload_multiple_sources_v2():
+    logger.info(f'upload_multiple_sources args is {request.json}')
+    args = dict(request.json)
+
+    missing_params = [param for param in ['user_id', 'img_oss_keys', 'person_id']
+                      if args.get(param) is None]
+                
+    if missing_params:
+        logger.error(f'upload_multiple_sources missing params {missing_params}')
+        return return_error(f"Missing parameters: {', '.join(missing_params)}")       
+    
+    user_id = args.get('user_id')
+    person_id = args.get('person_id')
+    image_oss_keys = args.get('img_oss_keys')
+
+    # 查找 persons 表中是否存在相应的记录
+    person = models.Person.query.filter_by(user_id=user_id, id=person_id).first()
+    source = models.Source.query.filter_by(user_id=user_id, person_id=person_id, is_first=1).first()
+    if not person:
+        return jsonify({"msg": "person_id不存在","code":-1}), 400
+    if not source:
+        return jsonify({"msg": "首张图片不存在","code":-1}), 400
+    else:
+        person_id = person.id
+        person.lora_train_status = None
+
+    print(image_oss_keys, type(image_oss_keys))
+
+    success_count = 0
+    result_map={}
+    soure_base_img = utils.oss_source_get(source.base_img_key)
+    for key in image_oss_keys:
+        data = utils.oss_source_get(key)
+        # confidence =aliyun_face_detector.aliyun_face_compare(soure_base_img, data)['Data']['Confidence']
+        confidence =aliyun_face_detector.aliyun_face_compare(soure_base_img, data)
+        logging.info(f'confidence={confidence}')
+        if confidence is not None and confidence> config.FACE_COMPARE_CONFIDENCE:
+            utils.oss_put(key, data)
+            source = models.Source(base_img_key=key, user_id=user_id, person_id=person_id, is_first=0)
+            db.session.add(source)
+            result_map[key]="success"
+            success_count += 1
+        else:
+            utils.oss_put(key, data)
+            result_map[key]="fail"
+    db.session.commit()
+
+    response = {
+        "msg": "上传人像图片成功", 
+        "code": 0, 
+        "data": {
+            "person_id": person_id,
+            "img_result": result_map,
+            "success_count": success_count
+        }
+    }
+    logging.info(f'upload source response={response}')
+    
+    return jsonify(response)
+
+
+@app.route('/api/pay_config', methods = ['GET'])
+def get_pay_config():
+    with open('backend/pay_config.json', 'r') as f:
+        config = json.load(f)
+    response = {
+        "msg": "get pay config success", 
+        "code": 0, 
+        "data": config
+    }
     return jsonify(response)
 
 @app.route('/api/upload_multiple_sources', methods = ['POST'])
@@ -1401,6 +1835,7 @@ if __name__ == '__main__':
     config.is_industry = args.is_industry
     config.min_image_num = args.image_num
     config.user_group = args.user_group
+    # wechat_pay = WeChatPay(config.appid, config.appsecret, config.m)
     app.run(host='0.0.0.0', port=args.port, ssl_context=('photolab.aichatjarvis.com.pem', 'photolab.aichatjarvis.com.key'))
     
 else:
