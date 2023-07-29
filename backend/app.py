@@ -239,6 +239,39 @@ def get_user():
         return jsonify({"error": "user not found"}), 404
 
     persons = models.Person.query.filter_by(user_id=user_id).all()
+    
+    friend_persons=[]
+    friend_open_ids = [record[0] for record in models.InviteRecord.query.filter_by(invite_open_id=user.open_id).with_entities(models.InviteRecord.open_id).all()]
+    # invite me user 
+    invite_record = models.InviteRecord.query.filter_by(open_id=user.open_id).first()
+    if invite_record:
+        friend_open_ids.append(invite_record.open_id)
+    friend_open_ids= list(set(friend_open_ids))
+    
+    logging.info(f'friend_open_ids={friend_open_ids}') 
+    if friend_open_ids:
+        users = models.User.query.filter(models.User.open_id.in_(friend_open_ids)).all()
+        if users:
+            for temp_user in users:
+                logging.info(f'temp_user={temp_user}')
+                process_persons = models.Person.query.filter_by(user_id=temp_user.user_id).all()
+                for process_person in process_persons:
+                    if process_person.head_img_key:
+                        head_img_url = utils.get_signed_url(process_person.head_img_key)
+                    else:
+                        head_img_url = None
+                    
+                    friend_persons.append({
+                        "person_id": process_person.id,
+                        "person_name": process_person.name,
+                        "head_img_url": head_img_url,
+                        "lora_train_status": process_person.lora_train_status,
+                        "user_name": temp_user.name,
+                        "user_icon": temp_user.icon
+                        
+                    })
+    
+                        
     logging.info(f'persons={persons}')
 
     result_persons = []
@@ -270,6 +303,7 @@ def get_user():
         result_persons.append({
             "person_id": person.id,
             "person_name": person.name,
+            "nickname": user.name,
             "head_img_url": head_img_url,
             "lora_train_status": person.lora_train_status,
         })
@@ -282,7 +316,9 @@ def get_user():
     if be_invite_num > 1:
         be_invite_num=1
     used_diamond = int(models.Payment.query.filter_by(user_id=user_id, pay_type=2).with_entities(func.sum(models.Payment.payment_amount)).scalar() or 0)
-    
+    icon_url=None
+    if user.icon:
+        icon_url = utils.get_signed_url(user.icon)
     response = {
         "data": {
             "persons": result_persons,
@@ -298,7 +334,8 @@ def get_user():
             "open_id": user.open_id,
             "reward_diamond": (invite_num + be_invite_num) * config.INVITED_ADD_DIAMOND,
             "name": user.name,
-            "icon": user.icon
+            "icon": icon_url,
+            "friend_persons": friend_persons 
         },
         "msg": "get user successfully",
         "code": 0
@@ -310,7 +347,7 @@ def get_user():
 
 @app.route('/api/update_user', methods=['POST'])
 def update_user():
-    logger.info(f'upload_multiple_sources args is {request.json}')
+    logger.info(f'update_user args is {request.json}')
     args = dict(request.json)
     user_id= args.get('user_id')
     name = args.get('name')
@@ -327,10 +364,12 @@ def update_user():
     if name:
         user.name=name
     if icon:
+        data = utils.oss_source_get(icon)
+        utils.oss_put(icon, data)
         user.icon=icon
     db.session.add(user)
     db.session.commit()
-    return jsonify({"msg": "update success","code":0}), 400
+    return jsonify({"msg": "update success","code":0}), 200
 
 
 
@@ -629,6 +668,7 @@ def wechat_pre_pay():
     else:
         return jsonify({"msg": "支付类型不存在","code":-1}), 400
     
+    diamond = matched_data['diamond']
     open_id = args.get('open_id')
 
     user = models.User.query.filter_by(open_id=open_id)
@@ -678,7 +718,7 @@ def wechat_pre_pay():
     if wechat_pay_order:
         return jsonify({"error": "order already exist"}), 400
     
-    new_pay_order = models.WechatPayOrder(open_id=open_id, state=1, order_id=order_id, amount=amount)
+    new_pay_order = models.WechatPayOrder(open_id=open_id, state=1, order_id=order_id, amount=amount, diamond = diamond)
     # create wechat order
     db.session.add(new_pay_order)
     db.session.commit()
@@ -733,11 +773,12 @@ def wechat_pay_callback():
             return jsonify({"code": "FALI","message":"失败"}), 400
         open_id = wechat_pay_order.open_id
         amount = wechat_pay_order.amount
+        diamond = wechat_pay_order.diamond
         user = models.User.query.filter_by(open_id=open_id).first()
         if not user:
             logging.info(f'open_idd={open_id} user not found')
             return jsonify({"code": "FALI","message":"失败"}), 400
-        user.diamond = user.diamond + config.MONEY_DIAMOND_RATE * amount
+        user.diamond = user.diamond + diamond
         wechat_pay_order.state=3
         wechat_pay_order.wechat_order_id = wechat_order_id
         wechat_pay_order.wechat_origin_text=plaintext_decode

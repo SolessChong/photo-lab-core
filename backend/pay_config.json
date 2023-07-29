@@ -4,25 +4,29 @@
         "id": "0nG6zCkP",
         "desc": "1000点券",
         "current_price": 7770,
-        "original_price": 10000
+        "original_price": 10000,
+        "diamond": 1000
       },
       {
         "id": "1234zadc",
         "desc": "300点券",
         "current_price": 2880,
-        "original_price": 5000
+        "original_price": 5000,
+        "diamond": 300
       },
       {
         "id": "2r3dzadc",
         "desc": "100点券",
         "current_price": 990,
-        "original_price": 1000
+        "original_price": 1000,
+        "diamond": 100
       },
       {
         "id": "test0001",
         "desc": "1点券",
         "current_price": 1,
-        "original_price": 1
+        "original_price": 1,
+        "diamond": 1
       }
     ]
   }

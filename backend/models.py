@@ -228,6 +228,7 @@ class WechatPayOrder(db.Model):
     state = db.Column(db.Integer, nullable=True)
     order_id = db.Column(db.String(32), nullable=True)
     amount = db.Column(db.Integer, nullable=True)
+    diamond = db.Column(db.Integer, nullable=True)
     wechat_order_id = db.Column(db.String(32), nullable=True)
     wechat_origin_text = db.Column(db.String(2048), nullable=True)
     create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
