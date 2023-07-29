@@ -220,6 +220,13 @@ class InviteRecord(db.Model):
     open_id = db.Column(db.String(255), nullable=True)
     invite_open_id = db.Column(db.String(255), nullable=True)
     create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    
+class Friends(db.Model):
+    __tablename__ = 'friends'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    open_id = db.Column(db.String(255), nullable=True)
+    friend_open_id = db.Column(db.String(255), nullable=True)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
 class WechatPayOrder(db.Model):
     __tablename__ = 'wechat_pay_order'
